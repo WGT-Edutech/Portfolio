@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>William Thomason — EdTech Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;700&family=Roboto+Flex:opsz,wght@8..144,100..1000&display=swap" rel="stylesheet">
+<style>
+:root{--bg-ink:#03030a;--bg-deep:#0a0a12;--purple:#8b5cf6;--accent-indigo:#5b4dff;--text-cream:#f4f1ea;--text-dim:rgba(244,241,234,.5)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:3450vh}
+
+/* Canvas layers — behind text */
+#scene{position:fixed;inset:0;z-index:2;pointer-events:none}
+#dotGridCanvas{position:fixed;inset:0;z-index:3;pointer-events:none}
+#cursorGridCanvas{position:fixed;inset:0;z-index:4;pointer-events:none}
+
+/* Rooms */
+.room{position:relative}
+.sticky{position:sticky;top:0;height:100vh;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;z-index:10;will-change:transform}
+
+/* Name stage */
+.name-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:6}
+.name-text{font-family:'Roboto Flex',sans-serif;font-size:clamp(3.5rem,10vw,9rem);font-weight:700;color:var(--text-cream);text-transform:uppercase;letter-spacing:.05em;text-shadow:0 0 60px rgba(139,92,246,.4)}
+.name-char{display:inline-block;opacity:0;transform:translateY(20px)}
+.vp-char{display:inline-block;will-change:font-variation-settings}
+
+/* Title stage */
+.title-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:6}
+.title-role{font-family:'Roboto Flex',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 30px rgba(139,92,246,.5)}
+.title-slogan{font-family:'Roboto Flex',sans-serif;font-size:clamp(1.2rem,2.8vw,2rem);color:var(--text-cream);letter-spacing:.04em;text-align:center}
+
+/* GALLERY */
+#galleryRoom{position:absolute;inset:0;z-index:30;perspective:1200px;display:flex;align-items:center;justify-content:center}
+.card-ring{position:relative;width:100%;height:100%;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center}
+.ring-card{position:absolute;left:50%;top:50%;width:420px;height:280px;margin-left:-210px;margin-top:-140px;transform-style:preserve-3d;cursor:pointer}
+.ring-card-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;backface-visibility:hidden;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.08);background:rgba(15,15,30,.85);box-shadow:0 10px 40px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+.ring-card-front{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2rem}
+.ring-card-title{font-family:'Oswald',sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-cream);text-align:center;line-height:1.2}
+
+#cardInfo{position:fixed;top:50%;left:50%;transform:translate(-50%,170px);z-index:40;text-align:center;pointer-events:none;transition:opacity .4s ease}
+.card-name{font-family:'Oswald',sans-serif;font-size:1.4rem;text-transform:uppercase;letter-spacing:.05em;text-shadow:0 0 15px rgba(91,77,255,.8),0 0 40px rgba(139,92,246,.5),0 0 80px rgba(91,77,255,.3)}
+
+/* Card hover glow */
+.ring-card .ring-card-inner{transition:box-shadow .4s ease,border-color .4s ease}
+.ring-card:hover .ring-card-inner{border-color:rgba(139,92,246,.5);box-shadow:0 0 40px rgba(91,77,255,.3),0 20px 60px rgba(0,0,0,.6),0 0 100px rgba(139,92,246,.15)}
+
+/* Phase dots */
+.phase-dots{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:.8rem}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(244,241,234,.2);border:1px solid rgba(244,241,234,.1);cursor:pointer;transition:all .3s;padding:0}
+.dot.active{background:var(--purple);border-color:var(--purple);box-shadow:0 0 12px rgba(139,92,246,.5);transform:scale(1.3)}
+
+/* JS-disabled fallback: text always visible */
+.no-js .name-stage,.no-js .title-stage,.no-js #galleryRoom,.no-js .ring-card,.no-js .top-nav,.no-js .slogan-bar{opacity:1!important;visibility:visible!important}
+.no-js .ring-card{position:relative;left:auto;top:auto;margin:8px;display:inline-block}
+
+/* TOP NAV BAR — backdrop only, hero content shrinks into it */
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:45;height:3.5rem;opacity:0;pointer-events:none;transition:opacity .5s;background:linear-gradient(to bottom,rgba(3,3,10,.95) 0%,rgba(3,3,10,.7) 70%,transparent 100%);display:flex;align-items:center;justify-content:flex-end;padding:0 2rem}
+.top-nav.visible{opacity:1;pointer-events:auto}
+.nav-links{display:flex;gap:1.5rem}
+.nav-links a{font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;color:var(--text-dim);text-decoration:none;letter-spacing:.05em;text-transform:uppercase;transition:color .3s}
+.nav-links a:hover{color:var(--purple)}
+.donate-link{color:var(--purple)!important}
+
+/* SECTION BUTTONS — under gallery */
+.section-buttons{position:fixed;bottom:8vh;left:50%;transform:translateX(-50%);z-index:40;display:flex;gap:1rem;opacity:0;pointer-events:none;transition:opacity .6s}
+.section-buttons.visible{opacity:1;pointer-events:auto}
+.sect-btn{display:inline-block;padding:.6em 1.8em;border-radius:999px;font-family:'Inter',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.05em;text-decoration:none;color:var(--text-cream);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);transition:all .3s}
+.sect-btn:hover{background:rgba(139,92,246,.2);border-color:rgba(139,92,246,.4);transform:translateY(-2px)}
+.donate-btn{background:var(--purple);border-color:var(--purple);box-shadow:0 0 20px rgba(139,92,246,.3)}
+.donate-btn:hover{background:rgba(139,92,246,.8);box-shadow:0 0 30px rgba(139,92,246,.5)}
+
+/* SLOGAN BOTTOM BAR */
+.slogan-bar{position:fixed;bottom:0;left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(1rem,2.5vw,1.6rem);color:var(--text-cream);letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .5s;text-shadow:0 0 30px rgba(139,92,246,.3)}
+.slogan-bar.visible{opacity:1}
+
+/* GALLERY FLOOR REFLECTION */
+.gallery-floor{position:fixed;bottom:0;left:0;right:0;height:35vh;z-index:25;opacity:0;pointer-events:none;transition:opacity .8s;background:linear-gradient(to bottom,rgba(10,10,20,0) 0%,rgba(10,10,20,.5) 50%,rgba(3,3,10,.9) 100%)}
+.gallery-floor.visible{opacity:1}
+
+/* 3D floor reflection — gallery only */
+#galleryRoom{-webkit-box-reflect:below 2px linear-gradient(transparent 0%,transparent 30%,rgba(3,3,10,.7) 100%)}
+
+/* Room heights — desktop (full experience) */
+.r1h{height:1000vh}.r2h{height:600vh}.r3h{height:180vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}
+/* Mobile — shorter scroll distances */
+@media(max-width:768px){.r1h{height:400vh}.r2h{height:350vh}.r3h{height:120vh}.r4h{height:200vh}.r5h{height:80vh}.r6h{height:2300vh}}
+
+/* DNA HELIX LOADER */
+.loading-screen{display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+.label-sm{font-family:'Inter',sans-serif;font-size:.9rem;color:#b794f4;letter-spacing:.12em;text-transform:uppercase;animation:pulseGlow 1.8s ease-in-out infinite}
+@keyframes pulseGlow{0%,100%{text-shadow:0 0 8px rgba(139,92,246,.8),0 0 20px rgba(139,92,246,.5),0 0 40px rgba(91,77,255,.3)}50%{text-shadow:0 0 16px rgba(180,140,255,.95),0 0 40px rgba(139,92,246,.7),0 0 70px rgba(91,77,255,.5),0 0 100px rgba(139,92,246,.3)}}
+.dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
+.dna-base{width:12px;height:110px;border-radius:4px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;filter:blur(2px);background-color:#2d1255;background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:0% 100%;background-repeat:no-repeat;will-change:transform,opacity,filter,background-size,box-shadow}
+
+@media(prefers-reduced-motion){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+</style>
+</head>
+<body>
+
+<canvas id="dotGridCanvas"></canvas>
+<canvas id="scene"></canvas>
+<canvas id="cursorGridCanvas"></canvas>
+
+<section class="room r1h" id="r1">
+  <div class="sticky">
+    <div class="loading-screen" id="loader">
+      <div class="label-sm">Scroll to energize</div>
+      <div class="dna-helix" id="dnaHelix"></div>
+    </div>
+  </div>
+</section>
+<section class="room r2h" id="r2"><div class="sticky"></div></section>
+<section class="room r3h" id="r3">
+  <div class="sticky">
+    <div class="name-stage" id="nameStage">
+      <h1 class="name-text" id="nameText">William Thomason</h1>
+    </div>
+  </div>
+</section>
+<section class="room r4h" id="r4">
+  <div class="sticky">
+    <div class="title-stage" id="titleStage">
+      <div class="title-role" id="roleText">EdTech Designer</div>
+      <div class="title-slogan" id="sloganText">Building the Future of Learning.</div>
+    </div>
+  </div>
+</section>
+<section class="room r5h" id="r5"><div class="sticky"></div></section>
+<section class="room r6h" id="r6">
+  <div class="sticky">
+    <section id="galleryRoom"><div class="card-ring" id="cardRing"></div></section>
+    <div id="cardInfo"><div class="card-name" id="cardName"></div></div>
+  </div>
+</section>
+
+<!-- TOP NAV BAR — backdrop only, hero content shrinks into it -->
+<nav class="top-nav" id="topNav">
+  <span class="nav-links">
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="https://paypal.me/williamgraythomason" target="_blank" class="donate-link">Donate</a>
+  </span>
+</nav>
+
+<!-- SLOGAN BOTTOM BAR -->
+<div class="slogan-bar" id="sloganBar">Building the Future of Learning.</div>
+
+<!-- GALLERY FLOOR REFLECTION -->
+<div class="gallery-floor" id="galleryFloor"></div>
+
+<!-- SECTION BUTTONS — under gallery -->
+<div class="section-buttons" id="sectionButtons">
+  <a href="#about" class="sect-btn">About</a>
+  <a href="#contact" class="sect-btn">Contact</a>
+  <a href="https://paypal.me/williamgraythomason" target="_blank" class="sect-btn donate-btn">Donate</a>
+</div>
+
+<nav class="phase-dots" id="phaseDots" aria-label="Phase navigation">
+  <button class="dot active" data-room="r1" aria-label="Dot background"></button>
+  <button class="dot" data-room="r2" aria-label="Particle ring"></button>
+  <button class="dot" data-room="r3" aria-label="Name reveal"></button>
+  <button class="dot" data-room="r4" aria-label="Title and slogan"></button>
+  <button class="dot" data-room="r5" aria-label="Cursor effects"></button>
+  <button class="dot" data-room="r6" aria-label="Gallery"></button>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+document.documentElement.classList.remove('no-js');
+
+// ═══════════════════════════════════════════════════════════
+// LAYER 1: GLOBAL SCROLL STATE — single source of truth
+// ═══════════════════════════════════════════════════════════
+var STATE = {
+  scrollY: 0, maxScroll: 1,
+  progress: 0, deltaY: 0, direction: 0,
+  mouseX: 0, mouseY: 0,
+  viewW: window.innerWidth, viewH: window.innerHeight,
+  rooms: [], activeRoom: -1,
+  frameSkip: false, timestamp: 0
+};
+window.__SCROLL_STATE__ = STATE;
+
+var clamp01 = function(v){ return Math.max(0,Math.min(1,v)); };
+var lerp = function(a,b,t){ return a+(b-a)*clamp01(t); };
+var smoothstep = function(t){ t=clamp01(t); return t*t*(3-2*t); };
+var DPR = Math.min(window.devicePixelRatio || 1, 2);
+
+// ═══════════════════════════════════════════════════════════
+// LAYER 2: PASSIVE SCROLL LISTENER — updates state only
+// ═══════════════════════════════════════════════════════════
+var lastScrollY = 0;
+window.addEventListener('scroll', function(){
+  STATE.scrollY = window.scrollY;
+  STATE.maxScroll = Math.max(1, document.body.scrollHeight - STATE.viewH);
+  STATE.progress = clamp01(STATE.scrollY / STATE.maxScroll);
+  STATE.deltaY = STATE.scrollY - lastScrollY;
+  STATE.direction = STATE.deltaY > 0 ? 1 : STATE.deltaY < 0 ? -1 : 0;
+  STATE.timestamp = performance.now();
+  lastScrollY = STATE.scrollY;
+}, { passive: true });
+
+// Mouse tracking (passive, window-level)
+window.addEventListener('mousemove', function(e){
+  STATE.mouseX = e.clientX; STATE.mouseY = e.clientY;
+}, { passive: true });
+
+// ═══════════════════════════════════════════════════════════
+// LAYER 3: INTERSECTION OBSERVER — active room detection
+// ═══════════════════════════════════════════════════════════
+var roomEls = ['r1','r2','r3','r4','r5','r6'].map(function(id){ return document.getElementById(id); });
+STATE.rooms = roomEls.map(function(el, i){ return { el: el, progress: 0, active: false, top: 0, height: 0 }; });
+
+// Cache room geometry (recompute on resize, not per frame)
+function cacheRoomGeometry(){
+  STATE.rooms.forEach(function(room){
+    var r = room.el.getBoundingClientRect();
+    room.top = r.top + STATE.scrollY;
+    room.height = r.height;
+  });
+}
+cacheRoomGeometry();
+
+// IntersectionObserver for active room
+var roomObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(entry){
+    var idx = roomEls.indexOf(entry.target);
+    if (idx >= 0) STATE.rooms[idx].active = entry.isIntersecting;
+  });
+  // Find best active room
+  var best = -1, bestRatio = 0;
+  STATE.rooms.forEach(function(r, i){
+    if (r.active){
+      var rect = r.el.getBoundingClientRect();
+      var visible = Math.max(0, Math.min(STATE.viewH, rect.bottom) - Math.max(0, rect.top)) / STATE.viewH;
+      if (visible > bestRatio){ bestRatio = visible; best = i; }
+    }
+  });
+  STATE.activeRoom = best;
+}, { threshold: [0, 0.1, 0.5] });
+roomEls.forEach(function(el){ roomObserver.observe(el); });
+
+// Resize → recache geometry
+window.addEventListener('resize', function(){
+  STATE.viewW = window.innerWidth; STATE.viewH = window.innerHeight;
+  cacheRoomGeometry();
+});
+
+// ═══════════════════════════════════════════════════════════
+// LAYER 4: BACKPRESSURE GATE
+// ═══════════════════════════════════════════════════════════
+var lastProcessedTimestamp = 0;
+var MIN_FRAME_MS = 1000 / 30; // 30fps cap
+
+function shouldProcessFrame(){
+  var now = performance.now();
+  if (now - lastProcessedTimestamp < MIN_FRAME_MS){
+    STATE.frameSkip = true;
+    return false;
+  }
+  STATE.frameSkip = false;
+  lastProcessedTimestamp = now;
+  return true;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUBSYSTEM: DOT GRID
+// ═══════════════════════════════════════════════════════════
+var dotCanvas = document.getElementById('dotGridCanvas'), dctx = dotCanvas.getContext('2d');
+var DOT_GAP = 32, DOT_SIZE = 8, DOT_PROXIMITY = 150;
+var dots = [], shockWaves = [];
+var dotBase = '#5227FF', dotActive = '#F97316';
+function hexRgb(h){ var v = h.replace('#',''); if(v.length===3)v=v[0]+v[0]+v[1]+v[1]+v[2]+v[2]; var n = parseInt(v,16); return {r:(n>>16)&255,g:(n>>8)&255,b:n&255}; }
+var baseRGB = hexRgb(dotBase), activeRGB = hexRgb(dotActive);
+
+function buildDots(){
+  dotCanvas.width = Math.round(STATE.viewW * DPR);
+  dotCanvas.height = Math.round(STATE.viewH * DPR);
+  dotCanvas.style.width = STATE.viewW + 'px';
+  dotCanvas.style.height = STATE.viewH + 'px';
+  dctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  var cols = Math.ceil(STATE.viewW / DOT_GAP), rows = Math.ceil(STATE.viewH / DOT_GAP);
+  dots = [];
+  for(var r=0;r<rows;r++) for(var c=0;c<cols;c++) dots.push({ox:c*DOT_GAP+DOT_GAP/2, oy:r*DOT_GAP+DOT_GAP/2, x:0, y:0, vx:0, vy:0});
+}
+buildDots();
+window.addEventListener('resize', buildDots);
+window.addEventListener('pointerdown', function(e){ shockWaves.push({x:e.clientX, y:e.clientY, radius:0, maxRadius:250, strength:5}); });
+
+function updateDots(dt){
+  var mx = STATE.mouseX, my = STATE.mouseY;
+  for(var i=0;i<dots.length;i++){
+    var d = dots[i], sx = d.ox + d.x, sy = d.oy + d.y;
+    var dx = mx - sx, dy = my - sy, mdist = Math.sqrt(dx*dx+dy*dy);
+    if(mdist < DOT_PROXIMITY && mdist > 0){ var f = (DOT_PROXIMITY - mdist) / DOT_PROXIMITY * 2; d.vx -= dx/mdist*f*.5; d.vy -= dy/mdist*f*.5; }
+    for(var j=shockWaves.length-1;j>=0;j--){ var w=shockWaves[j], wdx=sx-w.x, wdy=sy-w.y, wd=Math.sqrt(wdx*wdx+wdy*wdy);
+      if(wd < w.radius && wd > 0){ var wf = (1 - wd/w.radius) * w.strength * .5; d.vx += wdx/wd*wf; d.vy += wdy/wd*wf; } }
+    d.vx -= d.x*.008; d.vy -= d.y*.008; d.vx *= .92; d.vy *= .92; d.x += d.vx; d.y += d.vy;
+  }
+  for(var si=shockWaves.length-1;si>=0;si--){ shockWaves[si].radius += 8*dt*60; if(shockWaves[si].radius > shockWaves[si].maxRadius) shockWaves.splice(si,1); }
+}
+
+function drawDots(opacity){
+  if(opacity < 0.01) return;
+  dctx.clearRect(0, 0, dotCanvas.width, dotCanvas.height);
+  var mx = STATE.mouseX, my = STATE.mouseY;
+  for(var i=0;i<dots.length;i++){
+    var d = dots[i], sx = d.ox + d.x, sy = d.oy + d.y;
+    var dx = mx - sx, dy = my - sy, mdist = Math.sqrt(dx*dx+dy*dy), color = dotBase;
+    if(mdist < DOT_PROXIMITY){ var t = 1 - mdist/DOT_PROXIMITY; var r = Math.round(lerp(baseRGB.r, activeRGB.r, t)), g = Math.round(lerp(baseRGB.g, activeRGB.g, t)), b = Math.round(lerp(baseRGB.b, activeRGB.b, t)); color = 'rgb('+r+','+g+','+b+')'; }
+    dctx.fillStyle = color; dctx.globalAlpha = opacity;
+    dctx.beginPath(); dctx.arc(sx, sy, DOT_SIZE/2, 0, Math.PI*2); dctx.fill();
+  }
+  dctx.globalAlpha = 1;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUBSYSTEM: THREE.JS PARTICLE RINGS
+// ═══════════════════════════════════════════════════════════
+var renderer, scene3, cam, pts, pGeo, pMat, bgPts, bgGeo, bgMat;
+var P_COUNT = 200, B_COUNT = 250, pTgt, pPhase, bgTgt, bgPhase;
+var mx3 = 0, my3 = 0, mtx3 = 0, mty3 = 0;
+try {
+  renderer = new THREE.WebGLRenderer({canvas: document.getElementById('scene'), antialias: true, alpha: true});
+  renderer.setPixelRatio(DPR);
+  renderer.setSize(STATE.viewW, STATE.viewH);
+  scene3 = new THREE.Scene();
+  cam = new THREE.PerspectiveCamera(48, STATE.viewW/STATE.viewH, .1, 1000);
+  cam.position.set(0, .8, 7); cam.lookAt(0, 0, 0);
+
+  var P_RING=7;
+  pGeo = new THREE.BufferGeometry(); var pPos = new Float32Array(P_COUNT*3); pTgt = new Float32Array(P_COUNT*3); pPhase = new Float32Array(P_COUNT);
+  for(var i=0;i<P_COUNT;i++){ var a=(i/P_COUNT)*Math.PI*2;
+    pTgt[i*3]=Math.cos(a)*P_RING; pTgt[i*3+1]=Math.sin(a)*.5; pTgt[i*3+2]=Math.sin(a)*P_RING;
+    pPos[i*3]=(Math.random()-.5)*20; pPos[i*3+1]=(Math.random()-.5)*20; pPos[i*3+2]=(Math.random()-.5)*20; pPhase[i]=Math.random()*Math.PI*2; }
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
+  var pc = document.createElement('canvas'); pc.width=32; pc.height=32; var pctx = pc.getContext('2d');
+  var pg = pctx.createRadialGradient(16,16,0,16,16,16); pg.addColorStop(0,'rgba(180,160,255,0.9)'); pg.addColorStop(0.3,'rgba(140,120,240,0.5)'); pg.addColorStop(0.7,'rgba(100,80,220,0.1)'); pg.addColorStop(1,'rgba(0,0,0,0)');
+  pctx.fillStyle=pg; pctx.fillRect(0,0,32,32);
+  pMat = new THREE.PointsMaterial({size:.55, map: new THREE.CanvasTexture(pc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, color: 0x9b8aff});
+  pts = new THREE.Points(pGeo, pMat); pts.scale.set(.01,.01,.01); scene3.add(pts);
+
+  var B_RING=10;
+  bgGeo = new THREE.BufferGeometry(); var bgPos = new Float32Array(B_COUNT*3); bgTgt = new Float32Array(B_COUNT*3); bgPhase = new Float32Array(B_COUNT);
+  for(var i=0;i<B_COUNT;i++){ var a=(i/B_COUNT)*Math.PI*2;
+    bgTgt[i*3]=Math.cos(a)*B_RING; bgTgt[i*3+1]=Math.sin(a)*.5; bgTgt[i*3+2]=Math.sin(a)*B_RING;
+    bgPos[i*3]=(Math.random()-.5)*24; bgPos[i*3+1]=(Math.random()-.5)*24; bgPos[i*3+2]=(Math.random()-.5)*24; bgPhase[i]=Math.random()*Math.PI*2; }
+  bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
+  var bpc = document.createElement('canvas'); bpc.width=32; bpc.height=32; var bctx = bpc.getContext('2d');
+  var bgg = bctx.createRadialGradient(16,16,2,16,16,16); bgg.addColorStop(0,'rgba(255,159,252,0.9)'); bgg.addColorStop(0.3,'rgba(255,140,245,0.5)'); bgg.addColorStop(0.7,'rgba(200,80,220,0.1)'); bgg.addColorStop(1,'rgba(0,0,0,0)');
+  bctx.fillStyle=bgg; bctx.fillRect(0,0,32,32);
+  bgMat = new THREE.PointsMaterial({size:.6, map: new THREE.CanvasTexture(bpc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, color: 0xff9ffc});
+  bgPts = new THREE.Points(bgGeo, bgMat); bgPts.position.z = -2; bgPts.scale.set(.01,.01,.01); scene3.add(bgPts);
+
+  window.addEventListener('mousemove', function(e){ mtx3 = (e.clientX/STATE.viewW)*2-1; mty3 = -(e.clientY/STATE.viewH)*2+1; }, {passive: true});
+} catch(e){ console.error('Three.js:', e); }
+
+function updateParticles(time){
+  if(!pts) return;
+  mx3 += (mtx3-mx3)*.35; my3 += (mty3-my3)*.35;
+  var mag3D = new THREE.Vector3(mx3*28, my3*16, 2);
+  var orbitRot = STATE.rooms[1].progress * Math.PI * 8;
+  var posArr = pGeo.attributes.position.array;
+  for(var i=0;i<P_COUNT;i++){ var idx=i*3, a=(i/P_COUNT)*Math.PI*2, w=Math.sin(time*.001*.4+pPhase[i])*1, r=7+w*.8;
+    pTgt[idx]=Math.cos(a+orbitRot)*r; pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w; pTgt[idx+2]=Math.sin(a+orbitRot)*r;
+    var dx=posArr[idx]-mag3D.x, dy=posArr[idx+1]-mag3D.y, dz=posArr[idx+2]-mag3D.z;
+    var dist=Math.sqrt(dx*dx+dy*dy+dz*dz)+.001, force=Math.min(12/dist,20);
+    posArr[idx]+=(pTgt[idx]+(dx/dist)*force*.9-posArr[idx])*.12;
+    posArr[idx+1]+=(pTgt[idx+1]+(dy/dist)*force*.9-posArr[idx+1])*.12;
+    posArr[idx+2]+=(pTgt[idx+2]+(dz/dist)*force*.9-posArr[idx+2])*.12;
+  }
+  pGeo.attributes.position.needsUpdate = true;
+  pMat.size = .55 + Math.sin(time*.001*3)*.1;
+  var bgPosArr = bgGeo.attributes.position.array;
+  for(var i=0;i<B_COUNT;i++){ var idx=i*3, a=(i/B_COUNT)*Math.PI*2, w=Math.sin(time*.001*.4+bgPhase[i])*1, r=10+w*.8;
+    bgTgt[idx]=Math.cos(a+orbitRot)*r; bgTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w; bgTgt[idx+2]=Math.sin(a+orbitRot)*r;
+    var dx=bgPosArr[idx]-mag3D.x, dy=bgPosArr[idx+1]-mag3D.y, dz=bgPosArr[idx+2]-mag3D.z;
+    var dist=Math.sqrt(dx*dx+dy*dy+dz*dz)+.001, force=Math.min(14/dist,18);
+    bgPosArr[idx]+=(bgTgt[idx]+(dx/dist)*force*.9-bgPosArr[idx])*.14;
+    bgPosArr[idx+1]+=(bgTgt[idx+1]+(dy/dist)*force*.9-bgPosArr[idx+1])*.14;
+    bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
+  }
+  bgGeo.attributes.position.needsUpdate = true;
+  bgMat.size = .6 + Math.sin(time*.001*3)*.12;
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUBSYSTEM: CURSOR GRID
+// ═══════════════════════════════════════════════════════════
+var cgCanvas = document.getElementById('cursorGridCanvas'), cgCtx = cgCanvas.getContext('2d');
+var CG_CELL=70, CG_COLOR='#5b4dff', CG_RADIUS=140, CG_HOLD=400, CG_FADE=800;
+var cgAlpha=null, cgTouched=null, cgCols=0, cgRows=0, cgOffX=0, cgOffY=0, cgW=0, cgH=0, cgPulses=[];
+function h2rgb(h){ var v=h.replace('#',''); if(v.length===3)v=v[0]+v[0]+v[1]+v[1]+v[2]+v[2]; var n=parseInt(v,16); return [(n>>16)&255,(n>>8)&255,n&255]; }
+var cgRGB = h2rgb(CG_COLOR);
+
+function rebuildCg(){
+  cgW = STATE.viewW; cgH = STATE.viewH;
+  cgCanvas.width = Math.max(1, Math.round(cgW * DPR));
+  cgCanvas.height = Math.max(1, Math.round(cgH * DPR));
+  cgCanvas.style.width = cgW+'px'; cgCanvas.style.height = cgH+'px';
+  cgCtx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  cgCols = Math.ceil(cgW/CG_CELL)+1; cgRows = Math.ceil(cgH/CG_CELL)+1;
+  cgOffX = (cgW-cgCols*CG_CELL)/2; cgOffY = (cgH-cgRows*CG_CELL)/2;
+  cgAlpha = new Float32Array(cgCols*cgRows); cgTouched = new Float64Array(cgCols*cgRows);
+}
+rebuildCg();
+window.addEventListener('resize', rebuildCg);
+
+function cgCenter(i){ return [cgOffX+(i%cgCols)*CG_CELL+CG_CELL/2, cgOffY+Math.floor(i/cgCols)*CG_CELL+CG_CELL/2]; }
+
+function cgEnergize(x, y, boost){
+  var r = Math.max(CG_RADIUS, 1), now = performance.now();
+  var minCol = Math.max(0, Math.floor((x-r-cgOffX)/CG_CELL)), maxCol = Math.min(cgCols-1, Math.floor((x+r-cgOffX)/CG_CELL));
+  var minRow = Math.max(0, Math.floor((y-r-cgOffY)/CG_CELL)), maxRow = Math.min(cgRows-1, Math.floor((y+r-cgOffY)/CG_CELL));
+  for(var cr=minRow;cr<=maxRow;cr++) for(var cc=minCol;cc<=maxCol;cc++){
+    var i = cr*cgCols+cc, c = cgCenter(i), dist = Math.hypot(c[0]-x, c[1]-y);
+    if(dist > r) continue;
+    var t2 = 1-dist/r, level = t2*t2*(3-2*t2)*(boost||1);
+    if(level > cgAlpha[i]){ cgAlpha[i] = level; cgTouched[i] = now; } else if(level > 0) cgTouched[i] = now;
+  }
+}
+window.addEventListener('pointermove', function(e){ cgEnergize(e.clientX, e.clientY); }, {passive: true});
+window.addEventListener('pointerdown', function(e){ cgPulses.push({x:e.clientX, y:e.clientY, t0:performance.now()}); }, {passive: true});
+
+function drawCg(opacity){
+  if(opacity < 0.01) return;
+  var now = performance.now(), cr = cgRGB[0], cg = cgRGB[1], cb = cgRGB[2];
+  cgCtx.clearRect(0,0,cgW,cgH);
+
+  // Static grid
+  cgCtx.strokeStyle = 'rgba('+cr+','+cg+','+cb+','+(.15*opacity)+')'; cgCtx.lineWidth = 1; cgCtx.beginPath();
+  for(var c=0;c<=cgCols;c++){ var x=Math.round(cgOffX+c*CG_CELL)+.5; cgCtx.moveTo(x,0); cgCtx.lineTo(x,cgH); }
+  for(var r=0;r<=cgRows;r++){ var y=Math.round(cgOffY+r*CG_CELL)+.5; cgCtx.moveTo(0,y); cgCtx.lineTo(cgW,y); }
+  cgCtx.stroke();
+
+  // Pulses
+  for(var pi=cgPulses.length-1;pi>=0;pi--){
+    var pulse = cgPulses[pi], ringR = (now-pulse.t0)/1000*600;
+    if(ringR > Math.hypot(cgW,cgH)){ cgPulses.splice(pi,1); continue; }
+    var band = CG_CELL;
+    for(var cr=Math.max(0,Math.floor((pulse.y-ringR-band-cgOffY)/CG_CELL)); cr<=Math.min(cgRows-1,Math.floor((pulse.y+ringR+band-cgOffY)/CG_CELL)); cr++)
+      for(var cc=Math.max(0,Math.floor((pulse.x-ringR-band-cgOffX)/CG_CELL)); cc<=Math.min(cgCols-1,Math.floor((pulse.x+ringR+band-cgOffX)/CG_CELL)); cc++){
+        var i=cr*cgCols+cc, c=cgCenter(i), dist=Math.hypot(c[0]-pulse.x, c[1]-pulse.y);
+        if(Math.abs(dist-ringR) < band/2 && 1 > cgAlpha[i]){ cgAlpha[i]=1; cgTouched[i]=now; }
+      }
+  }
+
+  // Lit cells
+  var half = CG_CELL/2;
+  for(var i=0;i<cgAlpha.length;i++){
+    var a = cgAlpha[i]; if(a <= 0) continue;
+    if(now - cgTouched[i] > CG_HOLD){ a = Math.max(0, a - (now - cgTouched[i] - CG_HOLD) / CG_FADE); cgAlpha[i] = a; if(a <= 0) continue; }
+    var cx = cgOffX+(i%cgCols)*CG_CELL+half, cy = cgOffY+Math.floor(i/cgCols)*CG_CELL+half;
+    var grad = cgCtx.createRadialGradient(cx,cy,half*.1,cx,cy,CG_CELL);
+    grad.addColorStop(0, 'rgba('+cr+','+cg+','+cb+','+(a*opacity)+')');
+    grad.addColorStop(1, 'rgba('+cr+','+cg+','+cb+',0)');
+    cgCtx.beginPath(); cgCtx.rect(cx-half+.5, cy-half+.5, CG_CELL-1, CG_CELL-1);
+    cgCtx.fillStyle = 'rgba('+cr+','+cg+','+cb+','+(a*.08*opacity)+')'; cgCtx.fill();
+    cgCtx.strokeStyle = grad; cgCtx.lineWidth = 1.2; cgCtx.stroke();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUBSYSTEM: TEXT EFFECTS
+// ═══════════════════════════════════════════════════════════
+var nameText = document.getElementById('nameText'), nameStage = document.getElementById('nameStage');
+var roleText = document.getElementById('roleText'), sloganText = document.getElementById('sloganText'), titleStage = document.getElementById('titleStage');
+
+// Split all three text elements into per-character spans for VariableProximity
+function splitToChars(el, cls){
+  var text = el.textContent; el.textContent = '';
+  var chars = [];
+  text.split('').forEach(function(ch){
+    var s = document.createElement('span'); s.className = cls;
+    s.textContent = ch === ' ' ? '\u00a0' : ch;
+    el.appendChild(s); chars.push(s);
+  });
+  return chars;
+}
+var nameVPChars = splitToChars(nameText, 'name-char');
+var roleVPChars = splitToChars(roleText, 'vp-char');
+var sloganVPChars = splitToChars(sloganText, 'vp-char');
+var allVPChars = [].concat(roleVPChars, sloganVPChars); // name excluded — has its own reveal
+
+// Name reveal — simple character-by-character fade-in (no scramble)
+var nameRevealCount = 0;
+function revealNameChars(count){
+  nameVPChars.forEach(function(c, i){
+    c.style.opacity = i < count ? '1' : '0';
+    c.style.transform = i < count ? 'translateY(0)' : 'translateY(20px)';
+  });
+}
+
+// VariableProximity — apply to ALL text chars
+function updateAllVP(){
+  var mx = STATE.mouseX, my = STATE.mouseY;
+  allVPChars.forEach(function(c){
+    var rect = c.getBoundingClientRect(), cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+    var dist = Math.hypot(mx - cx, my - cy), radius = 150;
+    if(dist < radius){
+      var t = 1 - dist/radius, wght = 400 + 600*t, opsz = 9 + 31*t;
+      c.style.fontVariationSettings = "'wght' " + Math.round(wght) + ", 'opsz' " + Math.round(opsz);
+    } else {
+      c.style.fontVariationSettings = "'wght' 400, 'opsz' 9";
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUBSYSTEM: GALLERY CARDS
+// ═══════════════════════════════════════════════════════════
+var cardData = [
+  {name:'Language Tool', img:'images/language-tool.png'},
+  {name:'Lingui Translator', img:'images/lingui-logo.svg'},
+  {name:'IELTS Slide Decks', img:'images/ielts-speaking.png'},
+  {name:'Online Whiteboard', img:'images/whiteboard-screenshot.png'},
+  {name:'Nebula Notepad', img:'images/nebula-notepad.png'},
+  {name:'Alien Fret', img:'images/oobzoo-daw.png'},
+  {name:'Alien Metronome', img:'images/alien-metronome.png'},
+  {name:'Alien Tuner'},
+  {name:'Alien Recorder', img:'images/alien-recorder.png'},
+  {name:'Night Owl Manager', img:'images/night-owl.png'},
+  {name:'Server Manager'},
+  {name:'Booking Manager'},
+  {name:'Grammar Slide Decks', img:'images/linking-words.png'},
+  {name:'Video-Call App', img:'images/video-call.png'},
+  {name:'Video Lesson Maker', img:'images/video-lesson-maker.png'},
+  {name:'VBook Maker/Reader', img:'images/vbook.png'},
+  {name:'Web Dev', url:'https://wgt-edutech.github.io/Portfolio/'},
+  {name:'Articulate English Site', img:'images/wte.png'},
+  {name:'VocabForge', img:'images/vocab-forge.png'},
+  {name:'Sliding In', img:'images/sliding-in.png'},
+  {name:'Hermes Dashboard', img:'images/hermes-dashboard.png'},
+  {name:'Scalien', img:'images/scalien.png'},
+  {name:'Qigong Morning Flow', img:'images/qigong-morning-flow.png'}
+];
+var $cardRing = document.getElementById('cardRing'), $cardName = document.getElementById('cardName'), $cardInfo = document.getElementById('cardInfo');
+cardData.forEach(function(card){
+  var el = document.createElement('div'); el.className = 'ring-card';
+  var inner = card.img
+    ? '<div class="ring-card-inner"><div class="ring-card-front"><img src="'+card.img+'" alt="'+card.name+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></div></div>'
+    : '<div class="ring-card-inner"><div class="ring-card-front"><span class="ring-card-title">'+card.name+'</span></div></div>';
+  el.innerHTML = inner;
+  el.addEventListener('mouseenter', function(){ $cardName.textContent = card.name; $cardInfo.style.opacity = '1'; });
+  el.addEventListener('mouseleave', function(){ $cardInfo.style.opacity = '0'; });
+  if(card.url) el.addEventListener('click', function(e){ e.stopPropagation(); window.open(card.url, '_blank'); });
+  // Spring state per card: {tx, tz, ry, sc, op, vtx, vtz, vry, vsc, vop}
+  el._spring = {tx:0, tz:-400, ry:0, sc:0.5, op:0, vtx:0, vtz:0, vry:0, vsc:0, vop:0};
+  $cardRing.appendChild(el);
+});
+
+// ═══════════════════════════════════════════════════════════
+// SUBSYSTEM: PHASE DOTS
+// ═══════════════════════════════════════════════════════════
+var dots = document.querySelectorAll('.phase-dots .dot');
+dots.forEach(function(dot){
+  dot.addEventListener('click', function(){
+    document.getElementById(this.getAttribute('data-room')).scrollIntoView({behavior:'smooth'});
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+// SUBSYSTEM: DNA HELIX LOADER
+// ═══════════════════════════════════════════════════════════
+var BASE_COUNT = 15;
+var dnaHelix = document.getElementById('dnaHelix');
+var dnaBases = [];
+var dnaSmooth = null; // initialized on first tick
+for(var i = 0; i < BASE_COUNT; i++){
+  var base = document.createElement('div');
+  base.className = 'dna-base';
+  dnaHelix.appendChild(base);
+  dnaBases.push(base);
+}
+
+// ═══════════════════════════════════════════════════════════
+// LAYER 5: MAIN rAF LOOP — reads state, dispatches to subsystems
+// ═══════════════════════════════════════════════════════════
+var prevTime = 0;
+
+function tick(now){
+  requestAnimationFrame(tick);
+  if(!shouldProcessFrame()) return;
+
+  var dt = Math.min((now - prevTime) / 1000, 0.1);
+  prevTime = now;
+  if(dt <= 0) return;
+
+  // Compute per-room progress from cached geometry (NOT getBoundingClientRect)
+  STATE.rooms.forEach(function(room, i){
+    var total = room.height - STATE.viewH;
+    if(total <= 0){ room.progress = room.top <= STATE.scrollY ? 1 : 0; }
+    else { room.progress = clamp01((STATE.scrollY - room.top) / total); }
+  });
+
+  var rp = STATE.rooms.map(function(r){ return r.progress; });
+  var active = STATE.activeRoom;
+  dots.forEach(function(d, i){ d.classList.toggle('active', i === active); });
+
+  // ── ROOM 1: DNA loader ──
+  var helixP = rp[0];
+  var loader = document.getElementById('loader');
+  var strandSpan = 1.0 / BASE_COUNT;
+  var LERP_SPEED = 0.08; // smooth lerp factor — higher = snappier, lower = buttery
+
+  // Init smooth progress array if needed
+  if(!dnaSmooth){ dnaSmooth = new Float32Array(BASE_COUNT); for(var i=0;i<BASE_COUNT;i++) dnaSmooth[i]=0; }
+
+  dnaBases.forEach(function(base, i){
+    var strandStart = i * strandSpan;
+    var targetP = clamp01((helixP - strandStart) / strandSpan);
+
+    // Lerp toward target for buttery smoothness (no CSS transitions)
+    dnaSmooth[i] += (targetP - dnaSmooth[i]) * LERP_SPEED;
+    var sp = dnaSmooth[i];
+
+    // Continuous helix twist (scroll-driven rotation)
+    var rotY = helixP * Math.PI * 12 + (i / BASE_COUNT) * Math.PI * 2;
+    base.style.transform = 'rotateY(' + (rotY * 180 / Math.PI) + 'deg) rotateX(25deg)';
+
+    // Left-to-right fill: background-size grows from 0% to 100%
+    var fillPct = smoothstep(sp) * 100;
+    base.style.backgroundSize = fillPct + '% 100%';
+
+    // Opacity: 0.25 → 1.0 as it fills
+    base.style.opacity = (0.25 + smoothstep(sp) * 0.75).toFixed(3);
+
+    // De-blur: 2px → 0 as it fills
+    base.style.filter = 'blur(' + ((2 - smoothstep(sp) * 2).toFixed(2)) + 'px)';
+
+    // Box-shadow glow (builds as strand fills)
+    if(sp > 0){
+      var glowP = smoothstep(sp);
+      var greenTint = clamp01((sp - 0.4) / 0.6); // green kicks in at 40%
+      var r = Math.round(34 + (139-34)*(1-greenTint));
+      var g = Math.round(92 + (197-92)*greenTint);
+      var b = Math.round(246 + (94-246)*greenTint);
+      var glow1 = '0 0 ' + (glowP * 25).toFixed(1) + 'px rgba('+r+','+g+','+b+',' + (glowP*0.7).toFixed(2) + ')';
+      var glow2 = '0 0 ' + (glowP * 55).toFixed(1) + 'px rgba(139,92,246,' + (glowP*0.5).toFixed(2) + ')';
+      base.style.boxShadow = glow1 + ', ' + glow2;
+    } else {
+      base.style.boxShadow = 'none';
+    }
+  });
+
+  // Fade out loader when all strands energized + 2 extra scrolls, then fade at half speed
+  var allEnergized = helixP >= 0.98;
+  if(allEnergized && rp[1] > 0.33){
+    loader.style.opacity = Math.max(0, 1 - (rp[1] - 0.33) * 2.5);
+  } else {
+    loader.style.opacity = '1';
+  }
+
+  // Dot grid — disabled
+  dotCanvas.style.opacity = '0';
+
+  // ── ROOM 2: Particle rings zoom + 4 orbits ──
+  if(pts){
+    var pScale = lerp(.01, 1, smoothstep(rp[1]));
+    pts.scale.set(pScale,pScale,pScale); pMat.opacity = lerp(0, .7, smoothstep(clamp01(rp[1]*2)));
+    bgPts.scale.set(pScale,pScale,pScale); bgMat.opacity = lerp(0, .55, smoothstep(clamp01((rp[1]-.3)/.7)));
+  }
+
+  // ── ROOM 3: Name reveal (fade-in per character, no scramble) ──
+  if(rp[2] > 0.01){
+    var typeComp = .5, typeP = Math.min(1, rp[2] / typeComp), target = Math.floor(typeP * nameVPChars.length);
+    if(target !== nameRevealCount){ revealNameChars(target); nameRevealCount = target; }
+    nameStage.style.opacity = '1';
+  } else { nameStage.style.opacity = '0'; nameRevealCount = 0; }
+
+  // ── ROOM 4: Title + Slogan reveal, then hold ──
+  if(rp[3] > 0.02){
+    titleStage.style.opacity = '1';
+    var tp = Math.min(1, rp[3]/.35);
+    roleText.style.opacity = tp;
+    sloganText.style.opacity = Math.max(0, Math.min(1, (rp[3]-.2)/.3));
+    updateAllVP();
+  } else { titleStage.style.opacity = '0'; }
+
+  // ── ROOM 5: Hero shrinks to nav bar, slogan settles at bottom, cursor grid ──
+  var shrinkP = rp[4];
+  var heroEl = document.getElementById('nameStage');
+  var titleEl = document.getElementById('titleStage');
+  var navBar = document.getElementById('topNav');
+  var sloganBar = document.getElementById('sloganBar');
+
+  if(shrinkP > 0.01){
+    // Hero content shrinks and moves to top-left (into nav bar backdrop)
+    var shrink = lerp(1, 0.15, smoothstep(shrinkP));
+    var topY = lerp(50, 0.3, shrinkP);
+    var leftX = lerp(50, 1.5, shrinkP);
+    heroEl.style.position = 'fixed';
+    heroEl.style.top = topY + 'vh';
+    heroEl.style.left = leftX + 'vw';
+    heroEl.style.transform = 'translate(0,0) scale(' + shrink + ')';
+    heroEl.style.transformOrigin = 'top left';
+    heroEl.style.zIndex = '46';
+    heroEl.style.opacity = '1';
+
+    titleEl.style.position = 'fixed';
+    titleEl.style.top = (topY + 2.5) + 'vh';
+    titleEl.style.left = leftX + 'vw';
+    titleEl.style.transform = 'translate(0,0) scale(' + (shrink*0.7) + ')';
+    titleEl.style.transformOrigin = 'top left';
+    titleEl.style.zIndex = '46';
+    titleEl.style.opacity = shrinkP > 0.25 ? '1' : '0';
+
+    // Slogan moves to bottom
+    sloganBar.classList.toggle('visible', shrinkP > 0.35);
+
+    // Nav bar appears just before gallery (end of Room 5)
+    navBar.classList.toggle('visible', shrinkP > 0.75);
+  } else {
+    // Reset to defaults
+    heroEl.style.position = ''; heroEl.style.top = ''; heroEl.style.left = '';
+    heroEl.style.transform = ''; heroEl.style.transformOrigin = ''; heroEl.style.zIndex = '';
+    titleEl.style.position = ''; titleEl.style.top = ''; titleEl.style.left = '';
+    titleEl.style.transform = ''; titleEl.style.transformOrigin = ''; titleEl.style.zIndex = '';
+    navBar.classList.remove('visible');
+    sloganBar.classList.remove('visible');
+  }
+
+  // Cursor grid — disabled
+  cgCanvas.style.opacity = '0';
+
+  // ── ROOM 6: Gallery with floor reflection ──
+  var galP = rp[5];
+  var gallery = document.getElementById('galleryRoom');
+  var floor = document.getElementById('galleryFloor');
+  var sectBtns = document.getElementById('sectionButtons');
+
+  if(galP > 0.03){
+    gallery.style.opacity = '1'; gallery.style.visibility = 'visible';
+    floor.classList.add('visible');
+    sectBtns.classList.add('visible');
+
+    var ringCards = document.querySelectorAll('.ring-card'), total = ringCards.length;
+    var sp = galP * total, activeIdx = Math.max(0, Math.min(total-1, Math.floor(sp)));
+    var STIFF = 0.08, DAMP = 0.72;
+
+    ringCards.forEach(function(card, i){
+      var dist = i - activeIdx;
+      var s = card._spring;
+      var tx, tz, ry, sc, op;
+
+      if(dist === 0){        tx=0; tz=120; ry=0; sc=1; op=1; }
+      else if(dist === -1){  tx=-370; tz=-130; ry=32; sc=1; op=1; }
+      else if(dist === 1){   tx=370; tz=-130; ry=-32; sc=1; op=1; }
+      else if(dist === -2){  tx=-550; tz=-230; ry=42; sc=.9; op=.5; }
+      else if(dist === 2){   tx=550; tz=-230; ry=-42; sc=.9; op=.5; }
+      else {                 tx=0; tz=-400; ry=0; sc=.5; op=0; }
+
+      // Spring physics
+      s.vtx += (tx - s.tx) * STIFF; s.vtx *= DAMP; s.tx += s.vtx;
+      s.vtz += (tz - s.tz) * STIFF; s.vtz *= DAMP; s.tz += s.vtz;
+      s.vry += (ry - s.ry) * STIFF; s.vry *= DAMP; s.ry += s.vry;
+      s.vsc += (sc - s.sc) * STIFF; s.vsc *= DAMP; s.sc += s.vsc;
+      s.vop += (op - s.op) * STIFF; s.vop *= DAMP; s.op += s.vop;
+
+      card.style.transform = 'translateX(' + s.tx.toFixed(1) + 'px) translateZ(' + s.tz.toFixed(1) + 'px) rotateY(' + s.ry.toFixed(1) + 'deg) scale(' + s.sc.toFixed(2) + ')';
+      card.style.opacity = Math.max(0, Math.min(1, s.op)).toFixed(3);
+      card.style.zIndex = dist === 0 ? '100' : Math.abs(dist) === 1 ? '50' : '30';
+      card.style.pointerEvents = s.op > 0.3 ? 'auto' : 'none';
+    });
+
+    // Keep nav bar and slogan visible during gallery
+    navBar.classList.add('visible');
+    sloganBar.classList.add('visible');
+  } else {
+    gallery.style.opacity = '0'; gallery.style.visibility = 'hidden';
+    floor.classList.remove('visible');
+    sectBtns.classList.remove('visible');
+  }
+
+  updateParticles(now);
+  if(renderer){
+    renderer.render(scene3, cam);
+    if(STATE.viewW !== renderer.domElement.width || STATE.viewH !== renderer.domElement.height){
+      renderer.setSize(STATE.viewW, STATE.viewH);
+      cam.aspect = STATE.viewW / STATE.viewH; cam.updateProjectionMatrix();
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════════════════
+prevTime = performance.now();
+requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
