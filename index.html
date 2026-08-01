@@ -342,9 +342,10 @@ try {
     pPos[i*3]=(Math.random()-.5)*20; pPos[i*3+1]=(Math.random()-.5)*20; pPos[i*3+2]=(Math.random()-.5)*20; pPhase[i]=Math.random()*Math.PI*2; }
   pGeo.setAttribute('position', new THREE.BufferAttribute(pPos, 3));
   var pc = document.createElement('canvas'); pc.width=32; pc.height=32; var pctx = pc.getContext('2d');
-  var pg = pctx.createRadialGradient(16,16,0,16,16,16); pg.addColorStop(0,'rgba(180,160,255,0.9)'); pg.addColorStop(0.3,'rgba(140,120,240,0.5)'); pg.addColorStop(0.7,'rgba(100,80,220,0.1)'); pg.addColorStop(1,'rgba(0,0,0,0)');
+  var pg = pctx.createRadialGradient(16,16,1,16,16,16);
+  pg.addColorStop(0,'rgba(220,200,255,1)'); pg.addColorStop(0.15,'rgba(180,160,255,0.9)'); pg.addColorStop(0.4,'rgba(140,120,240,0.4)'); pg.addColorStop(0.7,'rgba(100,80,220,0.05)'); pg.addColorStop(1,'rgba(0,0,0,0)');
   pctx.fillStyle=pg; pctx.fillRect(0,0,32,32);
-  pMat = new THREE.PointsMaterial({size:.55, map: new THREE.CanvasTexture(pc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, color: 0x9b8aff});
+  pMat = new THREE.PointsMaterial({size:.65, map: new THREE.CanvasTexture(pc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, color: 0xb49cff});
   pts = new THREE.Points(pGeo, pMat); pts.scale.set(.01,.01,.01); scene3.add(pts);
 
   var B_RING=10;
@@ -354,9 +355,10 @@ try {
     bgPos[i*3]=(Math.random()-.5)*24; bgPos[i*3+1]=(Math.random()-.5)*24; bgPos[i*3+2]=(Math.random()-.5)*24; bgPhase[i]=Math.random()*Math.PI*2; }
   bgGeo.setAttribute('position', new THREE.BufferAttribute(bgPos, 3));
   var bpc = document.createElement('canvas'); bpc.width=32; bpc.height=32; var bctx = bpc.getContext('2d');
-  var bgg = bctx.createRadialGradient(16,16,2,16,16,16); bgg.addColorStop(0,'rgba(255,159,252,0.9)'); bgg.addColorStop(0.3,'rgba(255,140,245,0.5)'); bgg.addColorStop(0.7,'rgba(200,80,220,0.1)'); bgg.addColorStop(1,'rgba(0,0,0,0)');
+  var bgg = bctx.createRadialGradient(16,16,1,16,16,16);
+  bgg.addColorStop(0,'rgba(255,200,255,1)'); bgg.addColorStop(0.15,'rgba(255,159,252,0.9)'); bgg.addColorStop(0.4,'rgba(255,140,245,0.4)'); bgg.addColorStop(0.7,'rgba(200,80,220,0.05)'); bgg.addColorStop(1,'rgba(0,0,0,0)');
   bctx.fillStyle=bgg; bctx.fillRect(0,0,32,32);
-  bgMat = new THREE.PointsMaterial({size:.6, map: new THREE.CanvasTexture(bpc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, color: 0xff9ffc});
+  bgMat = new THREE.PointsMaterial({size:.7, map: new THREE.CanvasTexture(bpc), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, opacity: 0, color: 0xffb0ff});
   bgPts = new THREE.Points(bgGeo, bgMat); bgPts.position.z = -2; bgPts.scale.set(.01,.01,.01); scene3.add(bgPts);
 
   window.addEventListener('mousemove', function(e){ mtx3 = (e.clientX/STATE.viewW)*2-1; mty3 = -(e.clientY/STATE.viewH)*2+1; }, {passive: true});
