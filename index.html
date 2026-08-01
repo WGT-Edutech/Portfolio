@@ -82,8 +82,10 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .gallery-floor{position:fixed;bottom:0;left:0;right:0;height:35vh;z-index:25;opacity:0;pointer-events:none;transition:opacity .8s;background:linear-gradient(to bottom,rgba(10,10,20,0) 0%,rgba(10,10,20,.5) 50%,rgba(3,3,10,.9) 100%)}
 .gallery-floor.visible{opacity:1}
 
-/* 3D floor reflection — gallery only */
-#galleryRoom{-webkit-box-reflect:below 2px linear-gradient(transparent 0%,transparent 30%,rgba(3,3,10,.7) 100%)}
+/* 3D floor reflection — gallery cards mirror */
+#galleryRoom{-webkit-box-reflect:below 0 linear-gradient(transparent 0%,transparent 55%,rgba(3,3,10,.85) 100%)}
+/* Firefox fallback — gradient floor overlay */
+@-moz-document url-prefix(){.gallery-floor{height:45vh}}
 
 /* Room heights — desktop (full experience) */
 .r1h{height:1000vh}.r2h{height:600vh}.r3h{height:180vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}
@@ -738,13 +740,13 @@ function tick(now){
   var floor = document.getElementById('galleryFloor');
   var sectBtns = document.getElementById('sectionButtons');
 
-  if(galP > 0.03){
+  if(galP > 0){
     gallery.style.opacity = '1'; gallery.style.visibility = 'visible';
     floor.classList.add('visible');
     sectBtns.classList.add('visible');
 
     var ringCards = document.querySelectorAll('.ring-card'), total = ringCards.length;
-    var sp = galP * total, activeIdx = Math.max(0, Math.min(total-1, Math.floor(sp)));
+    var sp = galP * (total - 1), activeIdx = Math.max(0, Math.min(total-1, Math.round(sp)));
     var STIFF = 0.08, DAMP = 0.72;
 
     ringCards.forEach(function(card, i){
