@@ -370,7 +370,7 @@ function updateParticles(time){
   if(!pts) return;
   mx3 += (mtx3-mx3)*.35; my3 += (mty3-my3)*.35;
   var mag3D = new THREE.Vector3(mx3*28, my3*16, 2);
-  var orbitRot = STATE.rooms[1].progress * Math.PI * 8;
+  var orbitRot = STATE.rooms[1].progress * Math.PI * 8 + time*.001*.3;
   var posArr = pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){ var idx=i*3, a=(i/P_COUNT)*Math.PI*2, w=Math.sin(time*.001*.4+pPhase[i])*1, r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r; pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w; pTgt[idx+2]=Math.sin(a+orbitRot)*r;
