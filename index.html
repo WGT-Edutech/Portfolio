@@ -42,8 +42,8 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .ring-card-front{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2rem}
 .ring-card-title{font-family:'Oswald',sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-cream);text-align:center;line-height:1.2}
 
-#cardInfo{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:45;text-align:center;pointer-events:none;transition:opacity .4s ease}
-.card-name{font-family:'Oswald',sans-serif;font-size:2rem;text-transform:uppercase;letter-spacing:.06em;text-shadow:0 0 20px rgba(91,77,255,.9),0 0 50px rgba(139,92,246,.6),0 0 90px rgba(91,77,255,.3);background:rgba(3,3,10,.7);padding:.5rem 2rem;border-radius:8px;border:1px solid rgba(139,92,246,.25)}
+#cardInfo{position:fixed;top:50%;left:50%;transform:translate(-50%,170px);z-index:45;text-align:center;pointer-events:none;transition:opacity .4s ease}
+.card-name{font-family:'Oswald',sans-serif;font-size:1.4rem;text-transform:uppercase;letter-spacing:.05em;text-shadow:0 0 15px rgba(91,77,255,.8),0 0 40px rgba(139,92,246,.5),0 0 80px rgba(91,77,255,.3);background:rgba(3,3,10,.7);padding:.4rem 1.5rem;border-radius:8px;border:1px solid rgba(139,92,246,.2)}
 
 /* Card hover glow */
 .ring-card .ring-card-inner{transition:box-shadow .4s ease,border-color .4s ease}
@@ -370,7 +370,7 @@ function updateParticles(time){
   if(!pts) return;
   mx3 += (mtx3-mx3)*.35; my3 += (mty3-my3)*.35;
   var mag3D = new THREE.Vector3(mx3*28, my3*16, 2);
-  var orbitRot = STATE.rooms[1].progress * Math.PI * 8 + time*.001*2;
+  var orbitRot = STATE.rooms[1].progress * Math.PI * 8 + time*.001*.5;
   var posArr = pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){ var idx=i*3, a=(i/P_COUNT)*Math.PI*2, w=Math.sin(time*.001*.4+pPhase[i])*1, r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r; pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w; pTgt[idx+2]=Math.sin(a+orbitRot)*r;
