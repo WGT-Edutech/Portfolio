@@ -93,7 +93,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 @media(max-width:768px){.r1h{height:400vh}.r2h{height:350vh}.r3h{height:120vh}.r4h{height:200vh}.r5h{height:80vh}.r6h{height:2300vh}}
 
 /* DNA HELIX LOADER */
-.loading-screen{display:flex;flex-direction:column;align-items:center;gap:1.5rem}
+.loading-screen{display:flex;flex-direction:column;align-items:center;gap:1.5rem;transition:opacity 1s ease}
 .label-sm{font-family:'Inter',sans-serif;font-size:.9rem;color:#b794f4;letter-spacing:.12em;text-transform:uppercase;animation:pulseGlow 1.8s ease-in-out infinite}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 8px rgba(139,92,246,.8),0 0 20px rgba(139,92,246,.5),0 0 40px rgba(91,77,255,.3)}50%{text-shadow:0 0 16px rgba(180,140,255,.95),0 0 40px rgba(139,92,246,.7),0 0 70px rgba(91,77,255,.5),0 0 100px rgba(139,92,246,.3)}}
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
@@ -573,7 +573,7 @@ dots.forEach(function(dot){
 // ═══════════════════════════════════════════════════════════
 // SUBSYSTEM: DNA HELIX LOADER
 // ═══════════════════════════════════════════════════════════
-var BASE_COUNT = 15;
+var BASE_COUNT = 13;
 var dnaHelix = document.getElementById('dnaHelix');
 var dnaBases = [];
 var dnaSmooth = null; // initialized on first tick
@@ -654,13 +654,9 @@ function tick(now){
     }
   });
 
-  // Fade out loader when all strands energized + 2 extra scrolls, then fade at half speed
+  // Fade out once all strands energized
   var allEnergized = helixP >= 0.98;
-  if(allEnergized && rp[1] > 0.33){
-    loader.style.opacity = Math.max(0, 1 - (rp[1] - 0.33) * 2.5);
-  } else {
-    loader.style.opacity = '1';
-  }
+  loader.style.opacity = allEnergized ? '0' : '1';
 
   // Dot grid — disabled
   dotCanvas.style.opacity = '0';
