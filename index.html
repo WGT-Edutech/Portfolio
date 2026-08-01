@@ -370,7 +370,7 @@ function updateParticles(time){
   if(!pts) return;
   mx3 += (mtx3-mx3)*.35; my3 += (mty3-my3)*.35;
   var mag3D = new THREE.Vector3(mx3*28, my3*16, 2);
-  var orbitRot = STATE.rooms[1].progress * Math.PI * 8 + time*.001*.3;
+  var orbitRot = STATE.rooms[1].progress * Math.PI * 8 + time*.001*2;
   var posArr = pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){ var idx=i*3, a=(i/P_COUNT)*Math.PI*2, w=Math.sin(time*.001*.4+pPhase[i])*1, r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r; pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w; pTgt[idx+2]=Math.sin(a+orbitRot)*r;
@@ -381,7 +381,8 @@ function updateParticles(time){
     posArr[idx+2]+=(pTgt[idx+2]+(dz/dist)*force*.9-posArr[idx+2])*.12;
   }
   pGeo.attributes.position.needsUpdate = true;
-  pMat.size = .55 + Math.sin(time*.001*3)*.1;
+  pMat.size = .25 + Math.abs(Math.sin(time*.001*.8)) * .5;
+  pMat.opacity = .3 + Math.abs(Math.sin(time*.001*.8)) * .4;
   var bgPosArr = bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){ var idx=i*3, a=(i/B_COUNT)*Math.PI*2, w=Math.sin(time*.001*.4+bgPhase[i])*1, r=10+w*.8;
     bgTgt[idx]=Math.cos(a+orbitRot)*r; bgTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w; bgTgt[idx+2]=Math.sin(a+orbitRot)*r;
@@ -392,7 +393,8 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate = true;
-  bgMat.size = .6 + Math.sin(time*.001*3)*.12;
+  bgMat.size = .3 + Math.abs(Math.sin(time*.001*.7 + 1.5)) * .5;
+  bgMat.opacity = .25 + Math.abs(Math.sin(time*.001*.7 + 1.5)) * .35;
 }
 
 // ═══════════════════════════════════════════════════════════
