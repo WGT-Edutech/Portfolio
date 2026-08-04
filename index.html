@@ -362,15 +362,18 @@ function tick(now){
   if(best===-1)for(var i=0;i<roomData.length;i++)if(roomData[i].progress>=1){best=i;}
   dots.forEach(function(d,i){d.classList.toggle('active',i===best);});
 
-  // Room 1: DNA loader
+  // Room 1: DNA loader — fill (0-40%), hold fully lit centered (40-70%), fade out (70-100%)
   var helixP=rp[0],loader=document.getElementById('loader');
   var strandSpan=1/BASE_COUNT,LERP_SPEED=.08;
+  var FILL_END=.4,HOLD_END=.7;
+  var fillP=clamp01(helixP/FILL_END);                      // 0→1 over first ~4 scrolls
+  var fadeP=clamp01((helixP-HOLD_END)/(1-HOLD_END));       // 0→1 over last ~3 scrolls
   if(!dnaSmooth){dnaSmooth=new Float32Array(BASE_COUNT);for(var i=0;i<BASE_COUNT;i++)dnaSmooth[i]=0;}
   dnaBases.forEach(function(base,i){
-    var targetP=clamp01((helixP-i*strandSpan)/strandSpan);
+    var targetP=clamp01((fillP-i*strandSpan)/strandSpan);
     dnaSmooth[i]+=(targetP-dnaSmooth[i])*LERP_SPEED;
     var sp=dnaSmooth[i];
-    var rotY=helixP*Math.PI*12+(i/BASE_COUNT)*Math.PI*2;
+    var rotY=fillP*Math.PI*12*FILL_END+(i/BASE_COUNT)*Math.PI*2; // frozen once fully lit
     base.style.transform='rotateY('+(rotY*180/Math.PI)+'deg) rotateX(25deg)';
     base.style.backgroundSize=(smoothstep(sp)*100)+'% 100%';
     base.style.opacity=(.25+smoothstep(sp)*.75).toFixed(3);
@@ -381,7 +384,7 @@ function tick(now){
       base.style.boxShadow='0 0 '+(glowP*25).toFixed(1)+'px rgba('+gr+','+gg+','+gb+','+(glowP*.7).toFixed(2)+'), 0 0 '+(glowP*55).toFixed(1)+'px rgba(139,92,246,'+(glowP*.5).toFixed(2)+')';
     }else base.style.boxShadow='none';
   });
-  loader.style.opacity=helixP>=.98?'0':'1';
+  loader.style.opacity=(1-smoothstep(fadeP)).toFixed(3);
 
   // Room 2: Particles zoom (illumination is driven inside updateParticles by spread)
   if(pts){var ps=lerp(.01,1,smoothstep(rp[1]));pts.scale.set(ps,ps,ps);bgPts.scale.set(ps,ps,ps);}
