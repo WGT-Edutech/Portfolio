@@ -72,7 +72,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .r1h{height:1000vh}.r2h{height:600vh}.r3h{height:180vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}
 @media(max-width:768px){.r1h{height:400vh}.r2h{height:350vh}.r3h{height:120vh}.r4h{height:200vh}.r5h{height:80vh}.r6h{height:2300vh}}
 
-.loading-screen{display:flex;flex-direction:column;align-items:center;gap:1.5rem;transition:opacity 1s ease}
+.loading-screen{display:flex;flex-direction:column;align-items:center;gap:1.5rem}
 .label-sm{font-family:'Inter',sans-serif;font-size:.9rem;color:#b794f4;letter-spacing:.12em;text-transform:uppercase;animation:pulseGlow 1.8s ease-in-out infinite}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 8px rgba(139,92,246,.8),0 0 20px rgba(139,92,246,.5),0 0 40px rgba(91,77,255,.3)}50%{text-shadow:0 0 16px rgba(180,140,255,.95),0 0 40px rgba(139,92,246,.7),0 0 70px rgba(91,77,255,.5),0 0 100px rgba(139,92,246,.3)}}
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
@@ -362,7 +362,7 @@ function tick(now){
   if(best===-1)for(var i=0;i<roomData.length;i++)if(roomData[i].progress>=1){best=i;}
   dots.forEach(function(d,i){d.classList.toggle('active',i===best);});
 
-  // Room 1: DNA loader — fill (0-40%), hold fully lit centered (40-70%), fade out (70-100%)
+  // Room 1: DNA loader — fill (0-40%), hold fully lit centered, still spinning (40-70%), fade in place (70-100%)
   var helixP=rp[0],loader=document.getElementById('loader');
   var strandSpan=1/BASE_COUNT,LERP_SPEED=.08;
   var FILL_END=.4,HOLD_END=.7;
@@ -373,7 +373,7 @@ function tick(now){
     var targetP=clamp01((fillP-i*strandSpan)/strandSpan);
     dnaSmooth[i]+=(targetP-dnaSmooth[i])*LERP_SPEED;
     var sp=dnaSmooth[i];
-    var rotY=fillP*Math.PI*12*FILL_END+(i/BASE_COUNT)*Math.PI*2; // frozen once fully lit
+    var rotY=helixP*Math.PI*12+(i/BASE_COUNT)*Math.PI*2;   // motion continues the whole room, never freezes
     base.style.transform='rotateY('+(rotY*180/Math.PI)+'deg) rotateX(25deg)';
     base.style.backgroundSize=(smoothstep(sp)*100)+'% 100%';
     base.style.opacity=(.25+smoothstep(sp)*.75).toFixed(3);
