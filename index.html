@@ -386,7 +386,7 @@ function tick(now){
   });
   loader.style.opacity=(1-smoothstep(fadeP)).toFixed(3);
 
-  // Room 2: Particles zoom (illumination is driven inside updateParticles by spread)
+  // Room 2: Particles zoom (illumination is driven inside updateParticles by room progress)
   if(pts){var ps=lerp(.01,1,smoothstep(rp[1]));pts.scale.set(ps,ps,ps);bgPts.scale.set(ps,ps,ps);}
 
   // Room 3: Name reveal — typewriter 3 scrolls (0-33%), hold 3 scrolls (33-66%), fade out in place 3 scrolls (66-100%)
