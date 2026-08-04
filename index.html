@@ -66,6 +66,9 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 
 .gallery-floor{position:fixed;bottom:0;left:0;right:0;height:35vh;z-index:25;opacity:0;pointer-events:none;transition:opacity .8s;background:linear-gradient(to bottom,rgba(10,10,20,0) 0%,rgba(10,10,20,.5) 50%,rgba(3,3,10,.9) 100%)}
 .gallery-floor.visible{opacity:1}
+#varprox{position:fixed;top:0;left:0;right:0;height:25vh;z-index:42;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .8s}
+#varprox.visible{opacity:1}
+#varprox .variable-proximity{font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,8vw,6rem);font-weight:400;letter-spacing:.04em;line-height:1.2;text-align:center;white-space:nowrap;color:rgba(244,241,234,.4);text-shadow:0 0 30px rgba(139,92,246,.25);user-select:none;-webkit-user-select:none}
 @-moz-document url-prefix(){.gallery-floor{height:45vh}}
 
 .r1h{height:1000vh}.r2h{height:1100vh}.r3h{height:1000vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}
@@ -125,6 +128,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 </nav>
 <div class="slogan-bar" id="sloganBar">Building the Future of Learning.</div>
 <div class="gallery-floor" id="galleryFloor"></div>
+<div id="varprox" aria-hidden="true"></div>
 <div class="section-buttons" id="sectionButtons">
   <a href="#about" class="sect-btn">About</a>
   <a href="#contact" class="sect-btn">Contact</a>
@@ -354,6 +358,116 @@ for(var i=0;i<BASE_COUNT;i++){
   dnaHelix.appendChild(base);dnaBases.push(base);
 }
 
+// ── VARIABLE PROXIMITY TITLE (React Bits VariableProximity -> vanilla JS) ──
+(function(){
+  var ctn = document.getElementById('varprox');
+  if (!ctn) return;
+
+  var label = 'Projects';
+  var fromFontVariationSettings = "'wght' 400, 'opsz' 9";
+  var toFontVariationSettings = "'wght' 1000, 'opsz' 40";
+  var radius = 160;
+  var falloff = 'linear';
+
+  function parseSettings(str){
+    var map = {};
+    str.split(',').forEach(function(s){
+      s = s.trim();
+      var parts = s.split(' ');
+      map[parts[0].replace(/['"]/g, '')] = parseFloat(parts[1]);
+    });
+    return map;
+  }
+  var fromMap = parseSettings(fromFontVariationSettings);
+  var toMap = parseSettings(toFontVariationSettings);
+  var axes = Object.keys(fromMap).map(function(axis){
+    return { axis: axis, fromValue: fromMap[axis], toValue: toMap[axis] !== undefined ? toMap[axis] : fromMap[axis] };
+  });
+
+  var letterEls = [];
+  var letterIndex = 0;
+  var rootSpan = document.createElement('span');
+  rootSpan.className = 'variable-proximity';
+  ctn.appendChild(rootSpan);
+  label.split(' ').forEach(function(word, wordIndex){
+    var wspan = document.createElement('span');
+    wspan.style.display = 'inline-block';
+    wspan.style.whiteSpace = 'nowrap';
+    word.split('').forEach(function(ch){
+      var l = document.createElement('span');
+      l.style.display = 'inline-block';
+      l.setAttribute('aria-hidden', 'true');
+      l.textContent = ch;
+      wspan.appendChild(l);
+      letterEls[letterIndex++] = l;
+    });
+    rootSpan.appendChild(wspan);
+    if (wordIndex < label.split(' ').length - 1) {
+      var sp = document.createElement('span');
+      sp.style.display = 'inline-block';
+      sp.innerHTML = '&nbsp;';
+      rootSpan.appendChild(sp);
+    }
+  });
+
+  var mouseRef = { x: 0, y: 0 };
+  var lastPositionRef = { x: null, y: null };
+  var rectCache = null;
+
+  function updateRect(){ rectCache = ctn.getBoundingClientRect(); }
+  updateRect();
+  window.addEventListener('resize', updateRect);
+
+  window.addEventListener('mousemove', function(ev){
+    mouseRef.x = ev.clientX; mouseRef.y = ev.clientY;
+  }, { passive: true });
+  window.addEventListener('touchmove', function(ev){
+    var touch = ev.touches[0];
+    if (touch) { mouseRef.x = touch.clientX; mouseRef.y = touch.clientY; }
+  }, { passive: true });
+
+  function calculateDistance(x1, y1, x2, y2){ return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)); }
+
+  function calculateFalloff(distance){
+    var norm = Math.min(Math.max(1 - distance / radius, 0), 1);
+    switch (falloff) {
+      case 'exponential': return norm * norm;
+      case 'gaussian': return Math.exp(-Math.pow(distance / (radius / 2), 2) / 2);
+      case 'linear':
+      default: return norm;
+    }
+  }
+
+  function loop(){
+    requestAnimationFrame(loop);
+    var x = mouseRef.x, y = mouseRef.y;
+    if (lastPositionRef.x === x && lastPositionRef.y === y) return;
+    lastPositionRef.x = x; lastPositionRef.y = y;
+    if (!rectCache) return;
+
+    letterEls.forEach(function(letterEl){
+      if (!letterEl) return;
+      var rect = letterEl.getBoundingClientRect();
+      var letterCenterX = rect.left + rect.width / 2 - rectCache.left;
+      var letterCenterY = rect.top + rect.height / 2 - rectCache.top;
+
+      var distance = calculateDistance(x, y, letterCenterX, letterCenterY);
+
+      if (distance >= radius) {
+        letterEl.style.fontVariationSettings = fromFontVariationSettings;
+        return;
+      }
+
+      var falloffValue = calculateFalloff(distance);
+      letterEl.style.fontVariationSettings = axes.map(function(a){
+        var interpolatedValue = a.fromValue + (a.toValue - a.fromValue) * falloffValue;
+        return "'" + a.axis + "' " + interpolatedValue;
+      }).join(', ');
+    });
+  }
+  requestAnimationFrame(loop);
+})();
+
 // ── TICK ──
 var prevTime=0,lastFrame=0,MIN_MS=1000/30;
 
@@ -429,8 +543,8 @@ function tick(now){
   }
 
   // Room 6: Gallery
-  var galP=rp[5],gallery=document.getElementById('galleryRoom'),floor=document.getElementById('galleryFloor'),sectBtns=document.getElementById('sectionButtons');
-  if(galP>0){gallery.style.opacity='1';gallery.style.visibility='visible';floor.classList.add('visible');sectBtns.classList.add('visible');
+  var galP=rp[5],gallery=document.getElementById('galleryRoom'),floor=document.getElementById('galleryFloor'),sectBtns=document.getElementById('sectionButtons'),varprox=document.getElementById('varprox');
+  if(galP>0){gallery.style.opacity='1';gallery.style.visibility='visible';floor.classList.add('visible');sectBtns.classList.add('visible');varprox.classList.add('visible');
     var ringCards=document.querySelectorAll('.ring-card'),total=ringCards.length,sp=galP*(total-1),activeIdx=Math.max(0,Math.min(total-1,Math.round(sp)));
     var STIFF=.08,DAMP=.72;
     ringCards.forEach(function(card,i){var dist=i-activeIdx,s=card._spring,tx,tz,ry,sc,op;
@@ -440,7 +554,7 @@ function tick(now){
       card.style.opacity=Math.max(0,Math.min(1,s.op)).toFixed(3);card.style.zIndex=dist===0?'100':Math.abs(dist)===1?'50':'30';card.style.pointerEvents=s.op>.3?'auto':'none';
     });
     navBar.classList.add('visible');sloganBar.classList.add('visible');
-  }else{gallery.style.opacity='0';gallery.style.visibility='hidden';floor.classList.remove('visible');sectBtns.classList.remove('visible');}
+  }else{gallery.style.opacity='0';gallery.style.visibility='hidden';floor.classList.remove('visible');sectBtns.classList.remove('visible');varprox.classList.remove('visible');}
 
   updateParticles(now);
   if(renderer){renderer.render(scene3,cam);if(viewW!==renderer.domElement.width||viewH!==renderer.domElement.height){renderer.setSize(viewW,viewH);cam.aspect=viewW/viewH;cam.updateProjectionMatrix();}}
