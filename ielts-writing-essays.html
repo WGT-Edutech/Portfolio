@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; connect-src 'self'; media-src 'self' blob:; object-src 'none'; frame-ancestors 'none'">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IELTS Writing — How to Structure Essays for Band 7-9</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Montserrat:wght@400;600;700;900&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#060a14;--cyan:#22d3ee;--purple:#a78bfa;--gold:#fbbf24;--green:#34d399;
+  --red:#f87171;--pink:#f472b6;--text:#e2e8f0;--text-dim:#b0bec5;
+  --card:rgba(15,23,42,.72);--border:rgba(34,211,238,.25);
+}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+body{display:flex;flex-direction:column}
+
+/* ===== PROGRESS BAR ===== */
+.progress-bar{position:fixed;top:0;left:0;right:0;height:4px;z-index:200;background:rgba(255,255,255,.05)}
+.progress-bar .fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--purple));transition:width .4s ease;border-radius:0 2px 2px 0}
+
+/* ===== SLIDES CONTAINER ===== */
+.slides-wrap{flex:1;position:relative;overflow:hidden}
+.slide{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  padding:3vw 6vw;opacity:0;transform:translateY(18px);transition:opacity .45s ease,transform .45s ease;
+  pointer-events:none;overflow-y:auto;
+}
+.slide.active{opacity:1;transform:translateY(0);pointer-events:auto;z-index:10}
+
+/* Background per slide */
+.slide::before{
+  content:'';position:absolute;inset:0;z-index:-2;
+  background-size:cover;background-position:center;
+}
+.slide::after{
+  content:'';position:absolute;inset:0;z-index:-1;
+  background:linear-gradient(110deg,rgba(6,10,20,.92) 0%,rgba(6,10,20,.82) 35%,rgba(6,10,20,.65) 60%,rgba(6,10,20,.45) 100%);
+}
+
+/* ===== CONTENT BOX ===== */
+.content{
+  max-width:80vw;background:var(--card);border:1px solid var(--border);
+  border-radius:16px;padding:2.2vw 2.8vw;
+  box-shadow:0 0 30px rgba(34,211,238,.1),0 0 80px rgba(168,85,247,.06);
+}
+.content.wide{max-width:88vw}
+.content.narrow{max-width:68vw}
+
+/* ===== TYPOGRAPHY ===== */
+h1{font-family:Montserrat,sans-serif;font-size:clamp(1.6rem,3.2vw,2.8rem);font-weight:900;
+  background:linear-gradient(135deg,var(--cyan),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:.5em;line-height:1.15;letter-spacing:-.01em}
+h2{font-family:Montserrat,sans-serif;font-size:clamp(1.2rem,2.4vw,2rem);font-weight:700;
+  background:linear-gradient(135deg,var(--cyan),var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:.6em;line-height:1.2}
+h3{font-family:Oswald,sans-serif;font-size:clamp(1.05rem,1.9vw,1.6rem);font-weight:600;
+  color:var(--gold);margin:.8em 0 .4em;text-transform:uppercase;letter-spacing:.04em}
+h4{font-family:Oswald,sans-serif;font-size:clamp(.9rem,1.4vw,1.2rem);font-weight:500;
+  color:var(--cyan);margin:.6em 0 .3em;letter-spacing:.03em}
+p,li{font-size:clamp(.9rem,1.35vw,1.15rem);line-height:1.75;color:var(--text)}
+p{margin-bottom:.65em}
+ul,ol{padding-left:1.4em;margin-bottom:.6em}
+li{margin-bottom:.35em}
+strong{color:var(--cyan);font-weight:600}
+em{color:var(--purple);font-style:normal}
+.gold{color:var(--gold)}.green{color:var(--green)}.red{color:var(--red)}.pink{color:var(--pink)}
+.dim{color:var(--text-dim)}
+
+/* ===== GLOW BOXES ===== */
+.glow-box{
+  background:linear-gradient(135deg,rgba(34,211,238,.08),rgba(168,85,247,.08));
+  border:1px solid rgba(34,211,238,.4);border-radius:12px;
+  padding:1em 1.4em;margin:.7em 0;
+  box-shadow:0 0 20px rgba(34,211,238,.12),0 0 50px rgba(168,85,247,.06);
+}
+.glow-box.purple{border-color:rgba(168,85,247,.4);box-shadow:0 0 20px rgba(168,85,247,.12)}
+.glow-box.green{border-color:rgba(52,211,153,.4);box-shadow:0 0 20px rgba(52,211,153,.12)}
+.gold-box{
+  background:linear-gradient(135deg,rgba(251,191,36,.08),rgba(244,114,182,.06));
+  border:1px solid rgba(251,191,36,.4);border-radius:12px;
+  padding:1em 1.4em;margin:.7em 0;
+  box-shadow:0 0 20px rgba(251,191,36,.1);
+}
+
+/* ===== TAGS ===== */
+.tag{
+  display:inline-block;padding:.2em .7em;border-radius:6px;font-size:clamp(.75rem,.95vw,.88rem);
+  font-weight:600;font-family:JetBrains Mono,monospace;letter-spacing:.03em;margin:.15em .2em;
+}
+.tag.cyan{background:rgba(34,211,238,.15);color:var(--cyan);border:1px solid rgba(34,211,238,.3)}
+.tag.purple{background:rgba(168,85,247,.15);color:var(--purple);border:1px solid rgba(168,85,247,.3)}
+.tag.green{background:rgba(52,211,153,.15);color:var(--green);border:1px solid rgba(52,211,153,.3)}
+.tag.gold{background:rgba(251,191,36,.15);color:var(--gold);border:1px solid rgba(251,191,36,.3)}
+.tag.pink{background:rgba(244,114,182,.15);color:var(--pink);border:1px solid rgba(244,114,182,.3)}
+.tag.red{background:rgba(248,113,113,.15);color:var(--red);border:1px solid rgba(248,113,113,.3)}
+
+/* ===== TWO-COLUMN LAYOUT ===== */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:1.2vw}
+.cols-three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1vw}
+
+/* ===== TABLE ===== */
+table{width:100%;border-collapse:collapse;margin:.6em 0;font-size:clamp(.8rem,1.05vw,.95rem)}
+th{background:rgba(34,211,238,.12);color:var(--cyan);padding:.5em .7em;text-align:left;
+  font-family:Oswald,sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.04em;
+  border-bottom:2px solid rgba(34,211,238,.3)}
+td{padding:.45em .7em;border-bottom:1px solid rgba(255,255,255,.06);vertical-align:top}
+tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+
+/* ===== BAND SCORE BAR ===== */
+.band-row{display:flex;align-items:center;gap:.6em;margin:.35em 0}
+.band-label{width:3.5em;font-family:JetBrains Mono,monospace;font-size:.75rem;color:var(--text-dim);flex-shrink:0}
+.band-bar-bg{flex:1;height:10px;background:rgba(255,255,255,.06);border-radius:5px;overflow:hidden}
+.band-bar-fill{height:100%;border-radius:5px;transition:width 1s ease}
+.band-score{width:2em;text-align:right;font-family:JetBrains Mono,monospace;font-size:.8rem;font-weight:600}
+
+/* ===== ESSAY BLOCK ===== */
+.essay-block{
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);
+  border-radius:10px;padding:1.2em 1.5em;margin:.6em 0;
+  font-size:clamp(.82rem,1.1vw,1rem);line-height:1.8;
+  font-family:Georgia,serif;
+}
+.essay-block p{margin-bottom:.5em;text-indent:1.5em}
+.essay-block p:first-child{text-indent:0}
+.essay-label{
+  font-family:JetBrains Mono,monospace;font-size:.8rem;color:var(--green);
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:.4em;
+}
+
+/* ===== HIGHLIGHT PHRASE ===== */
+.phrase{
+  display:inline-block;background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.25);
+  border-radius:6px;padding:.15em .5em;margin:.1em;font-family:JetBrains Mono,monospace;
+  font-size:clamp(.78rem,1vw,.92rem);color:var(--cyan);
+}
+
+/* ===== NAVIGATION ===== */
+.nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:center;gap:1.2em;
+  padding:.8em 1.5em;background:linear-gradient(transparent,rgba(6,10,20,.9) 30%);
+}
+.nav-btn{
+  background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.35);
+  color:var(--cyan);padding:.5em 1.4em;border-radius:10px;cursor:pointer;
+  font-family:JetBrains Mono,monospace;font-size:.85rem;font-weight:600;
+  transition:all .2s;display:flex;align-items:center;gap:.4em;
+}
+.nav-btn:hover{background:rgba(34,211,238,.2);border-color:var(--cyan)}
+.nav-btn:disabled{opacity:.25;cursor:default}
+.slide-counter{font-family:JetBrains Mono,monospace;font-size:.9rem;color:var(--text-dim);min-width:4em;text-align:center}
+
+/* ===== START OVERLAY ===== */
+#startOverlay{
+  position:fixed;inset:0;z-index:500;background:rgba(6,10,20,.96);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5em;
+  cursor:pointer;transition:opacity .5s ease;
+}
+#startOverlay h1{font-size:clamp(1.4rem,3vw,2.5rem);text-align:center}
+#startOverlay p{color:var(--text-dim);font-size:clamp(.85rem,1.2vw,1.05rem);text-align:center;max-width:500px}
+#startOverlay .hint{font-family:JetBrains Mono,monospace;font-size:.75rem;color:var(--cyan);margin-top:.5em}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:768px){
+  .content,.content.wide,.content.narrow{max-width:92vw;padding:4vw 5vw}
+  .cols,.cols-three{grid-template-columns:1fr}
+  .slide{padding:5vw 4vw}
+  h1{font-size:clamp(1.3rem,5vw,2rem)}
+}
+</style>
+</head>
+<body>
+
+<!-- Start Overlay -->
+<div id="startOverlay" onclick="startDeck()">
+  <h1>IELTS Writing Essays</h1>
+  <p>How to give examiners exactly what they want.<br>Band descriptors, model phrases, and Band 9 examples.</p>
+  <div class="hint">CLICK ANYWHERE TO START &nbsp;|&nbsp; ← → ARROW KEYS TO NAVIGATE</div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-bar"><div class="fill" id="progressFill"></div></div>
+
+<!-- Slides -->
+<div class="slides-wrap" id="slidesWrap">
+
+  <!-- ===== SLIDE 1: TITLE ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&q=80')">
+    <div class="content narrow" style="text-align:center">
+      <p class="tag cyan" style="margin-bottom:1em">WTE CURRICULUM — IELTS WRITING</p>
+      <h1>How to Structure<br>IELTS Essays</h1>
+      <p style="font-size:clamp(.9rem,1.3vw,1.15rem);color:var(--text-dim);margin-top:.8em">
+        Giving examiners exactly what they reward.<br>
+        Band descriptors · Model phrases · Band 9 examples
+      </p>
+      <div style="margin-top:2em">
+        <span class="tag purple">Task 1 & Task 2</span>
+        <span class="tag green">Academic & General</span>
+        <span class="tag gold">Band 7–9 Focus</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 2: WHAT EXAMINERS WANT ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1600&q=80')">
+    <div class="content">
+      <p class="tag cyan" style="margin-bottom:.6em">THE 4 CRITERIA</p>
+      <h2>What Examiners Actually Score</h2>
+      <p style="margin-bottom:1em">Every IELTS essay is marked on <strong>four criteria</strong>, each worth 25% of your Writing score. Understanding these is the single most important thing you can do.</p>
+      <div class="cols">
+        <div class="glow-box">
+          <h3>1. Task Response</h3>
+          <p>Do you answer <strong>every part</strong> of the question? Is your position clear throughout? Are your ideas <strong>fully developed</strong> with relevant support?</p>
+        </div>
+        <div class="glow-box purple">
+          <h3>2. Coherence & Cohesion</h3>
+          <p>Is your essay <strong>logically organised</strong>? Do paragraphs have clear central topics? Are linking devices used <strong>appropriately</strong> (not mechanically)?</p>
+        </div>
+        <div class="glow-box green">
+          <h3>3. Lexical Resource</h3>
+          <p>Do you use a <strong>wide range</strong> of vocabulary with flexibility? Are word choices <strong>precise</strong>? Can you paraphrase naturally? Spelling and collocation matter.</p>
+        </div>
+        <div class="glow-box" style="border-color:rgba(251,191,36,.4)">
+          <h3>4. Grammatical Range & Accuracy</h3>
+          <p>Do you use a <strong>variety of complex structures</strong>? Are errors rare and minor? Punctuation counts. Band 7+ requires frequent error-free sentences.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 3: TASK RESPONSE ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80')">
+    <div class="content">
+      <p class="tag cyan" style="margin-bottom:.6em">CRITERION 1 — 25% OF SCORE</p>
+      <h2>Task Response: The Make-or-Break Criterion</h2>
+      <p>This is where most candidates <strong>lose the most marks</strong>. You can have beautiful English but still score Band 6 if you don't address the task properly.</p>
+      <div class="glow-box" style="margin-top:.8em">
+        <h4>What Band 9 Looks Like</h4>
+        <ul>
+          <li>Addresses <strong>all parts</strong> of the task fully</li>
+          <li>Presents a <strong>clear, consistent position</strong> throughout</li>
+          <li>Develops ideas with <strong>extended, well-supported</strong> arguments</li>
+          <li>Avoids over-generalisation — every claim has <strong>specific support</strong></li>
+        </ul>
+      </div>
+      <div class="glow-box purple">
+        <h4>Common Pitfalls (Band 5–6 Traps)</h4>
+        <ul>
+          <li><span class="red">✗</span> Addressing only <em>part</em> of the question</li>
+          <li><span class="red">✗</span> Giving a position but <em>not sustaining it</em> through the essay</li>
+          <li><span class="red">✗</span> Writing <em>general statements</em> without examples or explanation</li>
+          <li><span class="red">✗</span> Going <em>off-topic</em> — writing everything you know about the subject</li>
+        </ul>
+      </div>
+      <div class="gold-box" style="margin-top:.8em">
+        <p><strong>Examiner's mindset:</strong> <em>"Does this candidate answer the <u>specific</u> question asked — or are they reciting a memorised essay?"</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 4: COHERENCE & COHESION ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1600&q=80')">
+    <div class="content">
+      <p class="tag purple" style="margin-bottom:.6em">CRITERION 2 — 25% OF SCORE</p>
+      <h2>Coherence & Cohesion: The Reader's Experience</h2>
+      <p>Coherence = <strong>logical flow of ideas</strong>. Cohesion = <strong>how sentences and paragraphs connect</strong>. Examiners should never have to re-read a sentence to understand your argument.</p>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <h4>Paragraph Structure (Every Body Paragraph)</h4>
+          <div class="glow-box green" style="font-size:.85rem">
+            <p><strong>1.</strong> Topic sentence — states the main idea</p>
+            <p><strong>2.</strong> Explanation — why is this true?</p>
+            <p><strong>3.</strong> Example / evidence — specific support</p>
+            <p><strong>4.</strong> Link back to your position / thesis</p>
+          </div>
+          <h4 style="margin-top:.8em">Signposting</h4>
+          <p>Use clear <strong>topic sentences</strong> at the start of each paragraph. The examiner should know your essay's structure from reading <em>only</em> the first sentence of each paragraph.</p>
+        </div>
+        <div>
+          <h4>Linking Devices: The Right Way</h4>
+          <div class="glow-box purple" style="font-size:.85rem">
+            <p><span class="green">✓</strong></span> Use linkers <strong>naturally</strong> — they should clarify meaning, not decorate</p>
+            <p><span class="green">✓</strong></span> Vary your devices: <em>however, although, while, whereas, despite, nevertheless</em></p>
+            <p><span class="red">✗</span> Don't start every sentence with a linker</p>
+            <p><span class="red">✗</span> Don't use <em>"Furthermore"</em> five times in one essay</p>
+            <p><span class="red">✗</span> Don't use linkers that are <em>too informal</em> (besides, anyway, stuff like that)</p>
+          </div>
+          <p style="margin-top:.6em"><strong>Band 9 cohesion</strong> is often <em>invisible</em> — ideas flow logically without relying on obvious linking words.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 5: LEXICAL RESOURCE ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=1600&q=80')">
+    <div class="content">
+      <p class="tag green" style="margin-bottom:.6em">CRITERION 3 — 25% OF SCORE</p>
+      <h2>Lexical Resource: Vocabulary That Scores</h2>
+      <p>It's not about using <strong>big words</strong>. It's about using the <em>right</em> words, in the <em>right</em> combinations, with <em>precision</em>.</p>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <h4>What Examiners Reward</h4>
+          <div class="glow-box green" style="font-size:.85rem">
+            <p>✓ <strong>Topic-specific vocabulary</strong> — words relevant to the question</p>
+            <p>✓ <strong>Collocations</strong> — natural word pairings (e.g. <em>pose a threat</em>, not <em>make a threat</em>)</p>
+            <p>✓ <strong>Paraphrasing skill</strong> — restating ideas in different words</p>
+            <p>✓ <strong>Less common vocabulary</strong> — used naturally, not forced</p>
+            <p>✓ <strong>Spelling accuracy</strong> — even Band 9 allows occasional slips, but they must be rare</p>
+          </div>
+        </div>
+        <div>
+          <h4>Band 6 vs Band 9 Vocabulary</h4>
+          <table>
+            <tr><th>Band 6</th><th>Band 9</th></tr>
+            <tr><td><em>big problem</em></td><td><em>a significant / pressing / intractable issue</em></td></tr>
+            <tr><td><em>good thing</em></td><td><em>a notable advantage / a compelling benefit</em></td></tr>
+            <tr><td><em>bad effect</em></td><td><em>a detrimental / adverse / pernicious effect</em></td></tr>
+            <tr><td><em>more and more</em></td><td><em>an increasing number of / a growing proportion of</em></td></tr>
+            <tr><td><em>people think</em></td><td><em>it is widely argued / critics contend / proponents maintain</em></td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 6: GRAMMATICAL RANGE & ACCURACY ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1600&q=80')">
+    <div class="content">
+      <p class="tag gold" style="margin-bottom:.6em">CRITERION 4 — 25% OF SCORE</p>
+      <h2>Grammatical Range & Accuracy</h2>
+      <p>You need to <strong>demonstrate control</strong> of a variety of complex structures. It's not enough to be accurate with simple sentences — you must show you can handle complexity.</p>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <h4>Structures Examiners Look For</h4>
+          <div class="glow-box" style="font-size:.85rem">
+            <p>✓ <strong>Complex sentences</strong> — subordinate clauses, relative clauses</p>
+            <p>✓ <strong>Conditionals</strong> — <em>Were governments to invest… / If this trend were to continue…</em></p>
+            <p>✓ <strong>Passive voice</strong> — used appropriately (<em>It has been argued that…</em>)</p>
+            <p>✓ <strong>Participle clauses</strong> — <em>Having considered both sides, I believe…</em></p>
+            <p>✓ <strong>Inversion</strong> — <em>Not only does this… but it also…</em></p>
+            <p>✓ <strong>Modal verbs</strong> — <em>may, might, could, would, should</em> (nuanced usage)</p>
+            <p>✓ <strong>Varied sentence length</strong> — mix of short punchy sentences and longer complex ones</p>
+          </div>
+        </div>
+        <div>
+          <h4>Band Score Comparison</h4>
+          <table>
+            <tr><th>Band</th><th>Grammar Profile</th></tr>
+            <tr><td><span class="red">5</span></td><td>Limited range. Frequent errors. Meaning sometimes unclear.</td></tr>
+            <tr><td><span class="gold">6</span></td><td>Mix of simple and complex. Errors occur but rarely impede communication.</td></tr>
+            <tr><td><span class="green">7</span></td><td>Frequent use of complex structures. Generally few errors. Error-free sentences are common.</td></tr>
+            <tr><td><span class="green">8</span></td><td>Wide range of structures. The majority of sentences are error-free.</td></tr>
+            <tr><td><span class="cyan">9</span></td><td>Full flexibility. Consistent accuracy. Rare minor slips only.</td></tr>
+          </table>
+          <p style="margin-top:.6em;font-size:.85rem;color:var(--text-dim)"><strong>Key insight:</strong> Band 7+ requires <em>frequent</em> complex structures — not just one or two.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 7: ESSAY STRUCTURE TEMPLATE ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1600&q=80')">
+    <div class="content">
+      <p class="tag cyan" style="margin-bottom:.6em">ESSAY ARCHITECTURE</p>
+      <h2>The 4-Paragraph Structure (Task 2)</h2>
+      <p>This template works for <strong>all</strong> Task 2 question types: Opinion, Discussion, Problem-Solution, and Two-Part questions.</p>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <div class="glow-box">
+            <h4>Introduction (2–3 sentences)</h4>
+            <p><strong>Sentence 1:</strong> Paraphrase the topic (don't copy the question)</p>
+            <p><strong>Sentence 2:</strong> State your position / thesis (for opinion essays) or outline what you'll discuss</p>
+            <p class="dim" style="font-size:.8rem;margin-top:.4em">~40 words</p>
+          </div>
+          <div class="glow-box green">
+            <h4>Body Paragraph 1 (4–5 sentences)</h4>
+            <p><strong>Topic sentence</strong> → <strong>Explain</strong> → <strong>Example</strong> → <strong>Link</strong></p>
+            <p class="dim" style="font-size:.8rem;margin-top:.4em">~80–100 words</p>
+          </div>
+        </div>
+        <div>
+          <div class="glow-box green">
+            <h4>Body Paragraph 2 (4–5 sentences)</h4>
+            <p><strong>Topic sentence</strong> → <strong>Explain</strong> → <strong>Example</strong> → <strong>Link</strong></p>
+            <p class="dim" style="font-size:.8rem;margin-top:.4em">~80–100 words</p>
+          </div>
+          <div class="glow-box purple">
+            <h4>Conclusion (2–3 sentences)</h4>
+            <p><strong>Sentence 1:</strong> Summarise your main argument (in different words from the introduction)</p>
+            <p><strong>Sentence 2:</strong> Final thought / recommendation / prediction</p>
+            <p class="dim" style="font-size:.8rem;margin-top:.4em">~30–40 words. NEVER introduce new ideas.</p>
+          </div>
+        </div>
+      </div>
+      <div class="gold-box" style="margin-top:.8em">
+        <p><strong>Word count target:</strong> 270–300 words. Under 250 = automatic penalty. Over 330 = wasted time and more error opportunities.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 8: OPINION PHRASES ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=1600&q=80')">
+    <div class="content">
+      <p class="tag pink" style="margin-bottom:.6em">USEFUL PHRASES</p>
+      <h2>Giving Opinions: Examiner-Ready Phrases</h2>
+      <p>These phrases signal to the examiner that you can express and support a position — essential for <strong>Task Response</strong> and <strong>Lexical Resource</strong>.</p>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <h4>Stating Your Position</h4>
+          <div class="glow-box" style="font-size:.82rem">
+            <p class="phrase">I firmly believe that…</p>
+            <p class="phrase">In my view,…</p>
+            <p class="phrase">I am convinced that…</p>
+            <p class="phrase">It is my contention that…</p>
+            <p class="phrase">I would argue that…</p>
+            <p class="phrase">From my perspective,…</p>
+            <p class="phrase">I tend to agree that…</p>
+            <p class="phrase">I am inclined to believe that…</p>
+          </div>
+          <h4 style="margin-top:.7em">Strong Agreement / Disagreement</h4>
+          <div class="glow-box purple" style="font-size:.82rem">
+            <p class="phrase">I wholeheartedly agree that…</p>
+            <p class="phrase">I strongly disagree with the notion that…</p>
+            <p class="phrase">I find it difficult to accept that…</p>
+            <p class="phrase">There is considerable merit in the argument that…</p>
+          </div>
+        </div>
+        <div>
+          <h4>Balanced / Partial Agreement</h4>
+          <div class="glow-box green" style="font-size:.82rem">
+            <p class="phrase">While I acknowledge that…, I believe…</p>
+            <p class="phrase">Although there is some truth in…, I would contend…</p>
+            <p class="phrase">Notwithstanding the fact that…, I maintain…</p>
+            <p class="phrase">Despite recognising…, I would argue…</p>
+            <p class="phrase">I agree to a certain extent, however…</p>
+          </div>
+          <h4 style="margin-top:.7em">Introducing Other Viewpoints</h4>
+          <div class="glow-box" style="font-size:.82rem">
+            <p class="phrase">Critics argue that…</p>
+            <p class="phrase">Proponents of this view maintain that…</p>
+            <p class="phrase">It is often claimed that…</p>
+            <p class="phrase">Some people hold the view that…</p>
+            <p class="phrase">Those who oppose this idea point out that…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 9: ACADEMIC VOCABULARY ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=1600&q=80')">
+    <div class="content">
+      <p class="tag green" style="margin-bottom:.6em">ACADEMIC VOCABULARY</p>
+      <h2>Adjectives & Verbs for High Scores</h2>
+      <p>Replace basic words with these to boost your <strong>Lexical Resource</strong> score. Use them naturally — don't force them.</p>
+      <div class="cols-three" style="margin-top:.8em">
+        <div>
+          <h4>Power Adjectives</h4>
+          <div class="glow-box green" style="font-size:.8rem">
+            <p class="phrase">significant</p>
+            <p class="phrase">substantial</p>
+            <p class="phrase">considerable</p>
+            <p class="phrase">detrimental</p>
+            <p class="phrase">pervasive</p>
+            <p class="phrase">pressing</p>
+            <p class="phrase">paramount</p>
+            <p class="phrase">indispensable</p>
+            <p class="phrase">inevitable</p>
+            <p class="phrase">profound</p>
+            <p class="phrase">unprecedented</p>
+            <p class="phrase">widespread</p>
+            <p class="phrase">intractable</p>
+            <p class="phrase">compelling</p>
+            <p class="phrase">far-reaching</p>
+          </div>
+        </div>
+        <div>
+          <h4>Academic Verbs</h4>
+          <div class="glow-box" style="font-size:.8rem">
+            <p class="phrase">undermine</p>
+            <p class="phrase">exacerbate</p>
+            <p class="phrase">facilitate</p>
+            <p class="phrase">perpetuate</p>
+            <p class="phrase">alleviate</p>
+            <p class="phrase">contend</p>
+            <p class="phrase">assert</p>
+            <p class="phrase">corroborate</p>
+            <p class="phrase">deteriorate</p>
+            <p class="phrase">proliferate</p>
+            <p class="phrase">mitigate</p>
+            <p class="phrase">bolster</p>
+            <p class="phrase">curtail</p>
+            <p class="phrase">engender</p>
+            <p class="phrase">foster</p>
+          </div>
+        </div>
+        <div>
+          <h4>Useful Collocations</h4>
+          <div class="glow-box purple" style="font-size:.8rem">
+            <p class="phrase">pose a threat to</p>
+            <p class="phrase">play a pivotal role in</p>
+            <p class="phrase">have a detrimental effect on</p>
+            <p class="phrase">be of paramount importance</p>
+            <p class="phrase">cast doubt on</p>
+            <p class="phrase">give rise to</p>
+            <p class="phrase">take precedence over</p>
+            <p class="phrase">run counter to</p>
+            <p class="phrase">be conducive to</p>
+            <p class="phrase">be inextricably linked to</p>
+            <p class="phrase">warrant further investigation</p>
+            <p class="phrase">bear testament to</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 10: IDIOMS & ADVANCED PHRASES ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=1600&q=80')">
+    <div class="content">
+      <p class="tag gold" style="margin-bottom:.6em">ADVANCED LANGUAGE</p>
+      <h2>Idioms & Phrases for Band 8–9</h2>
+      <p>Used <strong>sparingly and appropriately</strong>, these elevate your writing. Overuse or misuse will <em>lower</em> your score. Maximum 2–3 per essay.</p>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <h4>Idiomatic Expressions</h4>
+          <div class="gold-box" style="font-size:.82rem">
+            <p class="phrase">a double-edged sword</p>
+            <p class="phrase">the tip of the iceberg</p>
+            <p class="phrase">a blessing in disguise</p>
+            <p class="phrase">at the expense of</p>
+            <p class="phrase">in the long run</p>
+            <p class="phrase">to a certain extent</p>
+            <p class="phrase">the crux of the matter</p>
+            <p class="phrase">a level playing field</p>
+            <p class="phrase">tip the balance</p>
+            <p class="phrase">a vicious cycle</p>
+          </div>
+        </div>
+        <div>
+          <h4>Sophisticated Sentence Starters</h4>
+          <div class="glow-box" style="font-size:.82rem">
+            <p class="phrase">Notwithstanding these concerns,…</p>
+            <p class="phrase">While it is undeniable that…, it is equally true that…</p>
+            <p class="phrase">The extent to which… remains a matter of debate.</p>
+            <p class="phrase">This is not to say that…; rather,…</p>
+            <p class="phrase">Far from being…, this trend actually…</p>
+            <p class="phrase">What is particularly noteworthy is that…</p>
+            <p class="phrase">It would be remiss not to mention…</p>
+            <p class="phrase">The implications of this are far-reaching.</p>
+          </div>
+        </div>
+      </div>
+      <div class="glow-box" style="margin-top:.8em;border-color:rgba(248,113,113,.3)">
+        <p><strong class="red">Warning:</strong> Never use idioms you're unsure about. A misused idiom is worse than no idiom. Examiners notice forced language immediately.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 11: LINKING DEVICES ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1600&q=80')">
+    <div class="content">
+      <p class="tag purple" style="margin-bottom:.6em">COHESION TOOLKIT</p>
+      <h2>Linking Devices by Function</h2>
+      <p>Vary your connectors. Using <em>"Furthermore"</em> and <em>"In addition"</em> repeatedly signals <strong>Band 6</strong> thinking.</p>
+      <div class="cols-three" style="margin-top:.8em">
+        <div>
+          <h4>Adding Information</h4>
+          <div class="glow-box" style="font-size:.78rem">
+            <p class="phrase">Moreover,…</p>
+            <p class="phrase">Furthermore,…</p>
+            <p class="phrase">In addition,…</p>
+            <p class="phrase">Equally important,…</p>
+            <p class="phrase">Beyond this,…</p>
+          </div>
+          <h4 style="margin-top:.6em">Contrasting</h4>
+          <div class="glow-box purple" style="font-size:.78rem">
+            <p class="phrase">However,…</p>
+            <p class="phrase">On the other hand,…</p>
+            <p class="phrase">Conversely,…</p>
+            <p class="phrase">Nevertheless,…</p>
+            <p class="phrase">Notwithstanding this,…</p>
+          </div>
+        </div>
+        <div>
+          <h4>Cause & Effect</h4>
+          <div class="glow-box green" style="font-size:.78rem">
+            <p class="phrase">Consequently,…</p>
+            <p class="phrase">As a result,…</p>
+            <p class="phrase">This gives rise to…</p>
+            <p class="phrase">Owing to this,…</p>
+            <p class="phrase">This, in turn, leads to…</p>
+          </div>
+          <h4 style="margin-top:.6em">Concession</h4>
+          <div class="glow-box" style="font-size:.78rem">
+            <p class="phrase">Although…,…</p>
+            <p class="phrase">Despite…,…</p>
+            <p class="phrase">While it is true that…,…</p>
+            <p class="phrase">Admittedly,…; however,…</p>
+            <p class="phrase">Granted,…; nonetheless,…</p>
+          </div>
+        </div>
+        <div>
+          <h4>Illustrating</h4>
+          <div class="glow-box" style="font-size:.78rem">
+            <p class="phrase">For instance,…</p>
+            <p class="phrase">To illustrate,…</p>
+            <p class="phrase">A case in point is…</p>
+            <p class="phrase">This is exemplified by…</p>
+            <p class="phrase">Consider, for example,…</p>
+          </div>
+          <h4 style="margin-top:.6em">Concluding</h4>
+          <div class="glow-box gold" style="font-size:.78rem">
+            <p class="phrase">In conclusion,…</p>
+            <p class="phrase">To summarise,…</p>
+            <p class="phrase">On balance,…</p>
+            <p class="phrase">Taking everything into account,…</p>
+            <p class="phrase">All things considered,…</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 12: BAND 9 EXAMPLE #1 ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1455390582262-044cdead277a?w=1600&q=80')">
+    <div class="content wide">
+      <p class="tag green" style="margin-bottom:.6em">BAND 9 MODEL ESSAY #1 — OPINION</p>
+      <h2>Sample: Technology & Education</h2>
+      <div class="glow-box" style="font-size:.85rem">
+        <p><strong>Question:</strong> <em>"Some people believe that technology has made education more effective. Others argue that it has created new problems. Discuss both views and give your own opinion."</em></p>
+      </div>
+      <div class="essay-block" style="margin-top:.8em">
+        <p class="essay-label">Band 9 Response (~285 words)</p>
+        <p>The role of technology in education has become a subject of considerable debate. While some contend that digital tools have revolutionised learning, others maintain that they have introduced new challenges. I believe that, despite certain drawbacks, technology has fundamentally enhanced the educational experience.</p>
+        <p>On the one hand, critics of technology in education raise valid concerns. The proliferation of digital devices has been linked to diminished attention spans, with students increasingly unable to engage in sustained, deep reading. Furthermore, the digital divide means that students from disadvantaged backgrounds may lack access to the same resources, thereby exacerbating existing inequalities. These are not trivial concerns; they warrant serious consideration from policymakers.</p>
+        <p>On the other hand, the benefits of educational technology are substantial and far-reaching. Interactive platforms such as Khan Academy and Coursera have democratised access to high-quality instruction, enabling learners in remote areas to study subjects that would otherwise be unavailable to them. Moreover, adaptive learning software can tailor content to individual students' needs, a level of personalisation that traditional classroom teaching simply cannot achieve. Research from Stanford University has consistently shown that blended learning approaches — combining online and face-to-face instruction — yield superior outcomes compared to purely traditional methods.</p>
+        <p>In my view, the advantages of technology in education significantly outweigh the disadvantages. The key lies not in rejecting technology but in implementing it thoughtfully, with adequate training for teachers and equitable access for students. When deployed strategically, digital tools have the potential to transform education in ways that were unimaginable a generation ago.</p>
+      </div>
+      <div class="glow-box green" style="font-size:.8rem;margin-top:.6em">
+        <p><strong>Why this scores Band 9:</strong> Clear position throughout · Both views fully developed with specific examples · Sophisticated vocabulary (<em>proliferation, democratised, adaptive, deployed strategically</em>) · Complex grammar (participle clauses, conditionals, relative clauses) · Cohesive without over-reliance on obvious linkers · ~285 words</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 13: BAND 9 EXAMPLE #2 ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1471107340929-a87cd0f5b5f3?w=1600&q=80')">
+    <div class="content wide">
+      <p class="tag green" style="margin-bottom:.6em">BAND 9 MODEL ESSAY #2 — PROBLEM/SOLUTION</p>
+      <h2>Sample: Urbanisation & Environment</h2>
+      <div class="glow-box" style="font-size:.85rem">
+        <p><strong>Question:</strong> <em>"In many cities, the movement of people from rural areas has led to environmental problems. What are these problems? What can be done to address them?"</em></p>
+      </div>
+      <div class="essay-block" style="margin-top:.8em">
+        <p class="essay-label">Band 9 Response (~275 words)</p>
+        <p>The mass migration of people from rural to urban areas has placed enormous pressure on cities' environments. This essay will examine the primary environmental consequences of rapid urbanisation and propose several measures to mitigate them.</p>
+        <p>The most pressing environmental problem associated with urban migration is air pollution. As cities expand, the number of vehicles on roads increases dramatically, releasing harmful emissions that degrade air quality and pose serious public health risks. In cities such as Delhi and Beijing, air pollution levels regularly exceed World Health Organisation guidelines by a factor of ten or more. Additionally, the construction of new housing and infrastructure often leads to deforestation and the destruction of natural habitats, which in turn reduces biodiversity and disrupts local ecosystems. The strain on water resources is equally concerning; many rapidly growing cities face chronic water shortages as demand outstrips supply.</p>
+        <p>Addressing these challenges requires a multifaceted approach. First, governments should invest heavily in public transportation systems — electric buses, metro networks, and cycling infrastructure — to reduce dependence on private vehicles. Cities like Copenhagen and Amsterdam have demonstrated that such investments can dramatically lower emissions while improving quality of life. Second, urban planning regulations must incorporate green spaces and protect existing natural areas within city boundaries. Singapore's "City in a Garden" model provides an excellent template for integrating nature into urban environments. Finally, water recycling and conservation measures should be mandated for all new developments.</p>
+        <p>In conclusion, while urbanisation poses significant environmental threats, these can be effectively managed through strategic investment in sustainable infrastructure and forward-thinking urban planning.</p>
+      </div>
+      <div class="glow-box green" style="font-size:.8rem;margin-top:.6em">
+        <p><strong>Why this scores Band 9:</strong> All parts of task addressed · Specific real-world examples (Delhi, Beijing, Copenhagen, Singapore) · Wide vocabulary (<em>multifaceted, chronic, mandated, template</em>) · Range of complex structures · Logical paragraphing · Clear problem → solution progression</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 14: COMMON MISTAKES ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=1600&q=80')">
+    <div class="content">
+      <p class="tag red" style="margin-bottom:.6em">AVOID THESE</p>
+      <h2>Common Mistakes That Cap Your Score</h2>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <h4>Task Response Errors</h4>
+          <div class="glow-box" style="font-size:.82rem;border-color:rgba(248,113,113,.3)">
+            <p><span class="red">✗</span> Writing a <strong>memorised essay</strong> regardless of the question</p>
+            <p><span class="red">✗</span> Only addressing <em>one part</em> of a two-part question</p>
+            <p><span class="red">✗</span> Giving a position in the intro then <em>contradicting it</em></p>
+            <p><span class="red">✗</span> Writing <em>everything you know</em> about the topic instead of answering the question</p>
+          </div>
+          <h4 style="margin-top:.7em">Vocabulary Errors</h4>
+          <div class="glow-box" style="font-size:.82rem;border-color:rgba(248,113,113,.3)">
+            <p><span class="red">✗</span> Using <strong>informal language</strong> (<em>kids, stuff, gonna, a lot of</em>)</p>
+            <p><span class="red">✗</span> <strong>Overusing</strong> the same words — no paraphrasing</p>
+            <p><span class="red">✗</span> Using <strong>big words incorrectly</strong> — this lowers your score</p>
+            <p><span class="red">✗</span> <strong>Spelling errors</strong> in common academic words</p>
+          </div>
+        </div>
+        <div>
+          <h4>Grammar Errors</h4>
+          <div class="glow-box" style="font-size:.82rem;border-color:rgba(248,113,113,.3)">
+            <p><span class="red">✗</span> Only writing <strong>simple sentences</strong> — no complex structures</p>
+            <p><span class="red">�span></span> <strong>Run-on sentences</strong> — multiple ideas joined by commas</p>
+            <p><span class="red">✗</span> <strong>Article errors</strong> (a/an/the) — very common, very costly</p>
+            <p><span class="red">✗</span> <strong>Subject-verb disagreement</strong> in complex sentences</p>
+          </div>
+          <h4 style="margin-top:.7em">Structural Errors</h4>
+          <div class="glow-box" style="font-size:.82rem;border-color:rgba(248,113,113,.3)">
+            <p><span class="red">✗</span> <strong>No paragraphs</strong> — one block of text</p>
+            <p><span class="red">✗</span> <strong>Too short</strong> — under 250 words (Task 2) or 150 (Task 1)</p>
+            <p><span class="red">✗</span> <strong>Introducing new ideas</strong> in the conclusion</p>
+            <p><span class="red">✗</span> <strong>Copying the question</strong> word-for-word in your introduction</p>
+          </div>
+        </div>
+      </div>
+      <div class="gold-box" style="margin-top:.8em">
+        <p><strong>Golden rule:</strong> If you wouldn't say it in an academic essay at university, don't write it in IELTS.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 15: EXAM STRATEGY ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1600&q=80')">
+    <div class="content">
+      <p class="tag cyan" style="margin-bottom:.6em">EXAM DAY STRATEGY</p>
+      <h2>Your 40-Minute Game Plan (Task 2)</h2>
+      <div class="cols" style="margin-top:.8em">
+        <div>
+          <div class="glow-box">
+            <h4>Minutes 1–5: Analyse & Plan</h4>
+            <ul>
+              <li>Read the question <strong>twice</strong></li>
+              <li>Identify the <strong>question type</strong> (opinion, discussion, etc.)</li>
+              <li>Underline <strong>key words</strong> and task instructions</li>
+              <li>Brainstorm <strong>2–3 ideas</strong> for each body paragraph</li>
+              <li>Decide your <strong>position</strong> (if required)</li>
+            </ul>
+          </div>
+          <div class="glow-box green">
+            <h4>Minutes 6–10: Write Introduction</h4>
+            <ul>
+              <li>Paraphrase the topic</li>
+              <li>State your thesis / outline</li>
+              <li>Keep it <strong>concise</strong> — 2 sentences maximum</li>
+            </ul>
+          </div>
+        </div>
+        <div>
+          <div class="glow-box green">
+            <h4>Minutes 11–25: Write Body Paragraphs</h4>
+            <ul>
+              <li>Follow the <strong>TEEL</strong> structure (Topic → Explain → Example → Link)</li>
+              <li>One idea per paragraph — <strong>don't mix arguments</strong></li>
+              <li>Use a <strong>range</strong> of vocabulary and grammar</li>
+              <li>Include <strong>specific examples</strong> (real or plausible)</li>
+            </ul>
+          </div>
+          <div class="glow-box purple">
+            <h4>Minutes 26–35: Conclusion + Review</h4>
+            <ul>
+              <li>Summarise in <strong>different words</strong> from the intro</li>
+              <li><strong>Never</strong> add new ideas</li>
+              <li>Check: Did I answer <strong>every part</strong> of the question?</li>
+              <li>Check: Is my <strong>position clear</strong> throughout?</li>
+              <li>Check: <strong>Spelling, grammar, word count</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SLIDE 16: FINAL SUMMARY ===== -->
+  <section class="slide" style="background-image:url('https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1600&q=80')">
+    <div class="content" style="text-align:center">
+      <p class="tag cyan" style="margin-bottom:.6em">KEY TAKEAWAYS</p>
+      <h2>What Examiners Reward</h2>
+      <div style="max-width:50vw;margin:1.2em auto;text-align:left">
+        <div class="glow-box">
+          <p><strong class="cyan">1.</strong> Answer the <strong>specific question</strong> — not the topic in general</p>
+        </div>
+        <div class="glow-box purple">
+          <p><strong class="purple">2.</strong> Maintain a <strong>clear position</strong> throughout (for opinion essays)</p>
+        </div>
+        <div class="glow-box green">
+          <p><strong class="green">3.</strong> Develop every idea with <strong>explanation + specific example</strong></p>
+        </div>
+        <div class="glow-box" style="border-color:rgba(251,191,36,.4)">
+          <p><strong class="gold">4.</strong> Use <strong>varied, precise vocabulary</strong> — not just "big words"</p>
+        </div>
+        <div class="glow-box" style="border-color:rgba(244,114,182,.4)">
+          <p><strong class="pink">5.</strong> Demonstrate <strong>complex grammar</strong> frequently and accurately</p>
+        </div>
+        <div class="glow-box" style="border-color:rgba(34,211,238,.4)">
+          <p><strong class="cyan">6.</strong> Organise ideas <strong>logically</strong> — one idea per paragraph</p>
+        </div>
+      </div>
+      <div class="gold-box" style="margin-top:1.2em">
+        <p style="font-size:clamp(.9rem,1.3vw,1.15rem)"><strong>The examiner reads hundreds of essays.</strong><br>
+        Make yours <strong>clear, specific, and well-structured</strong> — and you'll stand out.</p>
+      </div>
+      <div style="margin-top:1.5em">
+        <span class="tag cyan">WTE Curriculum</span>
+        <span class="tag green">IELTS Writing</span>
+        <span class="tag purple">Band 7–9</span>
+      </div>
+    </div>
+  </section>
+
+</div><!-- end slides-wrap -->
+
+<!-- Navigation -->
+<nav class="nav">
+  <button class="nav-btn" id="prevBtn" onclick="goPrev()">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    PREV
+  </button>
+  <span class="slide-counter" id="slideCounter">1 / 16</span>
+  <button class="nav-btn" id="nextBtn" onclick="goNext()">
+    NEXT
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+  </button>
+</nav>
+
+<script>
+// ===== AUDIO: SWISH WITH REVERB =====
+var audioCtx = null;
+var reverbNode = null;
+
+function ensureAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    var rate = audioCtx.sampleRate;
+    var length = Math.floor(rate * 1.2);
+    var impulse = audioCtx.createBuffer(2, length, rate);
+    for (var ch = 0; ch < 2; ch++) {
+      var data = impulse.getChannelData(ch);
+      for (var i = 0; i < length; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 2.5);
+      }
+    }
+    reverbNode = audioCtx.createConvolver();
+    reverbNode.buffer = impulse;
+    var reverbGain = audioCtx.createGain();
+    reverbGain.gain.value = 0.4;
+    reverbNode.connect(reverbGain);
+    reverbGain.connect(audioCtx.destination);
+  }
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playSwish(direction) {
+  ensureAudio();
+  var now = audioCtx.currentTime;
+
+  var bufferSize = Math.floor(audioCtx.sampleRate * 0.18);
+  var buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  var data = buffer.getChannelData(0);
+  for (var i = 0; i < bufferSize; i++) {
+    var env = Math.sin((i / bufferSize) * Math.PI);
+    data[i] = (Math.random() * 2 - 1) * env;
+  }
+
+  var src = audioCtx.createBufferSource();
+  src.buffer = buffer;
+
+  var filter = audioCtx.createBiquadFilter();
+  filter.type = 'bandpass';
+  filter.Q.value = 8;
+  if (direction === 'forward') {
+    filter.frequency.setValueAtTime(800, now);
+    filter.frequency.exponentialRampToValueAtTime(4000, now + 0.15);
+  } else {
+    filter.frequency.setValueAtTime(4000, now);
+    filter.frequency.exponentialRampToValueAtTime(800, now + 0.15);
+  }
+
+  var gain = audioCtx.createGain();
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(0.12, now + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+  var dryGain = audioCtx.createGain();
+  dryGain.gain.value = 0.6;
+  var wetGain = audioCtx.createGain();
+  wetGain.gain.value = 0.4;
+
+  src.connect(filter);
+  filter.connect(gain);
+  gain.connect(dryGain);
+  gain.connect(wetGain);
+  dryGain.connect(audioCtx.destination);
+  wetGain.connect(reverbNode);
+
+  src.start(now);
+  src.stop(now + 0.2);
+
+  var osc = audioCtx.createOscillator();
+  osc.type = 'sine';
+  var oscGain = audioCtx.createGain();
+  if (direction === 'forward') {
+    osc.frequency.setValueAtTime(600, now);
+    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+  } else {
+    osc.frequency.setValueAtTime(1200, now);
+    osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+  }
+  oscGain.gain.setValueAtTime(0, now);
+  oscGain.gain.linearRampToValueAtTime(0.04, now + 0.02);
+  oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+  osc.connect(oscGain);
+  oscGain.connect(audioCtx.destination);
+  osc.start(now);
+  osc.stop(now + 0.15);
+}
+
+// ===== SLIDE NAVIGATION =====
+var slides = document.querySelectorAll('.slide');
+var current = 0;
+var total = slides.length;
+var started = false;
+
+function updateSlide() {
+  for (var i = 0; i < total; i++) {
+    slides[i].classList.remove('active');
+  }
+  slides[current].classList.add('active');
+  document.getElementById('slideCounter').textContent = (current + 1) + ' / ' + total;
+  document.getElementById('progressFill').style.width = ((current + 1) / total * 100) + '%';
+  document.getElementById('prevBtn').disabled = (current === 0);
+  document.getElementById('nextBtn').disabled = (current === total - 1);
+}
+
+function goNext() {
+  if (current < total - 1) {
+    current++;
+    playSwish('forward');
+    updateSlide();
+  }
+}
+
+function goPrev() {
+  if (current > 0) {
+    current--;
+    playSwish('back');
+    updateSlide();
+  }
+}
+
+function startDeck() {
+  started = true;
+  var overlay = document.getElementById('startOverlay');
+  overlay.style.opacity = '0';
+  setTimeout(function() { overlay.style.display = 'none'; }, 500);
+  ensureAudio();
+  updateSlide();
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', function(e) {
+  if (!started) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startDeck(); }
+    return;
+  }
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goNext(); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goPrev(); }
+});
+
+// Init
+updateSlide();
+</script>
+</body>
+</html>
