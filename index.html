@@ -187,7 +187,7 @@ try{
   pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
   var pc=document.createElement('canvas');pc.width=32;pc.height=32;var pctx=pc.getContext('2d');
   var pg=pctx.createRadialGradient(16,16,1,16,16,16);
-  pg.addColorStop(0,'rgba(220,200,255,1)');pg.addColorStop(0.15,'rgba(180,160,255,0.9)');pg.addColorStop(0.4,'rgba(140,120,240,0.4)');pg.addColorStop(0.7,'rgba(100,80,220,0.05)');pg.addColorStop(1,'rgba(0,0,0,0)');
+  pg.addColorStop(0,'rgba(255,246,255,1)');pg.addColorStop(0.12,'rgba(210,190,255,0.95)');pg.addColorStop(0.3,'rgba(160,140,245,0.4)');pg.addColorStop(0.5,'rgba(110,90,225,0.06)');pg.addColorStop(1,'rgba(0,0,0,0)');
   pctx.fillStyle=pg;pctx.fillRect(0,0,32,32);
   pMat=new THREE.PointsMaterial({size:.65,map:new THREE.CanvasTexture(pc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xb49cff});
   pts=new THREE.Points(pGeo,pMat);pts.scale.set(.01,.01,.01);scene3.add(pts);
@@ -200,7 +200,7 @@ try{
   bgGeo.setAttribute('position',new THREE.BufferAttribute(bgPos,3));
   var bpc=document.createElement('canvas');bpc.width=32;bpc.height=32;var bctx=bpc.getContext('2d');
   var bgg=bctx.createRadialGradient(16,16,1,16,16,16);
-  bgg.addColorStop(0,'rgba(255,200,255,1)');bgg.addColorStop(0.15,'rgba(255,159,252,0.9)');bgg.addColorStop(0.4,'rgba(255,140,245,0.4)');bgg.addColorStop(0.7,'rgba(200,80,220,0.05)');bgg.addColorStop(1,'rgba(0,0,0,0)');
+  bgg.addColorStop(0,'rgba(255,240,255,1)');bgg.addColorStop(0.12,'rgba(255,170,252,0.95)');bgg.addColorStop(0.3,'rgba(255,145,246,0.4)');bgg.addColorStop(0.5,'rgba(205,85,225,0.06)');bgg.addColorStop(1,'rgba(0,0,0,0)');
   bctx.fillStyle=bgg;bctx.fillRect(0,0,32,32);
   bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffb0ff});
   bgPts=new THREE.Points(bgGeo,bgMat);bgPts.position.z=-2;bgPts.scale.set(.01,.01,.01);scene3.add(bgPts);
@@ -227,7 +227,7 @@ function updateParticles(time){
     posArr[idx+2]+=(pTgt[idx+2]+(dz/dist)*force*.9-posArr[idx+2])*.12;
   }
   pGeo.attributes.position.needsUpdate=true;
-  pMat.size=(.25+Math.abs(Math.sin(time*.001*.8))*.5)*(0.25+0.75*illum);
+  pMat.size=(.25+Math.abs(Math.sin(time*.001*.8))*.5)*(1.6-1.1*illum);
   pMat.opacity=illum*(.3+Math.abs(Math.sin(time*.001*.8))*.4);
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){var idx=i*3,a=(i/B_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+bgPhase[i])*1,r=10+w*.8;
@@ -239,7 +239,7 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate=true;
-  bgMat.size=(.3+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(0.25+0.75*illum);
+  bgMat.size=(.3+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(1.6-1.1*illum);
   bgMat.opacity=illum*(.25+Math.abs(Math.sin(time*.001*.7+1.5))*.35);
 }
 
