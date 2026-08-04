@@ -214,10 +214,9 @@ function updateParticles(time){
   var mag3D=new THREE.Vector3(mx3*28,my3*16,2);
   // Orbit: 1/8 orbit per scroll (room2 scrollable = height - viewport, 1 scroll ≈ viewport)
   var orbitRot=roomData[1].progress*Math.PI/4*Math.max(1,(roomData[1].height-viewH)/viewH)+time*.001*.5;
-  // Illumination ramps with spread: 0 while particles are bunched (Room 1 + start of zoom),
-  // full only when they are far apart (end of the zoom-in). pulse gated by illum.
-  var spread=lerp(.01,1,smoothstep(roomData[1].progress));
-  var illum=smoothstep(clamp01((spread-.25)/.75));
+  // Illumination: visible from the very start of Room 2 (progress>0), ramps fast,
+  // full pulse by ~1/3 of the zoom and stays lit. Invisible in Room 1 (progress=0).
+  var illum=smoothstep(clamp01(roomData[1].progress*3));
   var posArr=pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){var idx=i*3,a=(i/P_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+pPhase[i])*1,r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r;pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w;pTgt[idx+2]=Math.sin(a+orbitRot)*r;
