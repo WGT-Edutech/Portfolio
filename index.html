@@ -263,6 +263,21 @@ var sloganVPChars=splitToChars(sloganText,'vp-char');
 var allVPChars=[].concat(nameVPChars,roleVPChars,sloganVPChars);
 var nameRevealCount=0;
 
+// Fit name to screen width (40px padding each side), shrink-only so CSS clamp keeps its max
+var TITLE_PAD=40;
+function fitName(){
+  if(!nameText)return;
+  nameText.style.fontSize='';
+  var avail=viewW-TITLE_PAD*2;
+  var w=nameText.scrollWidth;
+  if(w>avail&&w>0){
+    var cur=parseFloat(getComputedStyle(nameText).fontSize);
+    nameText.style.fontSize=(cur*avail/w)+'px';
+  }
+}
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitName);else fitName();
+window.addEventListener('resize',fitName);
+
 function revealNameChars(count){
   nameVPChars.forEach(function(c,i){
     c.style.opacity=i<count?'1':'0';
