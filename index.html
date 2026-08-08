@@ -244,7 +244,7 @@ try{
   bgGeo.setAttribute('position',new THREE.BufferAttribute(bgPos,3));
   var bpc=document.createElement('canvas');bpc.width=256;bpc.height=256;var bctx=bpc.getContext('2d');
   var bgg=bctx.createRadialGradient(128,128,1,128,128,128);
-  bgg.addColorStop(0,'rgba(255,240,255,1)');bgg.addColorStop(0.1,'rgba(255,185,252,0.9)');bgg.addColorStop(0.25,'rgba(255,155,246,0.45)');bgg.addColorStop(0.45,'rgba(220,105,230,0.12)');bgg.addColorStop(0.7,'rgba(205,85,225,0.03)');bgg.addColorStop(1,'rgba(0,0,0,0)');
+  bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.1,'rgba(255,170,246,0.95)');bgg.addColorStop(0.25,'rgba(255,110,235,0.55)');bgg.addColorStop(0.45,'rgba(235,60,215,0.16)');bgg.addColorStop(0.7,'rgba(215,30,200,0.05)');bgg.addColorStop(1,'rgba(0,0,0,0)');
   bctx.fillStyle=bgg;bctx.fillRect(0,0,256,256);
   bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffb0ff});
   bgPts=new THREE.Points(bgGeo,bgMat);bgPts.position.z=-2;bgPts.scale.set(.01,.01,.01);scene3.add(bgPts);
@@ -290,8 +290,9 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate=true;
-  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(.6+1.79*illum);
-  bgMat.opacity=illum*ps*(.55+Math.abs(Math.sin(time*.001*.7+1.5))*.4);
+  // Pink ring: wider pulse swing (0.35..1.0 on the sine) so it visibly throbs.
+  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.65)*(.6+1.79*illum);
+  bgMat.opacity=illum*ps*(.5+Math.abs(Math.sin(time*.001*.7+1.5))*.5);
 }
 
 // ── TEXT EFFECTS ──
