@@ -260,8 +260,10 @@ function updateParticles(time){
   // Orbit: 1/8 orbit per scroll (room2 scrollable = height - viewport, 1 scroll ≈ viewport)
   var orbitRot=roomData[1].progress*Math.PI/4*Math.max(1,(roomData[1].height-viewH)/viewH)+time*.001*.5;
   // Illumination: builds across the whole Room 2 — faint at the start of the zoom,
-  // fully lit by the end. Invisible in Room 1 (progress=0).
-  var illum=.12+.88*smoothstep(clamp01(roomData[1].progress));
+  // fully lit by the end. EXACTLY 0 in Room 1 (rp=0) — the .12 floor applies only
+  // once Room 2 has started, so particles are invisible during Room 1.
+  var rp1=clamp01(roomData[1].progress);
+  var illum=rp1>0 ? .12+.88*smoothstep(rp1) : 0;
   var posArr=pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){var idx=i*3,a=(i/P_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+pPhase[i])*1,r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r;pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+RING_Y;pTgt[idx+2]=Math.sin(a+orbitRot)*r;
