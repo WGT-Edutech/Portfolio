@@ -276,11 +276,9 @@ function updateParticles(time){
     posArr[idx+2]+=(pTgt[idx+2]+(dz/dist)*force*.9-posArr[idx+2])*.12;
   }
   pGeo.attributes.position.needsUpdate=true;
-  // REVIEW FIX (2026-08-08): size previously ramped DOWN with illum (1.6-1.1*illum),
-  // shrinking sprite area 4x as opacity rose — opacity×area stayed flat, so the ring
-  // never got bright. Now size GROWS with illum: bigger AND brighter = real lamp
-  // approach. Opacity ceiling raised to 1.0.
-  pMat.size=(.3+Math.abs(Math.sin(time*.001*.8))*.5)*(.6+.9*illum);
+  // REVIEW FIX (2026-08-08): size grows WITH illum so net light (op*size^2) is
+  // monotonic and reaches 0.8 at end of room (illum=0.8, mid-pulse).
+  pMat.size=(.3+Math.abs(Math.sin(time*.001*.8))*.5)*(.6+1.79*illum);
   pMat.opacity=illum*ps*(.6+Math.abs(Math.sin(time*.001*.8))*.4);
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){var idx=i*3,a=(i/B_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+bgPhase[i])*1,r=10+w*.8;
@@ -292,7 +290,7 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate=true;
-  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(.6+.9*illum);
+  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(.6+1.79*illum);
   bgMat.opacity=illum*ps*(.55+Math.abs(Math.sin(time*.001*.7+1.5))*.4);
 }
 
