@@ -213,7 +213,7 @@ window.addEventListener('resize',function(){viewW=window.innerWidth;viewH=window
 
 // ── THREE.JS PARTICLES ──
 var renderer,scene3,cam,pts,pGeo,pMat,bgPts,bgGeo,bgMat;
-var P_COUNT=200,B_COUNT=250,pTgt,pPhase,bgTgt,bgPhase;
+var P_COUNT=200,B_COUNT=250,pTgt,pPhase,bgTgt,bgPhase,pSwellD,bgSwellD;
 var mx3=0,my3=0,mtx3=0,mty3=0,projV3=null;
 try{
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('scene'),antialias:true,alpha:true});
@@ -229,6 +229,7 @@ try{
     pTgt[i*3]=Math.cos(a)*P_RING;pTgt[i*3+1]=Math.sin(a)*.5;pTgt[i*3+2]=Math.sin(a)*P_RING;
     pPos[i*3]=(Math.random()-.5)*20;pPos[i*3+1]=(Math.random()-.5)*20;pPos[i*3+2]=(Math.random()-.5)*20;pPhase[i]=Math.random()*Math.PI*2;}
   pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+  pSwellD=new Float32Array(P_COUNT);for(var i=0;i<P_COUNT;i++)pSwellD[i]=Math.random();
   var pc=document.createElement('canvas');pc.width=256;pc.height=256;var pctx=pc.getContext('2d');
   var pg=pctx.createRadialGradient(128,128,1,128,128,128);
   pg.addColorStop(0,'rgba(255,255,255,1)');pg.addColorStop(0.12,'rgba(255,255,255,1)');pg.addColorStop(0.2,'rgba(228,208,255,0.92)');pg.addColorStop(0.3,'rgba(185,165,250,0.42)');pg.addColorStop(0.5,'rgba(145,125,235,0.13)');pg.addColorStop(0.75,'rgba(115,95,225,0.045)');pg.addColorStop(1,'rgba(0,0,0,0)');
@@ -249,6 +250,7 @@ try{
     bgTgt[i*3]=Math.cos(a)*B_RING;bgTgt[i*3+1]=Math.sin(a)*.5;bgTgt[i*3+2]=Math.sin(a)*B_RING;
     bgPos[i*3]=(Math.random()-.5)*24;bgPos[i*3+1]=(Math.random()-.5)*24;bgPos[i*3+2]=(Math.random()-.5)*24;bgPhase[i]=Math.random()*Math.PI*2;}
   bgGeo.setAttribute('position',new THREE.BufferAttribute(bgPos,3));
+  bgSwellD=new Float32Array(B_COUNT);for(var i=0;i<B_COUNT;i++)bgSwellD[i]=Math.random();
   var bpc=document.createElement('canvas');bpc.width=256;bpc.height=256;var bctx=bpc.getContext('2d');
   var bgg=bctx.createRadialGradient(128,128,1,128,128,128);
   bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.12,'rgba(255,255,255,1)');bgg.addColorStop(0.2,'rgba(255,190,246,0.92)');bgg.addColorStop(0.3,'rgba(255,120,235,0.5)');bgg.addColorStop(0.5,'rgba(235,70,215,0.16)');bgg.addColorStop(0.75,'rgba(215,40,205,0.05)');bgg.addColorStop(1,'rgba(0,0,0,0)');
@@ -290,13 +292,16 @@ function updateParticles(time){
     posArr[idx+2]+=(pTgt[idx+2]+(dz/dist)*force*.9-posArr[idx+2])*.12;
   }
   pGeo.attributes.position.needsUpdate=true;
-  // Cursor swell: project each particle to NDC, swell up to 2x within SWELL_R of cursor.
+  // Cursor swell: project each particle to NDC, swell up to 3x within SWELL_R of cursor.
+  // Staggered per-particle (pSwellD): the swell starts at a random fraction of the
+  // approach, so particles ripple instead of popping in sync.
   if(!projV3)projV3=new THREE.Vector3();
   var SWELL_R=.22,aSz=pGeo.attributes.aSize.array;
   for(var i=0;i<P_COUNT;i++){var idx=i*3;
     projV3.set(posArr[idx],posArr[idx+1],posArr[idx+2]).project(cam);
     var sdx=projV3.x-mx3,sdy=projV3.y-my3,sd=Math.sqrt(sdx*sdx+sdy*sdy);
-    aSz[i]=1+smoothstep(clamp01(1-sd/SWELL_R));   // 1 far away → 2 at cursor
+    var sw=clamp01(1-sd/SWELL_R),st=clamp01((sw-pSwellD[i]*.4)/.6);
+    aSz[i]=1+2*smoothstep(st);   // 1 far → up to 3 at cursor, staggered
   }
   pGeo.attributes.aSize.needsUpdate=true;
   // REVIEW FIX (2026-08-08): size grows WITH illum so net light (op*size^2) is
@@ -313,12 +318,13 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate=true;
-  // Cursor swell for pink ring.
+  // Cursor swell for pink ring (staggered, up to 3x).
   var bSz=bgGeo.attributes.aSize.array;
   for(var i=0;i<B_COUNT;i++){var idx=i*3;
     projV3.set(bgPosArr[idx],bgPosArr[idx+1],bgPosArr[idx+2]).project(cam);
     var bdx=projV3.x-mx3,bdy=projV3.y-my3,bd=Math.sqrt(bdx*bdx+bdy*bdy);
-    bSz[i]=1+smoothstep(clamp01(1-bd/SWELL_R));
+    var bw=clamp01(1-bd/SWELL_R),bt=clamp01((bw-bgSwellD[i]*.4)/.6);
+    bSz[i]=1+2*smoothstep(bt);
   }
   bgGeo.attributes.aSize.needsUpdate=true;
   // Pink ring: wider pulse swing (0.35..1.0 on the sine) so it visibly throbs.
