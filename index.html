@@ -30,7 +30,9 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 #galleryRoom{position:absolute;inset:0;z-index:30;perspective:1200px;display:flex;align-items:center;justify-content:center}
 .card-ring{position:relative;width:100%;height:100%;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center}
 .ring-card{position:absolute;left:50%;top:50%;width:420px;height:280px;margin-left:-210px;margin-top:-140px;transform-style:preserve-3d;cursor:pointer}
-.ring-card-inner{position:relative;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(15,15,30,.85);box-shadow:0 10px 40px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;-webkit-box-reflect:below 10px linear-gradient(to bottom,rgba(255,255,255,.28) 0%,rgba(255,255,255,.14) 20%,rgba(255,255,255,.05) 38%,rgba(255,255,255,0) 50%)}
+.ring-card-inner{position:relative;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid rgba(255,255,255,.08);background:rgba(15,15,30,.85);box-shadow:0 10px 40px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center}
+.ring-card-reflect{position:absolute;top:100%;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;opacity:.45}
+.ring-card-reflect img{width:100%;height:100%;object-fit:cover;transform:scaleY(-1);-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,.18) 40%,rgba(0,0,0,0) 72%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.6) 0%,rgba(0,0,0,.18) 40%,rgba(0,0,0,0) 72%)}
 .ring-card-front{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;padding:2rem}
 .ring-card-title{font-family:'Oswald',sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-cream);text-align:center;line-height:1.2;text-shadow:0 0 3px rgba(255,255,255,.3),0 0 8px rgba(139,92,246,.4),0 0 14px rgba(139,92,246,.25)}
 
@@ -98,6 +100,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
   .card-ring{width:max-content;min-width:100%;flex-direction:row;align-items:center;gap:18px;transform-style:flat;padding:0 10vw}
   .ring-card{position:relative;left:auto;top:auto;width:80vw;height:53vw;max-width:400px;max-height:270px;margin:0;flex:0 0 auto;scroll-snap-align:center;scroll-snap-stop:always;transform:none!important;opacity:1!important;pointer-events:auto!important;z-index:auto!important}
   .ring-card-inner{-webkit-box-reflect:none}
+  .ring-card-reflect{display:none}
 }
 .menu-backdrop{position:fixed;top:3.5rem;left:0;right:0;bottom:0;z-index:104;background:rgba(3,3,10,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease}
 .menu-backdrop.open{opacity:1;pointer-events:auto}
@@ -416,7 +419,7 @@ var $cardRing=document.getElementById('cardRing'),$cardName=document.getElementB
 cardData.forEach(function(card){
   var el=document.createElement('div');el.className='ring-card';
   var inner=card.img
-    ?'<div class="ring-card-inner"><div class="ring-card-front"><img src="'+card.img+'" alt="'+card.name+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></div></div>'
+    ?'<div class="ring-card-inner"><div class="ring-card-front"><img src="'+card.img+'" alt="'+card.name+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></div></div><div class="ring-card-reflect" aria-hidden="true"><img src="'+card.img+'" alt=""></div>'
     :'<div class="ring-card-inner"><div class="ring-card-front"><span class="ring-card-title">'+card.name+'</span></div></div>';
   el.innerHTML=inner;
   el.addEventListener('mouseenter',function(){$cardName.textContent=card.name;$cardInfo.style.opacity='1';});
