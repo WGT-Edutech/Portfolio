@@ -214,7 +214,7 @@ window.addEventListener('resize',function(){viewW=window.innerWidth;viewH=window
 // ── THREE.JS PARTICLES ──
 var renderer,scene3,cam,pts,pGeo,pMat,bgPts,bgGeo,bgMat;
 var P_COUNT=200,B_COUNT=250,pTgt,pPhase,bgTgt,bgPhase;
-var mx3=0,my3=0,mtx3=0,mty3=0;
+var mx3=0,my3=0,mtx3=0,mty3=0,projV3=null;
 try{
   renderer=new THREE.WebGLRenderer({canvas:document.getElementById('scene'),antialias:true,alpha:true});
   renderer.setPixelRatio(DPR);
@@ -231,9 +231,16 @@ try{
   pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
   var pc=document.createElement('canvas');pc.width=256;pc.height=256;var pctx=pc.getContext('2d');
   var pg=pctx.createRadialGradient(128,128,1,128,128,128);
-  pg.addColorStop(0,'rgba(255,246,255,1)');pg.addColorStop(0.1,'rgba(225,205,255,0.9)');pg.addColorStop(0.25,'rgba(180,160,250,0.45)');pg.addColorStop(0.45,'rgba(140,120,235,0.12)');pg.addColorStop(0.7,'rgba(110,90,225,0.03)');pg.addColorStop(1,'rgba(0,0,0,0)');
+  pg.addColorStop(0,'rgba(255,255,255,1)');pg.addColorStop(0.12,'rgba(255,255,255,1)');pg.addColorStop(0.2,'rgba(228,208,255,0.92)');pg.addColorStop(0.3,'rgba(185,165,250,0.42)');pg.addColorStop(0.5,'rgba(145,125,235,0.13)');pg.addColorStop(0.75,'rgba(115,95,225,0.045)');pg.addColorStop(1,'rgba(0,0,0,0)');
   pctx.fillStyle=pg;pctx.fillRect(0,0,256,256);
   pMat=new THREE.PointsMaterial({size:.65,map:new THREE.CanvasTexture(pc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xb49cff});
+  // Per-particle size attribute: cursor proximity swells individual particles up to 2x.
+  pGeo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(P_COUNT).fill(1),1));
+  pMat.onBeforeCompile=function(sh){
+    sh.vertexShader=sh.vertexShader
+      .replace('#include <common>','#include <common>\nattribute float aSize;')
+      .replace('gl_PointSize = size * ( scale / - mvPosition.z );','gl_PointSize = size * aSize * ( scale / - mvPosition.z );');
+  };
   pts=new THREE.Points(pGeo,pMat);pts.scale.set(.01,.01,.01);scene3.add(pts);
 
   var B_RING=10;
@@ -244,9 +251,15 @@ try{
   bgGeo.setAttribute('position',new THREE.BufferAttribute(bgPos,3));
   var bpc=document.createElement('canvas');bpc.width=256;bpc.height=256;var bctx=bpc.getContext('2d');
   var bgg=bctx.createRadialGradient(128,128,1,128,128,128);
-  bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.1,'rgba(255,170,246,0.95)');bgg.addColorStop(0.25,'rgba(255,110,235,0.55)');bgg.addColorStop(0.45,'rgba(235,60,215,0.16)');bgg.addColorStop(0.7,'rgba(215,30,200,0.05)');bgg.addColorStop(1,'rgba(0,0,0,0)');
+  bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.12,'rgba(255,255,255,1)');bgg.addColorStop(0.2,'rgba(255,190,246,0.92)');bgg.addColorStop(0.3,'rgba(255,120,235,0.5)');bgg.addColorStop(0.5,'rgba(235,70,215,0.16)');bgg.addColorStop(0.75,'rgba(215,40,205,0.05)');bgg.addColorStop(1,'rgba(0,0,0,0)');
   bctx.fillStyle=bgg;bctx.fillRect(0,0,256,256);
   bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffb0ff});
+  bgGeo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(B_COUNT).fill(1),1));
+  bgMat.onBeforeCompile=function(sh){
+    sh.vertexShader=sh.vertexShader
+      .replace('#include <common>','#include <common>\nattribute float aSize;')
+      .replace('gl_PointSize = size * ( scale / - mvPosition.z );','gl_PointSize = size * aSize * ( scale / - mvPosition.z );');
+  };
   bgPts=new THREE.Points(bgGeo,bgMat);bgPts.position.z=-2;bgPts.scale.set(.01,.01,.01);scene3.add(bgPts);
 
   window.addEventListener('mousemove',function(e){mtx3=(e.clientX/viewW)*2-1;mty3=-(e.clientY/viewH)*2+1;},{passive:true});
@@ -265,7 +278,7 @@ function updateParticles(time){
   // bright through the end. Exactly 0 in Room 1 (rp1=0).
   var rp1=clamp01(roomData[1].progress);
   var ps=lerp(.01,1,smoothstep(rp1));          // cloud scale, same as tick() applies
-  var illum=rp1>0 ? .8*clamp01(rp1*1.4) : 0;   // reaches 0.8 by ~71% of the room, holds
+  var illum=rp1>0 ? (.25+.75*clamp01(rp1*1.4)) : 0;  // visible from Room 2 start, ends at 1.0
   var posArr=pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){var idx=i*3,a=(i/P_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+pPhase[i])*1,r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r;pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+RING_Y;pTgt[idx+2]=Math.sin(a+orbitRot)*r;
@@ -276,9 +289,18 @@ function updateParticles(time){
     posArr[idx+2]+=(pTgt[idx+2]+(dz/dist)*force*.9-posArr[idx+2])*.12;
   }
   pGeo.attributes.position.needsUpdate=true;
+  // Cursor swell: project each particle to NDC, swell up to 2x within SWELL_R of cursor.
+  if(!projV3)projV3=new THREE.Vector3();
+  var SWELL_R=.22,aSz=pGeo.attributes.aSize.array;
+  for(var i=0;i<P_COUNT;i++){var idx=i*3;
+    projV3.set(posArr[idx],posArr[idx+1],posArr[idx+2]).project(cam);
+    var sdx=projV3.x-mx3,sdy=projV3.y-my3,sd=Math.sqrt(sdx*sdx+sdy*sdy);
+    aSz[i]=1+smoothstep(clamp01(1-sd/SWELL_R));   // 1 far away → 2 at cursor
+  }
+  pGeo.attributes.aSize.needsUpdate=true;
   // REVIEW FIX (2026-08-08): size grows WITH illum so net light (op*size^2) is
   // monotonic and reaches 0.8 at end of room (illum=0.8, mid-pulse).
-  pMat.size=(.3+Math.abs(Math.sin(time*.001*.8))*.5)*(.6+1.79*illum);
+  pMat.size=(.3+Math.abs(Math.sin(time*.001*.8))*.5)*(.6+1.433*illum);
   pMat.opacity=illum*ps*(.6+Math.abs(Math.sin(time*.001*.8))*.4);
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){var idx=i*3,a=(i/B_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+bgPhase[i])*1,r=10+w*.8;
@@ -290,8 +312,16 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate=true;
+  // Cursor swell for pink ring.
+  var bSz=bgGeo.attributes.aSize.array;
+  for(var i=0;i<B_COUNT;i++){var idx=i*3;
+    projV3.set(bgPosArr[idx],bgPosArr[idx+1],bgPosArr[idx+2]).project(cam);
+    var bdx=projV3.x-mx3,bdy=projV3.y-my3,bd=Math.sqrt(bdx*bdx+bdy*bdy);
+    bSz[i]=1+smoothstep(clamp01(1-bd/SWELL_R));
+  }
+  bgGeo.attributes.aSize.needsUpdate=true;
   // Pink ring: wider pulse swing (0.35..1.0 on the sine) so it visibly throbs.
-  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.65)*(.6+1.79*illum);
+  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.65)*(.6+1.433*illum);
   bgMat.opacity=illum*ps*(.5+Math.abs(Math.sin(time*.001*.7+1.5))*.5);
 }
 
