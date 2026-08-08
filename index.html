@@ -259,12 +259,13 @@ function updateParticles(time){
   var mag3D=new THREE.Vector3(mx3*28,my3*16,2);
   // Orbit: 1/8 orbit per scroll (room2 scrollable = height - viewport, 1 scroll ≈ viewport)
   var orbitRot=roomData[1].progress*Math.PI/4*Math.max(1,(roomData[1].height-viewH)/viewH)+time*.001*.5;
-  // Illumination: brightness TRACKS THE ZOOM SCALE — near-invisible while the
-  // cloud is a distant dot (additive overlap would saturate to white), ramping
-  // to full as the ring fills the view. Exactly 0 in Room 1 (rp1=0).
+  // Illumination model: "a lamp approaching" — the cloud is a faint glimmer in
+  // the distance (opacity ∝ zoom scale ps, so additive overlap can't saturate),
+  // grows steadily through the zoom, and is fully lit by ~2/3 of Room 2, holding
+  // bright through the end. Exactly 0 in Room 1 (rp1=0).
   var rp1=clamp01(roomData[1].progress);
-  var ps=lerp(.01,1,smoothstep(rp1));   // same zoom scale tick() applies to the mesh
-  var illum=rp1>0 ? smoothstep(rp1) : 0;
+  var ps=lerp(.01,1,smoothstep(rp1));          // cloud scale, same as tick() applies
+  var illum=rp1>0 ? clamp01(rp1*1.4) : 0;      // linear ramp, full by ~71% of the room
   var posArr=pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){var idx=i*3,a=(i/P_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+pPhase[i])*1,r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r;pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+RING_Y;pTgt[idx+2]=Math.sin(a+orbitRot)*r;
@@ -276,7 +277,7 @@ function updateParticles(time){
   }
   pGeo.attributes.position.needsUpdate=true;
   pMat.size=(.25+Math.abs(Math.sin(time*.001*.8))*.5)*(1.6-1.1*illum);
-  pMat.opacity=illum*ps*(.3+Math.abs(Math.sin(time*.001*.8))*.4);
+  pMat.opacity=illum*ps*(.55+Math.abs(Math.sin(time*.001*.8))*.35);
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){var idx=i*3,a=(i/B_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+bgPhase[i])*1,r=10+w*.8;
     bgTgt[idx]=Math.cos(a+orbitRot)*r;bgTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+RING_Y;bgTgt[idx+2]=Math.sin(a+orbitRot)*r;
@@ -288,7 +289,7 @@ function updateParticles(time){
   }
   bgGeo.attributes.position.needsUpdate=true;
   bgMat.size=(.3+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(1.6-1.1*illum);
-  bgMat.opacity=illum*ps*(.25+Math.abs(Math.sin(time*.001*.7+1.5))*.35);
+  bgMat.opacity=illum*ps*(.5+Math.abs(Math.sin(time*.001*.7+1.5))*.35);
 }
 
 // ── TEXT EFFECTS ──
