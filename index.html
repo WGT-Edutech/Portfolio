@@ -276,8 +276,12 @@ function updateParticles(time){
     posArr[idx+2]+=(pTgt[idx+2]+(dz/dist)*force*.9-posArr[idx+2])*.12;
   }
   pGeo.attributes.position.needsUpdate=true;
-  pMat.size=(.25+Math.abs(Math.sin(time*.001*.8))*.5)*(1.6-1.1*illum);
-  pMat.opacity=illum*ps*(.55+Math.abs(Math.sin(time*.001*.8))*.35);
+  // REVIEW FIX (2026-08-08): size previously ramped DOWN with illum (1.6-1.1*illum),
+  // shrinking sprite area 4x as opacity rose — opacity×area stayed flat, so the ring
+  // never got bright. Now size GROWS with illum: bigger AND brighter = real lamp
+  // approach. Opacity ceiling raised to 1.0.
+  pMat.size=(.3+Math.abs(Math.sin(time*.001*.8))*.5)*(.6+.9*illum);
+  pMat.opacity=illum*ps*(.6+Math.abs(Math.sin(time*.001*.8))*.4);
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){var idx=i*3,a=(i/B_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+bgPhase[i])*1,r=10+w*.8;
     bgTgt[idx]=Math.cos(a+orbitRot)*r;bgTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+RING_Y;bgTgt[idx+2]=Math.sin(a+orbitRot)*r;
@@ -288,8 +292,8 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgTgt[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate=true;
-  bgMat.size=(.3+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(1.6-1.1*illum);
-  bgMat.opacity=illum*ps*(.5+Math.abs(Math.sin(time*.001*.7+1.5))*.35);
+  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.5)*(.6+.9*illum);
+  bgMat.opacity=illum*ps*(.55+Math.abs(Math.sin(time*.001*.7+1.5))*.4);
 }
 
 // ── TEXT EFFECTS ──
