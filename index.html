@@ -404,7 +404,7 @@ var cardData=[
   {name:'Video-Call App',img:'images/video-call.png'},
   {name:'Video Lesson Maker',img:'images/video-lesson-maker.png'},
   {name:'VBook Maker/Reader',img:'images/vbook.png'},
-  {name:'Web Dev',url:'https://wgt-edutech.github.io/Portfolio/'},
+  {name:'Web Dev',img:'images/web-dev.png',restart:true},
   {name:'Articulate English Site',img:'images/wte.png'},
   {name:'VocabForge',img:'images/vocab-forge.png'},
   {name:'Sliding In',img:'images/sliding-in.png'},
@@ -422,6 +422,7 @@ cardData.forEach(function(card){
   el.addEventListener('mouseenter',function(){$cardName.textContent=card.name;$cardInfo.style.opacity='1';});
   el.addEventListener('mouseleave',function(){$cardInfo.style.opacity='0';});
   if(card.url)el.addEventListener('click',function(e){e.stopPropagation();window.open(card.url,'_blank');});
+  if(card.restart)el.addEventListener('click',function(e){e.stopPropagation();window.scrollTo({top:0,behavior:'smooth'});});
   el._spring={tx:0,tz:-400,ry:0,sc:.5,op:0,vtx:0,vtz:0,vry:0,vsc:0,vop:0};
   $cardRing.appendChild(el);
 });
@@ -663,6 +664,10 @@ function tick(now){
 }
 
 prevTime=performance.now();
+// Scroll reset: force the experience to start at the top on every refresh
+// (browsers otherwise restore the previous scroll position on reload).
+if('scrollRestoration' in history)history.scrollRestoration='manual';
+window.scrollTo(0,0);
 requestAnimationFrame(tick);
 })();
 </script>
