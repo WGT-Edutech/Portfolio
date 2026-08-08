@@ -278,6 +278,7 @@ function updateParticles(time){
   // bright through the end. Exactly 0 in Room 1 (rp1=0).
   var rp1=clamp01(roomData[1].progress);
   var ps=lerp(.01,1,smoothstep(rp1));          // cloud scale, same as tick() applies
+  var psOp=lerp(.35,1,smoothstep(rp1));        // opacity scale: floor .35 so particles are LIT from the first pixel of Room 2
   var illum=rp1>0 ? (.25+.75*clamp01(rp1*1.4)) : 0;  // visible from Room 2 start, ends at 1.0
   var posArr=pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){var idx=i*3,a=(i/P_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+pPhase[i])*1,r=7+w*.8;
@@ -301,7 +302,7 @@ function updateParticles(time){
   // REVIEW FIX (2026-08-08): size grows WITH illum so net light (op*size^2) is
   // monotonic and reaches 0.8 at end of room (illum=0.8, mid-pulse).
   pMat.size=(.3+Math.abs(Math.sin(time*.001*.8))*.5)*(.6+1.433*illum);
-  pMat.opacity=illum*ps*(.6+Math.abs(Math.sin(time*.001*.8))*.4);
+  pMat.opacity=illum*psOp*(.6+Math.abs(Math.sin(time*.001*.8))*.4);
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){var idx=i*3,a=(i/B_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+bgPhase[i])*1,r=10+w*.8;
     bgTgt[idx]=Math.cos(a+orbitRot)*r;bgTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+RING_Y;bgTgt[idx+2]=Math.sin(a+orbitRot)*r;
@@ -322,7 +323,7 @@ function updateParticles(time){
   bgGeo.attributes.aSize.needsUpdate=true;
   // Pink ring: wider pulse swing (0.35..1.0 on the sine) so it visibly throbs.
   bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.65)*(.6+1.433*illum);
-  bgMat.opacity=illum*ps*(.5+Math.abs(Math.sin(time*.001*.7+1.5))*.5);
+  bgMat.opacity=illum*psOp*(.5+Math.abs(Math.sin(time*.001*.7+1.5))*.5);
 }
 
 // ── TEXT EFFECTS ──
