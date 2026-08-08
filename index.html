@@ -265,7 +265,7 @@ function updateParticles(time){
   // bright through the end. Exactly 0 in Room 1 (rp1=0).
   var rp1=clamp01(roomData[1].progress);
   var ps=lerp(.01,1,smoothstep(rp1));          // cloud scale, same as tick() applies
-  var illum=rp1>0 ? clamp01(rp1*1.4) : 0;      // linear ramp, full by ~71% of the room
+  var illum=rp1>0 ? .8*clamp01(rp1*1.4) : 0;   // reaches 0.8 by ~71% of the room, holds
   var posArr=pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){var idx=i*3,a=(i/P_COUNT)*Math.PI*2,w=Math.sin(time*.001*.4+pPhase[i])*1,r=7+w*.8;
     pTgt[idx]=Math.cos(a+orbitRot)*r;pTgt[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+RING_Y;pTgt[idx+2]=Math.sin(a+orbitRot)*r;
