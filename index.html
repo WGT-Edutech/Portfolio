@@ -587,8 +587,9 @@ function tick(now){
   // Autoplay: steady scroll when the user hasn't interacted
   if(autoplayActive){
     var maxY=document.documentElement.scrollHeight-window.innerHeight;
-    var ny=window.scrollY+autoplaySpeed*dt;
-    if(ny>=maxY){ny=maxY;autoplayActive=false;}
+    var ny=window.scrollY+autoplaySpeed*dt*autoplayDir;
+    if(ny>=maxY){ny=maxY;autoplayDir=-1;}
+    else if(ny<=0){ny=0;autoplayDir=1;}
     window.scrollTo(0,ny);
   }
 
@@ -677,10 +678,11 @@ function tick(now){
 }
 
 prevTime=performance.now();
-// ── AUTOPLAY: if the user never interacts, scroll the whole experience at a steady pace ──
+// ── AUTOPLAY: if the user never interacts, scroll the whole experience at a steady pace,
+// reversing direction at each end so it keeps cycling and can draw the eye back ──
 // (aids older users and anyone who doesn't read the instruction label; any user
 // input — wheel, touch, keys, clicks — stops it permanently and hands back control).
-var autoplayActive=false,autoplayStopped=false,autoplaySpeed=0;
+var autoplayActive=false,autoplayStopped=false,autoplaySpeed=0,autoplayDir=1;
 var autoplayTimer=setTimeout(function(){
   if(autoplayStopped)return;
   autoplaySpeed=Math.max(50,document.documentElement.scrollHeight/80); // full journey ≈ 80s
