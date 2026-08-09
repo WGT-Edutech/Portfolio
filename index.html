@@ -79,6 +79,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .nav-brand{display:none}
 .menu-toggle{display:none}
 @media(max-width:768px){
+  .lbl-desk{display:none}.lbl-mob{display:inline}
   .top-nav{justify-content:space-between;padding:0 1rem}
   .nav-brand{display:block;font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:.18em;color:var(--text-cream);text-shadow:0 0 3px rgba(255,255,255,.35),0 0 8px rgba(139,92,246,.45),0 0 14px rgba(139,92,246,.3)}
   .nav-links{display:none}
@@ -112,6 +113,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 
 .loading-screen{display:flex;flex-direction:column;align-items:center;gap:1.5rem}
 .label-sm{font-family:'Inter',sans-serif;font-size:.9rem;color:#b794f4;letter-spacing:.12em;text-transform:uppercase;animation:pulseGlow 1.8s ease-in-out infinite}
+.lbl-mob{display:none}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 8px rgba(139,92,246,.8),0 0 20px rgba(139,92,246,.5),0 0 40px rgba(91,77,255,.3)}50%{text-shadow:0 0 16px rgba(180,140,255,.95),0 0 40px rgba(139,92,246,.7),0 0 70px rgba(91,77,255,.5),0 0 100px rgba(139,92,246,.3)}}
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
 .dna-base{width:12px;height:110px;border-radius:4px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;filter:blur(2px);background-color:#2d1255;background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:0% 100%;background-repeat:no-repeat;will-change:transform,opacity,filter,background-size,box-shadow}
@@ -126,7 +128,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 <section class="room r1h" id="r1">
   <div class="sticky">
     <div class="loading-screen" id="loader">
-      <div class="label-sm">Scroll to energize</div>
+      <div class="label-sm"><span class="lbl-desk">keep scrolling down</span><span class="lbl-mob">keep swiping up</span></div>
       <div class="dna-helix" id="dnaHelix"></div>
     </div>
   </div>
@@ -582,6 +584,14 @@ function tick(now){
   lastFrame=now;
   var dt=Math.min((now-prevTime)/1000,.1);prevTime=now;if(dt<=0)return;
 
+  // Autoplay: steady scroll when the user hasn't interacted
+  if(autoplayActive){
+    var maxY=document.documentElement.scrollHeight-window.innerHeight;
+    var ny=window.scrollY+autoplaySpeed*dt;
+    if(ny>=maxY){ny=maxY;autoplayActive=false;}
+    window.scrollTo(0,ny);
+  }
+
   // Per-room progress from cache
   roomData.forEach(function(r){
     var total=r.height-viewH;
@@ -667,6 +677,22 @@ function tick(now){
 }
 
 prevTime=performance.now();
+// ── AUTOPLAY: if the user never interacts, scroll the whole experience at a steady pace ──
+// (aids older users and anyone who doesn't read the instruction label; any user
+// input — wheel, touch, keys, clicks — stops it permanently and hands back control).
+var autoplayActive=false,autoplayStopped=false,autoplaySpeed=0;
+var autoplayTimer=setTimeout(function(){
+  if(autoplayStopped)return;
+  autoplaySpeed=Math.max(50,document.documentElement.scrollHeight/80); // full journey ≈ 80s
+  autoplayActive=true;
+},4000);
+function stopAutoplay(){
+  autoplayStopped=true;autoplayActive=false;
+  clearTimeout(autoplayTimer);
+}
+['wheel','touchstart','touchmove','keydown','pointerdown'].forEach(function(ev){
+  window.addEventListener(ev,stopAutoplay,{passive:true});
+});
 // Scroll reset: force the experience to start at the top on every refresh
 // (browsers otherwise restore the previous scroll position on reload).
 if('scrollRestoration' in history)history.scrollRestoration='manual';
