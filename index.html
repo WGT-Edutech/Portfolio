@@ -678,22 +678,24 @@ function tick(now){
 }
 
 prevTime=performance.now();
-// ── AUTOPLAY: if the user never interacts, scroll the whole experience at a steady pace,
-// reversing direction at each end so it keeps cycling and can draw the eye back ──
-// (aids older users and anyone who doesn't read the instruction label; any user
-// input — wheel, touch, keys, clicks — stops it permanently and hands back control).
-var autoplayActive=false,autoplayStopped=false,autoplaySpeed=0,autoplayDir=1;
-var autoplayTimer=setTimeout(function(){
-  if(autoplayStopped)return;
-  autoplaySpeed=Math.max(50,document.documentElement.scrollHeight/80); // full journey ≈ 80s
-  autoplayActive=true;
-},4000);
-function stopAutoplay(){
-  autoplayStopped=true;autoplayActive=false;
-  clearTimeout(autoplayTimer);
+// ── AUTOPLAY: if the user doesn't interact, scroll the whole experience at a steady pace,
+// reversing direction at each end so it keeps cycling and can draw the eye back.
+// Any user input pauses it; if they go idle again for 4s, it resumes from where it left off ──
+var autoplayActive=false,autoplaySpeed=0,autoplayDir=1,autoplayTimer=null;
+function armAutoplay(){
+  autoplayTimer=setTimeout(function(){
+    autoplaySpeed=Math.max(50,document.documentElement.scrollHeight/80); // full journey ≈ 80s
+    autoplayActive=true;
+  },4000);
 }
+function pauseAutoplay(){
+  autoplayActive=false;
+  clearTimeout(autoplayTimer);
+  armAutoplay();
+}
+armAutoplay();
 ['wheel','touchstart','touchmove','keydown','pointerdown'].forEach(function(ev){
-  window.addEventListener(ev,stopAutoplay,{passive:true});
+  window.addEventListener(ev,pauseAutoplay,{passive:true});
 });
 // Scroll reset: force the experience to start at the top on every refresh
 // (browsers otherwise restore the previous scroll position on reload).
