@@ -284,7 +284,7 @@ try{
   pSwellD=new Float32Array(P_COUNT);for(var i=0;i<P_COUNT;i++)pSwellD[i]=Math.random();
   var pc=document.createElement('canvas');pc.width=256;pc.height=256;var pctx=pc.getContext('2d');
   var pg=pctx.createRadialGradient(128,128,1,128,128,128);
-  pg.addColorStop(0,'rgba(255,255,255,1)');pg.addColorStop(0.12,'rgba(255,255,255,1)');pg.addColorStop(0.2,'rgba(228,208,255,0.92)');pg.addColorStop(0.3,'rgba(185,165,250,0.42)');pg.addColorStop(0.5,'rgba(145,125,235,0.13)');pg.addColorStop(0.75,'rgba(115,95,225,0.045)');pg.addColorStop(1,'rgba(0,0,0,0)');
+  pg.addColorStop(0,'rgba(255,255,255,1)');pg.addColorStop(0.25,'rgba(255,255,255,1)');pg.addColorStop(0.35,'rgba(228,208,255,0.6)');pg.addColorStop(0.6,'rgba(185,165,250,0.15)');pg.addColorStop(1,'rgba(0,0,0,0)');
   pctx.fillStyle=pg;pctx.fillRect(0,0,256,256);
   pMat=new THREE.PointsMaterial({size:.65,map:new THREE.CanvasTexture(pc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xb49cff});
   // Per-particle size attribute: cursor proximity swells individual particles up to 2x.
@@ -305,7 +305,7 @@ try{
   bgSwellD=new Float32Array(B_COUNT);for(var i=0;i<B_COUNT;i++)bgSwellD[i]=Math.random();
   var bpc=document.createElement('canvas');bpc.width=256;bpc.height=256;var bctx=bpc.getContext('2d');
   var bgg=bctx.createRadialGradient(128,128,1,128,128,128);
-  bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.12,'rgba(255,255,255,1)');bgg.addColorStop(0.2,'rgba(255,190,246,0.92)');bgg.addColorStop(0.3,'rgba(255,120,235,0.5)');bgg.addColorStop(0.5,'rgba(235,70,215,0.16)');bgg.addColorStop(0.75,'rgba(215,40,205,0.05)');bgg.addColorStop(1,'rgba(0,0,0,0)');
+  bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.25,'rgba(255,255,255,1)');bgg.addColorStop(0.35,'rgba(255,190,246,0.6)');bgg.addColorStop(0.6,'rgba(255,120,235,0.15)');bgg.addColorStop(1,'rgba(0,0,0,0)');
   bctx.fillStyle=bgg;bctx.fillRect(0,0,256,256);
   bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffb0ff});
   bgGeo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(B_COUNT).fill(1),1));
