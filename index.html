@@ -45,9 +45,6 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(244,241,234,.2);border:1px solid rgba(244,241,234,.1);cursor:pointer;transition:all .3s;padding:0}
 .dot.active{background:radial-gradient(circle,rgba(200,170,255,.9) 20%,var(--purple) 55%,rgba(139,92,246,.3) 100%);border-color:var(--purple);box-shadow:none;transform:scale(1.3)}
 
-.no-js .name-stage,.no-js .title-stage,.no-js #galleryRoom,.no-js .ring-card,.no-js .top-nav,.no-js .slogan-bar{opacity:1!important;visibility:visible!important}
-.no-js .ring-card{position:relative;left:auto;top:auto;margin:8px;display:inline-block}
-
 .top-nav{position:fixed;top:0;left:0;right:0;z-index:45;height:3.5rem;opacity:0;pointer-events:none;transition:opacity .5s;background:rgba(0,0,0,.85);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:flex-end;padding:0 2rem}
 .top-nav.visible{opacity:1;pointer-events:auto}
 .nav-links{display:flex;gap:1.5rem}
@@ -73,8 +70,6 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 #varprox{position:fixed;top:0;left:0;right:0;height:25vh;z-index:42;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 2.5s}
 #varprox.visible{opacity:1}
 #varprox .variable-proximity{font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,8vw,6rem);font-weight:400;letter-spacing:.04em;line-height:1.2;text-align:center;white-space:nowrap;color:rgba(91,77,255,.8);text-shadow:0 0 2px rgba(160,130,255,.4);user-select:none;-webkit-user-select:none}
-@-moz-document url-prefix(){.gallery-floor{height:45vh}}
-
 .r1h{height:1000vh}.r2h{height:1100vh}.r3h{height:1000vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}
 @media(max-width:768px){.r1h{height:400vh}.r2h{height:1100vh}.r3h{height:667vh}.r4h{height:200vh}.r5h{height:80vh}}
 /* Portrait pacing: r2 (the particle zoom) was 1100vh — ~27 phone screens of
