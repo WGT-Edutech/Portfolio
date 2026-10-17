@@ -326,8 +326,8 @@ function updateParticles(time){
   }
   pGeo.attributes.aSize.needsUpdate=true;
 
-  pMat.size=(.3+Math.abs(Math.sin(time*.001*.8))*.5)*(.6+1.433*illum);
-  pMat.opacity=illum*psOp*(.8+Math.abs(Math.sin(time*.001*.8))*.2);
+  pMat.size=(.3+Math.abs(Math.sin(time*.001*.6))*.5)*(.6+1.433*illum);
+  pMat.opacity=illum*psOp*(.8+Math.abs(Math.sin(time*.001*.6))*.2);
 
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){
@@ -340,8 +340,8 @@ function updateParticles(time){
     bgPosArr[idx+2]+=(bgPosArr[idx+2]+(dz/dist)*force*.9-bgPosArr[idx+2])*.14;
   }
   bgGeo.attributes.position.needsUpdate=true;
-  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.7+1.5))*.65)*(.6+1.433*illum);
-  bgMat.opacity=illum*psOp*(.7+Math.abs(Math.sin(time*.001*.7+1.5))*.3);
+  bgMat.size=(.35+Math.abs(Math.sin(time*.001*.525+1.5))*.65)*(.6+1.433*illum);
+  bgMat.opacity=illum*psOp*(.7+Math.abs(Math.sin(time*.001*.525+1.5))*.3);
 }
 
 // ── TEXT EFFECTS ──
