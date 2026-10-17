@@ -478,16 +478,19 @@ for(var i=0;i<BASE_COUNT;i++){
 
 // ── LANDSCAPE PROMPT ──
 var landscapeOverlay=document.getElementById('landscapeOverlay');
+var loDismissed=false;
 function checkOrientation(){
-  if(window.innerWidth<=768&&window.innerHeight>window.innerWidth){
-    landscapeOverlay.style.display='flex';
-  }else{
-    landscapeOverlay.style.display='none';
-  }
+  var portraitPhone=window.innerWidth<=768&&window.innerHeight>window.innerWidth;
+  if(!portraitPhone)loDismissed=false;
+  landscapeOverlay.style.display=(portraitPhone&&!loDismissed)?'flex':'none';
 }
 checkOrientation();
-window.addEventListener('resize',checkOrientation);
-document.getElementById('loOkBtn').addEventListener('click',function(){landscapeOverlay.style.display='none';});
+window.addEventListener('orientationchange',function(){setTimeout(checkOrientation,100);});
+var loLastW=window.innerWidth;
+window.addEventListener('resize',function(){
+  if(window.innerWidth!==loLastW){loLastW=window.innerWidth;checkOrientation();}
+});
+document.getElementById('loOkBtn').addEventListener('click',function(){loDismissed=true;landscapeOverlay.style.display='none';});
 
 // ── TICK ──
 var prevTime=0,lastFrame=0,MIN_MS=1000/30;
