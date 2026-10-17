@@ -535,9 +535,8 @@ function tick(now){
     base.style.opacity=(.25+smoothstep(sp)*.75).toFixed(3);
     base.style.filter='blur('+((2-smoothstep(sp)*2).toFixed(2))+'px)';
     if(sp>0){
-      var glowP=smoothstep(sp),gt=clamp01((sp-.4)/.6);
-      var gr=Math.round(34+(139-34)*(1-gt)),gg=Math.round(92+(197-92)*gt),gb=Math.round(246+(94-246)*gt);
-      base.style.boxShadow='0 0 '+(glowP*25).toFixed(1)+'px rgba('+gr+','+gg+','+gb+','+(glowP*.7).toFixed(2)+'), 0 0 '+(glowP*55).toFixed(1)+'px rgba(139,92,246,'+(glowP*.5).toFixed(2)+')';
+      var glowP=smoothstep(sp);
+      base.style.boxShadow='0 0 '+(glowP*25).toFixed(1)+'px rgba(255,255,255,'+(glowP*.7).toFixed(2)+'), 0 0 '+(glowP*55).toFixed(1)+'px rgba(255,255,255,'+(glowP*.35).toFixed(2)+')';
     }else base.style.boxShadow='none';
   });
   loader.style.opacity=helixP>=.98?'0':'1';
