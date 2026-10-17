@@ -108,9 +108,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .lbl-mob{display:none}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 1px hsl(260 90% 75% / .75)}50%{text-shadow:0 0 2px hsl(260 95% 80% / .95)}}
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
-.dna-base{width:14px;height:110px;border-radius:999px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:rgba(45,18,85,.55);box-shadow:inset 0 0 0 1px rgba(200,170,255,.35);backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform,opacity,box-shadow}
-.dna-fill{position:absolute;left:0;right:0;bottom:0;height:0%;border-radius:999px;overflow:hidden;pointer-events:none;background:linear-gradient(to top,#22c55e 0%,#22c55e 50%,#a855f7 50%,#a855f7 100%) bottom/100% 110px no-repeat}
-.dna-fill::before{content:'';position:absolute;top:0;left:1px;right:1px;height:5px;border-radius:999px;background:rgba(255,255,255,.55);filter:blur(1.5px)}
+.dna-base{width:12px;height:110px;border-radius:4px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;filter:blur(2px);background-color:#2d1255;background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:0% 100%;background-repeat:no-repeat;will-change:transform,opacity,filter,background-size,box-shadow}
 
 .landscape-overlay{display:none}
 @media(max-width:768px) and (orientation:portrait){
@@ -472,9 +470,9 @@ if(menuToggle){
 var BASE_COUNT=13;
 var dnaHelix=document.getElementById('dnaHelix');
 var dnaBases=[];
+var dnaSmooth=null;
 for(var i=0;i<BASE_COUNT;i++){
   var base=document.createElement('div');base.className='dna-base';
-  var fillEl=document.createElement('span');fillEl.className='dna-fill';base.appendChild(fillEl);
   dnaHelix.appendChild(base);dnaBases.push(base);
 }
 
@@ -526,31 +524,23 @@ function tick(now){
   // Room 1: DNA loader
   var helixP=rp[0],loader=document.getElementById('loader');
   var strandSpan=1/BASE_COUNT,LERP_SPEED=.08;
-  var FILL_END=2/3,HOLD_END=.85;
-  var fillP=clamp01(helixP/FILL_END);
-  var fadeP=clamp01((helixP-HOLD_END)/(1-HOLD_END));
-  var dnaSmooth=[];
-  for(var i=0;i<BASE_COUNT;i++)dnaSmooth.push(0);
+  if(!dnaSmooth){dnaSmooth=new Float32Array(BASE_COUNT);for(var i=0;i<BASE_COUNT;i++)dnaSmooth[i]=0;}
   dnaBases.forEach(function(base,i){
-    var targetP=clamp01((fillP-i*strandSpan)/strandSpan);
+    var targetP=clamp01((helixP-i*strandSpan)/strandSpan);
     dnaSmooth[i]+=(targetP-dnaSmooth[i])*LERP_SPEED;
     var sp=dnaSmooth[i];
     var rotY=helixP*Math.PI*12+(i/BASE_COUNT)*Math.PI*2;
-    base.style.transform='rotateY('+(rotY*180/Math.PI)+'deg) rotateX(25deg) translateZ(0)';
-    base.firstChild.style.height=(smoothstep(sp)*100).toFixed(1)+'%';
+    base.style.transform='rotateY('+(rotY*180/Math.PI)+'deg) rotateX(25deg)';
+    base.style.backgroundSize=(smoothstep(sp)*100)+'% 100%';
     base.style.opacity=(.25+smoothstep(sp)*.75).toFixed(3);
+    base.style.filter='blur('+((2-smoothstep(sp)*2).toFixed(2))+'px)';
     if(sp>0){
-      var glowP=smoothstep(sp);
-      if(fillP>=1){
-        base.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.6), 0 0 6px rgba(34,197,94,.95), 0 0 14px rgba(34,197,94,.7), 0 0 28px rgba(168,85,247,.6), 0 0 55px rgba(168,85,247,.35)';
-        base.style.opacity='1';
-      }else{
-        var gc=glowP<.5?'34,197,94':'168,85,247';
-        base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35), 0 0 '+(glowP*5).toFixed(1)+'px rgba('+gc+','+(glowP*.9).toFixed(2)+'), 0 0 '+(glowP*12).toFixed(1)+'px rgba('+gc+','+(glowP*.55).toFixed(2)+'), 0 0 '+(glowP*26).toFixed(1)+'px rgba(139,92,246,'+(glowP*.3).toFixed(2)+')';
-      }
-    }else base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35)';
+      var glowP=smoothstep(sp),gt=clamp01((sp-.4)/.6);
+      var gr=Math.round(34+(139-34)*(1-gt)),gg=Math.round(92+(197-92)*gt),gb=Math.round(246+(94-246)*gt);
+      base.style.boxShadow='0 0 '+(glowP*25).toFixed(1)+'px rgba('+gr+','+gg+','+gb+','+(glowP*.7).toFixed(2)+'), 0 0 '+(glowP*55).toFixed(1)+'px rgba(139,92,246,'+(glowP*.5).toFixed(2)+')';
+    }else base.style.boxShadow='none';
   });
-  loader.style.opacity=(1-smoothstep(fadeP)).toFixed(3);
+  loader.style.opacity=helixP>=.98?'0':'1';
 
   // Room 2: Particles zoom
   if(pts){var ps2=lerp(.01,1,smoothstep(rp[1]));pts.scale.set(ps2,ps2,ps2);bgPts.scale.set(ps2,ps2,ps2);}
