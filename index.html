@@ -27,10 +27,10 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .title-role{font-family:'Roboto Flex',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 3px rgba(180,140,255,.6)}
 .title-slogan{font-family:'Roboto Flex',sans-serif;font-size:clamp(2.4rem,5.6vw,4rem);color:var(--text-cream);letter-spacing:.04em;text-align:center;text-shadow:0 0 3px rgba(180,140,255,.55)}
 
-#galleryRoom{position:absolute;inset:0;z-index:30;perspective:1200px;display:flex;align-items:center;justify-content:center}
+#galleryRoom{position:absolute;inset:0;z-index:30;perspective:1200px;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse 60% 50% at 50% 55%,rgba(139,92,246,.06) 0%,transparent 70%)}
 .card-ring{position:relative;width:100%;height:100%;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center}
 .ring-card{position:absolute;left:50%;top:50%;width:420px;height:280px;margin-left:-210px;margin-top:-140px;transform-style:preserve-3d;cursor:pointer}
-.ring-card-inner{position:relative;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(15,15,30,.85);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -2px 0 rgba(0,0,0,.35),inset 1px 0 0 rgba(255,255,255,.04),inset -1px 0 0 rgba(0,0,0,.15),0 10px 40px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;transition:box-shadow .4s ease,border-color .4s ease}
+.ring-card-inner{position:relative;width:100%;height:100%;backface-visibility:hidden;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(10,10,18,.95);box-shadow:inset 0 1px 0 rgba(255,255,255,.1),inset 0 -2px 0 rgba(0,0,0,.35),inset 1px 0 0 rgba(255,255,255,.04),inset -1px 0 0 rgba(0,0,0,.15),0 10px 40px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;transition:box-shadow .4s ease,border-color .4s ease}
 .ring-card-reflect{position:absolute;top:100%;left:0;width:100%;height:100%;overflow:hidden;pointer-events:none;opacity:.55;background:linear-gradient(to bottom,rgba(255,255,255,.12) 0%,rgba(255,255,255,.04) 50%,transparent 100%)}
 .ring-card-reflect img{width:100%;height:100%;object-fit:cover;transform:scaleY(-1);-webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.85) 0%,rgba(0,0,0,.5) 45%,rgba(0,0,0,.15) 80%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.85) 0%,rgba(0,0,0,.5) 45%,rgba(0,0,0,.15) 80%,rgba(0,0,0,0) 100%)}
 .ring-card-front{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;padding:2rem}
@@ -65,7 +65,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .slogan-bar{position:fixed;bottom:calc((50vh - 140px) / 3 - 150px);left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--text-cream);letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .6s;text-shadow:0 0 3px rgba(180,140,255,.45)}
 .slogan-bar.visible{opacity:1;transition:opacity 7s}
 
-.gallery-floor{position:fixed;bottom:0;left:0;right:0;height:38vh;z-index:25;opacity:0;pointer-events:none;transition:opacity .8s;background:linear-gradient(to bottom,rgba(0,0,0,0) 0%,rgba(0,0,0,.6) 60%,rgba(0,0,0,.95) 100%)}
+.gallery-floor{position:fixed;bottom:0;left:0;right:0;height:38vh;z-index:25;opacity:0;pointer-events:none;transition:opacity .8s;background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(139,92,246,.08) 0%,rgba(0,0,0,.3) 40%,rgba(0,0,0,.85) 100%)}
 .gallery-floor.visible{opacity:1}
 #varprox{position:fixed;top:0;left:0;right:0;height:25vh;z-index:42;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 2.5s}
 #varprox.visible{opacity:1}
@@ -590,7 +590,7 @@ function tick(now){
       s.vtx+=(tx-s.tx)*STIFF;s.vtx*=DAMP;s.tx+=s.vtx;s.vtz+=(tz-s.tz)*STIFF;s.vtz*=DAMP;s.tz+=s.vtz;s.vry+=(ry-s.ry)*STIFF;s.vry*=DAMP;s.ry+=s.vry;s.vsc+=(sc-s.sc)*STIFF;s.vsc*=DAMP;s.sc+=s.vsc;s.vop+=(op-s.op)*STIFF;s.vop*=DAMP;s.op+=s.vop;
       card.style.transform='translateX('+s.tx.toFixed(1)+'px) translateZ('+s.tz.toFixed(1)+'px) rotateY('+s.ry.toFixed(1)+'deg) scale('+s.sc.toFixed(2)+')';
       card.style.opacity=Math.max(0,Math.min(1,s.op)).toFixed(3);card.style.zIndex=dist===0?'100':Math.abs(dist)===1?'50':'30';card.style.pointerEvents=s.op>.3?'auto':'none';
-      if(dist!==0&&s.op>0){var g=s.op*.8;card.style.boxShadow='0 0 8px rgba(139,92,246,'+(g*.6).toFixed(2)+'),0 0 16px rgba(91,77,255,'+(g*.4).toFixed(2)+')';}else{card.style.boxShadow='none';}
+      card.style.boxShadow='none';
     });}
     navBar.classList.add('visible');sectBtns.classList.toggle('visible',galP>(mobilePortrait?0.6:0));
   }else{gallery.style.opacity='0';gallery.style.visibility='hidden';floor.classList.remove('visible');sectBtns.classList.remove('visible');varprox.classList.remove('visible');}
