@@ -554,7 +554,7 @@ function tick(now){
     var ringCards=document.querySelectorAll('.ring-card'),total=ringCards.length,sp=galP*(total-1),activeIdx=Math.max(0,Math.min(total-1,Math.round(sp)));
     var STIFF=.08,DAMP=.72;
     if(!mobilePortrait){ringCards.forEach(function(card,i){var dist=i-activeIdx,s=card._spring,tx,tz,ry,sc,op;
-      if(dist===0){tx=0;tz=120;ry=0;sc=1;op=1;}else if(dist===-1){tx=-370;tz=-130;ry=32;sc=1;op=1;}else if(dist===1){tx=370;tz=-130;ry=-32;sc=1;op=1;}else if(dist===-2){tx=-550;tz=-230;ry=42;sc=.9;op=.5;}else if(dist===2){tx=550;tz=-230;ry=-42;sc=.9;op=.5;}else{tx=0;tz=-400;ry=0;sc=.5;op=0;}
+      if(dist===0){tx=0;tz=120;ry=0;sc=1;op=1;}else if(dist===-1){tx=-370;tz=-130;ry=32;sc=1;op=1;}else if(dist===1){tx=370;tz=-130;ry=-32;sc=1;op=1;}else if(dist===-2){tx=-550;tz=-230;ry=42;sc=1;op=.5;}else if(dist===2){tx=550;tz=-230;ry=-42;sc=1;op=.5;}else{tx=0;tz=-400;ry=0;sc=1;op=0;}
       s.vtx+=(tx-s.tx)*STIFF;s.vtx*=DAMP;s.tx+=s.vtx;s.vtz+=(tz-s.tz)*STIFF;s.vtz*=DAMP;s.tz+=s.vtz;s.vry+=(ry-s.ry)*STIFF;s.vry*=DAMP;s.ry+=s.vry;s.vsc+=(sc-s.sc)*STIFF;s.vsc*=DAMP;s.sc+=s.vsc;s.vop+=(op-s.op)*STIFF;s.vop*=DAMP;s.op+=s.vop;
       card.style.transform='translateX('+s.tx.toFixed(1)+'px) translateZ('+s.tz.toFixed(1)+'px) rotateY('+s.ry.toFixed(1)+'deg) scale('+s.sc.toFixed(2)+')';
       card.style.opacity=Math.max(0,Math.min(1,s.op)).toFixed(3);card.style.zIndex=dist===0?'100':Math.abs(dist)===1?'50':'30';card.style.pointerEvents=s.op>.3?'auto':'none';
