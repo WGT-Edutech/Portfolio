@@ -26,7 +26,6 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .title-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:6;opacity:0;transform:translateY(150px)}
 .title-role{font-family:'Roboto Flex',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 2px hsl(260 90% 75% / .65)}
 .title-slogan{font-family:'Roboto Flex',sans-serif;font-size:clamp(2.4rem,5.6vw,4rem);color:var(--text-cream);letter-spacing:.04em;text-align:center;text-shadow:0 0 2px hsl(260 90% 75% / .6)}
-.title-reflect{display:flex;flex-direction:column;align-items:center;gap:1.5rem;transform:scaleY(-1);margin-top:-.4rem;opacity:0;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-mask-image:linear-gradient(to bottom,transparent 15%,rgba(0,0,0,.7) 100%);mask-image:linear-gradient(to bottom,transparent 15%,rgba(0,0,0,.7) 100%);filter:blur(1px)}
 
 #galleryRoom{position:absolute;inset:0;z-index:30;perspective:1200px;display:flex;align-items:center;justify-content:center}
 .card-ring{position:relative;width:100%;height:100%;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center}
@@ -156,10 +155,6 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
     <div class="title-stage" id="titleStage">
       <div class="title-role" id="roleText">EdTech Designer</div>
       <div class="title-slogan" id="sloganText">Building the Future of Learning.</div>
-      <div class="title-reflect" id="titleReflect" aria-hidden="true">
-        <div class="title-role">EdTech Designer</div>
-        <div class="title-slogan">Building the Future of Learning.</div>
-      </div>
     </div>
   </div>
 </section>
@@ -351,7 +346,7 @@ function updateParticles(time){
 
 // ── TEXT EFFECTS ──
 var nameText=document.getElementById('nameText'),nameStage=document.getElementById('nameStage');
-var roleText=document.getElementById('roleText'),sloganText=document.getElementById('sloganText'),titleStage=document.getElementById('titleStage'),titleReflect=document.getElementById('titleReflect');
+var roleText=document.getElementById('roleText'),sloganText=document.getElementById('sloganText'),titleStage=document.getElementById('titleStage');
 
 function splitToChars(el,cls){
   var text=el.textContent;el.textContent='';
@@ -561,11 +556,9 @@ function tick(now){
     titleStage.style.opacity='1';
     var tp=Math.min(1,rp[3]/.35);
     roleText.style.opacity=tp;
-    var slOp=Math.max(0,Math.min(1,(rp[3]-.2)/.3));
-    sloganText.style.opacity=slOp;
-    titleReflect.style.opacity=(slOp*.45*(1-clamp01(rp[4]*5))).toFixed(3);
+    sloganText.style.opacity=Math.max(0,Math.min(1,(rp[3]-.2)/.3));
     updateAllVP();
-  }else{titleStage.style.opacity='0';titleReflect.style.opacity='0';}
+  }else titleStage.style.opacity='0';
 
   // Room 5: Shrink to nav
   var shrinkP=rp[4],heroEl=document.getElementById('nameStage'),titleEl=document.getElementById('titleStage'),navBar=document.getElementById('topNav'),sloganBar=document.getElementById('sloganBar');
