@@ -12,7 +12,7 @@
 :root{--purple:#8b5cf6;--text-cream:#f4f1ea;--text-dim:rgba(244,241,234,.5)}
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:auto}
-body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased;min-height:3450vh}
+body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
 
 #scene{position:fixed;inset:0;z-index:2;pointer-events:none}
 .room{position:relative}
@@ -61,6 +61,9 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .sect-btn:hover{background:rgba(139,92,246,.2);border-color:rgba(139,92,246,.4);transform:translateY(-2px)}
 .donate-btn{background:var(--purple);border-color:var(--purple);box-shadow:0 0 4px rgba(180,140,255,.35)}
 .donate-btn:hover{background:rgba(139,92,246,.8);box-shadow:0 0 4px rgba(180,140,255,.5)}
+/* Base state: arrows are a portrait-only affordance, hidden everywhere else.
+   Must precede the media queries below or it would override them. */
+.gal-arrow{display:none}
 
 .slogan-bar{position:fixed;bottom:calc((50vh - 140px) / 3 - 150px);left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--text-cream);letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .6s;text-shadow:0 0 2px hsl(260 90% 75% / .5)}
 .slogan-bar.visible{opacity:1;transition:opacity 7s}
@@ -74,6 +77,11 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 
 .r1h{height:1000vh}.r2h{height:1100vh}.r3h{height:1000vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}
 @media(max-width:768px){.r1h{height:400vh}.r2h{height:1100vh}.r3h{height:667vh}.r4h{height:200vh}.r5h{height:80vh}}
+/* Portrait pacing: r2 (the particle zoom) was 1100vh — ~27 phone screens of
+   near-identical motion. Rebalanced so no room is a dead stretch. */
+@media(max-width:768px) and (orientation:portrait){
+  .r1h{height:340vh}.r2h{height:560vh}.r3h{height:420vh}.r4h{height:220vh}.r5h{height:70vh}
+}
 
 .nav-brand{display:none}
 .menu-toggle{display:none}
@@ -82,7 +90,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
   .top-nav{justify-content:space-between;padding:0 1rem}
   .nav-brand{display:block;font-family:'Oswald',sans-serif;font-size:1.15rem;font-weight:700;letter-spacing:.18em;color:var(--text-cream);text-shadow:0 0 6px rgba(139,92,246,.3)}
   .nav-links{display:none}
-  .menu-toggle{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:40px;height:40px;padding:0;background:none;border:0;cursor:pointer;-webkit-appearance:none}
+  .menu-toggle{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:5px;width:44px;height:44px;padding:0;background:none;border:0;cursor:pointer;-webkit-appearance:none}
   .menu-toggle span{display:block;width:22px;height:2px;background:var(--text-cream);border-radius:2px;transition:transform .3s ease,opacity .3s ease}
   .menu-toggle.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
   .menu-toggle.open span:nth-child(2){opacity:0}
@@ -91,9 +99,26 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 }
 @media(orientation:portrait){
   .name-text{line-height:1.12;text-align:center}
-  .name-text .name-space{display:block}
+  /* The single space between WILLIAM and THOMASON becomes a designed hairline
+     rule instead of an empty inline-block box (that box was the phantom line
+     that made the lockup 183px tall for two 61px lines). */
+  .name-text .name-space{display:block;width:min(46vw,230px);height:1px;margin:0 auto;
+    background:linear-gradient(to right,transparent,rgba(160,130,255,.7),transparent);
+    opacity:.85;transform:none!important}
+  .title-slogan{line-height:1.25;font-size:clamp(1.4rem,4.2vw,4rem)}
+  /* Explicit, controlled break point — never a phantom empty line. */
+  .title-slogan .name-space{display:block;width:100%;height:0}
 }
 @media(max-width:768px) and (orientation:portrait){
+  /* Dot rail becomes a horizontal pill at the bottom, clear of the name lockup,
+     with 44px hit targets (the visual dot stays small; ::after grows the box). */
+  .phase-dots{right:auto;left:50%;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 1rem);
+    transform:translateX(-50%);flex-direction:row;gap:.9rem;padding:.7rem .9rem;
+    border-radius:999px;background:rgba(3,3,10,.55);backdrop-filter:blur(6px);
+    border:1px solid rgba(255,255,255,.06)}
+  .dot{width:12px;height:12px;position:relative}
+  .dot::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;
+    transform:translate(-50%,-50%)}
   .r6h{height:280vh}
   #galleryRoom{perspective:none;justify-content:flex-start;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;touch-action:pan-x}
   #galleryRoom::-webkit-scrollbar{display:none}
@@ -101,6 +126,26 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
   .ring-card{position:relative;left:auto;top:auto;width:80vw;height:53vw;max-width:400px;max-height:270px;margin:0;flex:0 0 auto;scroll-snap-align:center;scroll-snap-stop:always;transform:none!important;opacity:1!important;pointer-events:auto!important;z-index:auto!important}
   .ring-card-inner{-webkit-box-reflect:none}
   .ring-card-reflect{display:none}
+  /* Caption: touch has no hover, so the project name must always be visible.
+     Replaces the desktop #cardInfo{display:none} with a persistent caption. */
+  #cardInfo{display:block;position:fixed;left:50%;right:auto;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 4.6rem);
+    transform:translateX(-50%);width:min(86vw,420px);z-index:60;opacity:1!important;pointer-events:none;transition:none}
+  .card-name{font-family:'Oswald',sans-serif;font-size:1rem;letter-spacing:.06em;padding:.35rem 1.1rem}
+  /* Prev/next affordance — swipe still works, but arrows make it discoverable. */
+  .gal-arrow{display:flex;align-items:center;justify-content:center;position:fixed;top:50%;z-index:60;
+    width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.14);
+    background:rgba(3,3,10,.6);backdrop-filter:blur(6px);color:var(--text-cream);
+    font-size:1.5rem;line-height:1;cursor:pointer;opacity:0;pointer-events:none;transition:opacity .4s;
+    -webkit-appearance:none;appearance:none;padding:0}
+  .gal-arrow.visible{opacity:1;pointer-events:auto}
+  .gal-prev{left:.6rem;transform:translateY(-50%)}
+  .gal-next{right:.6rem;transform:translateY(-50%)}
+  /* Notch / home-bar clearance for the fixed chrome. */
+  .top-nav{padding-top:env(safe-area-inset-top,0px);height:calc(3.5rem + env(safe-area-inset-top,0px))}
+  .section-buttons{bottom:calc(env(safe-area-inset-bottom,0px) + 4.2rem)}
+  .slogan-bar{bottom:calc(env(safe-area-inset-bottom,0px) + 4.6rem)}
+  .mobile-menu{top:calc(3.5rem + env(safe-area-inset-top,0px))}
+  .menu-backdrop{top:calc(3.5rem + env(safe-area-inset-top,0px))}
 }
 .menu-backdrop{position:fixed;top:3.5rem;left:0;right:0;bottom:0;z-index:104;background:rgba(3,3,10,.55);backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .3s ease}
 .menu-backdrop.open{opacity:1;pointer-events:auto}
@@ -117,27 +162,10 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
 .dna-base{width:12px;height:110px;border-radius:4px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:#2d1255;background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:0% 100%;background-repeat:no-repeat;will-change:transform,opacity,background-size,box-shadow}
 
-.landscape-overlay{display:none}
-@media(max-width:768px) and (orientation:portrait){
-  .landscape-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;text-align:center;padding:2rem}
-  .landscape-overlay .lo-icon{font-size:3rem;animation:loRotate 2s ease-in-out infinite}
-  @keyframes loRotate{0%,20%{transform:rotate(0deg)}60%,100%{transform:rotate(90deg)}}
-  .landscape-overlay h2{font-family:'Oswald',sans-serif;font-size:1.4rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-cream);text-shadow:0 0 3px rgba(180,140,255,.5)}
-  .landscape-overlay p{font-family:'Inter',sans-serif;font-size:.9rem;color:var(--text-dim);max-width:320px;line-height:1.6}
-  .landscape-overlay .lo-btn{padding:.7em 2em;border-radius:999px;border:1px solid rgba(139,92,246,.4);background:rgba(139,92,246,.15);color:var(--text-cream);font-family:'Inter',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .3s}
-  .landscape-overlay .lo-btn:hover{background:rgba(139,92,246,.3);box-shadow:0 0 8px rgba(139,92,246,.3)}
-}
 @media(prefers-reduced-motion){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
-
-<div class="landscape-overlay" id="landscapeOverlay">
-  <div class="lo-icon">📱</div>
-  <h2>Rotate Your Phone</h2>
-  <p>This experience is designed for landscape orientation. Please turn your phone sideways for the best view.</p>
-  <button class="lo-btn" id="loOkBtn">OK</button>
-</div>
 
 <canvas id="scene"></canvas>
 
@@ -170,6 +198,8 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
   <div class="sticky">
     <section id="galleryRoom"><div class="card-ring" id="cardRing"></div></section>
     <div id="cardInfo"><div class="card-name" id="cardName"></div></div>
+    <button class="gal-arrow gal-prev" id="galPrev" aria-label="Previous project">&#8249;</button>
+    <button class="gal-arrow gal-next" id="galNext" aria-label="Next project">&#8250;</button>
   </div>
 </section>
 
@@ -219,6 +249,7 @@ var DPR=Math.min(window.devicePixelRatio||1,2);
 
 // ── SCROLL STATE ──
 var viewW=window.innerWidth,viewH=window.innerHeight;
+var mobilePortraitNow=false;
 var rooms=['r1','r2','r3','r4','r5','r6'].map(function(id){return document.getElementById(id);});
 var roomData=rooms.map(function(el){return{el:el,progress:0,top:0,height:0};});
 
@@ -374,6 +405,21 @@ var sloganVPChars=splitToChars(sloganText,'vp-char');
 var allVPChars=[].concat(nameVPChars,roleVPChars,sloganVPChars);
 var nameRevealCount=0;
 
+// On very narrow phones the two-line lockup can still wrap mid-word, which looks
+// broken rather than stylish. Below 380px drop to a single-line monogram lockup
+// so it can never break awkwardly.
+var NAME_FULL='William Thomason',NAME_SHORT='W. Thomason';
+function setNameLockup(short){
+  if(nameText.getAttribute('data-lockup')===(short?'short':'full'))return;
+  nameText.setAttribute('data-lockup',short?'short':'full');
+  nameText.textContent=short?NAME_SHORT:NAME_FULL;
+  nameVPChars=splitToChars(nameText,'name-char');
+  allVPChars=[].concat(nameVPChars,roleVPChars,sloganVPChars);
+  nameRevealCount=0;
+  fitName();
+}
+function syncNameLockup(){setNameLockup(viewW<380);}
+
 // Fit name to screen width (40px padding each side), shrink-only so CSS clamp keeps its max
 var TITLE_PAD=40;
 function fitName(){
@@ -388,6 +434,8 @@ function fitName(){
 }
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fitName);else fitName();
 window.addEventListener('resize',fitName);
+window.addEventListener('resize',syncNameLockup);
+syncNameLockup();
 
 function revealNameChars(count){
   nameVPChars.forEach(function(c,i){
@@ -456,21 +504,6 @@ dots.forEach(function(dot){
   });
 });
 
-// ── LANDSCAPE PROMPT ──
-var landscapeOverlay=document.getElementById('landscapeOverlay');
-function checkOrientation(){
-  if(window.innerWidth<=768&&window.innerHeight>window.innerWidth){
-    landscapeOverlay.style.display='flex';
-  }else{
-    landscapeOverlay.style.display='none';
-  }
-}
-checkOrientation();
-window.addEventListener('resize',checkOrientation);
-document.getElementById('loOkBtn').addEventListener('click',function(){
-  landscapeOverlay.style.display='none';
-});
-
 // ── MOBILE MENU ──
 var menuToggle=document.getElementById('menuToggle'),mobileMenu=document.getElementById('mobileMenu'),menuBackdrop=document.getElementById('menuBackdrop');
 function setMenu(open){
@@ -520,7 +553,7 @@ function tick(now){
     r.progress=total<=0?(r.top<=window.scrollY?1:0):clamp01((window.scrollY-r.top)/total);
   });
   var rp=roomData.map(function(r){return r.progress;});
-  var mobilePortrait=viewW<=768&&viewH>viewW;
+  var mobilePortrait=mobilePortraitNow=viewW<=768&&viewH>viewW;
 
   // Active room for dots
   var best=-1;
@@ -593,6 +626,14 @@ function tick(now){
       card.style.boxShadow='none';
     });}
     navBar.classList.add('visible');sectBtns.classList.toggle('visible',galP>(mobilePortrait?0.6:0));
+    if(mobilePortrait){
+      // Touch has no hover: label the active card persistently (the scroll handler
+      // below keeps it in step while the carousel is swiped).
+      $cardName.textContent=cardData[activeIdx].name;
+      $cardInfo.style.opacity='1';
+      galPrev.classList.toggle('visible',activeIdx>0);
+      galNext.classList.toggle('visible',activeIdx<total-1);
+    }
   }else{gallery.style.opacity='0';gallery.style.visibility='hidden';floor.classList.remove('visible');sectBtns.classList.remove('visible');varprox.classList.remove('visible');}
 
   updateParticles(now);
@@ -600,6 +641,31 @@ function tick(now){
 }
 
 prevTime=performance.now();
+// ── GALLERY ARROWS (touch) ──
+// Swipe already works via scroll-snap; the arrows exist so the affordance is
+// discoverable. Caption stays in step with whichever card is actually centred.
+function galleryStep(dir){
+  var card=galleryRoom.querySelector('.ring-card');
+  var w=card?card.offsetWidth+18:galleryRoom.clientWidth*0.8;
+  galleryRoom.scrollBy({left:dir*w,behavior:'smooth'});
+}
+function updateGalleryCaption(){
+  if(!mobilePortraitNow)return;
+  var cards=galleryRoom.querySelectorAll('.ring-card');
+  if(!cards.length)return;
+  var mid=galleryRoom.scrollLeft+galleryRoom.clientWidth/2,best=0,bestD=Infinity;
+  for(var i=0;i<cards.length;i++){
+    var cc=cards[i].offsetLeft+cards[i].offsetWidth/2,d=Math.abs(cc-mid);
+    if(d<bestD){bestD=d;best=i;}
+  }
+  $cardName.textContent=cardData[best].name;
+  $cardInfo.style.opacity='1';
+  galPrev.classList.toggle('visible',best>0);
+  galNext.classList.toggle('visible',best<cards.length-1);
+}
+if(galPrev){galPrev.addEventListener('click',function(){galleryStep(-1);});}
+if(galNext){galNext.addEventListener('click',function(){galleryStep(1);});}
+galleryRoom.addEventListener('scroll',updateGalleryCaption,{passive:true});
 // ── AUTOPLAY: if the user doesn't interact, scroll the whole experience at a steady pace,
 // reversing direction at each end so it keeps cycling and can draw the eye back.
 // Any user input pauses it; if they go idle again for 4s, it resumes from where it left off ──
