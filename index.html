@@ -117,10 +117,27 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
 .dna-base{width:12px;height:110px;border-radius:4px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:#2d1255;background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:0% 100%;background-repeat:no-repeat;will-change:transform,opacity,background-size,box-shadow}
 
+.landscape-overlay{display:none}
+@media(max-width:768px) and (orientation:portrait){
+  .landscape-overlay{position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.97);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;text-align:center;padding:2rem}
+  .landscape-overlay .lo-icon{font-size:3rem;animation:loRotate 2s ease-in-out infinite}
+  @keyframes loRotate{0%,20%{transform:rotate(0deg)}60%,100%{transform:rotate(90deg)}}
+  .landscape-overlay h2{font-family:'Oswald',sans-serif;font-size:1.4rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-cream);text-shadow:0 0 3px rgba(180,140,255,.5)}
+  .landscape-overlay p{font-family:'Inter',sans-serif;font-size:.9rem;color:var(--text-dim);max-width:320px;line-height:1.6}
+  .landscape-overlay .lo-btn{padding:.7em 2em;border-radius:999px;border:1px solid rgba(139,92,246,.4);background:rgba(139,92,246,.15);color:var(--text-cream);font-family:'Inter',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:all .3s}
+  .landscape-overlay .lo-btn:hover{background:rgba(139,92,246,.3);box-shadow:0 0 8px rgba(139,92,246,.3)}
+}
 @media(prefers-reduced-motion){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
 </head>
 <body>
+
+<div class="landscape-overlay" id="landscapeOverlay">
+  <div class="lo-icon">📱</div>
+  <h2>Rotate Your Phone</h2>
+  <p>This experience is designed for landscape orientation. Please turn your phone sideways for the best view.</p>
+  <button class="lo-btn" id="loOkBtn">OK</button>
+</div>
 
 <canvas id="scene"></canvas>
 
@@ -437,6 +454,21 @@ dots.forEach(function(dot){
   dot.addEventListener('click',function(){
     document.getElementById(this.getAttribute('data-room')).scrollIntoView({behavior:'smooth'});
   });
+});
+
+// ── LANDSCAPE PROMPT ──
+var landscapeOverlay=document.getElementById('landscapeOverlay');
+function checkOrientation(){
+  if(window.innerWidth<=768&&window.innerHeight>window.innerWidth){
+    landscapeOverlay.style.display='flex';
+  }else{
+    landscapeOverlay.style.display='none';
+  }
+}
+checkOrientation();
+window.addEventListener('resize',checkOrientation);
+document.getElementById('loOkBtn').addEventListener('click',function(){
+  landscapeOverlay.style.display='none';
 });
 
 // ── MOBILE MENU ──
