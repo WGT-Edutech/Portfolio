@@ -253,7 +253,7 @@ try{
   pg.addColorStop(0,'rgba(200,75,255,1)');pg.addColorStop(0.55,'rgba(200,75,255,1)');
   pg.addColorStop(0.65,'rgba(200,75,255,.45)');pg.addColorStop(1,'rgba(200,75,255,0)');
   pctx.fillStyle=pg;pctx.fillRect(0,0,256,256);
-  pMat=new THREE.PointsMaterial({size:.65,map:new THREE.CanvasTexture(pc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffffff});
+  pMat=new THREE.PointsMaterial({size:.65,map:new THREE.CanvasTexture(pc),blending:THREE.NormalBlending,depthWrite:false,transparent:true,opacity:0,color:0xffffff});
   pGeo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(P_COUNT).fill(1),1));
   pMat.onBeforeCompile=function(sh){
     sh.vertexShader=sh.vertexShader
@@ -278,7 +278,7 @@ try{
   bgg.addColorStop(0,'rgba(255,62,200,1)');bgg.addColorStop(0.55,'rgba(255,62,200,1)');
   bgg.addColorStop(0.65,'rgba(255,62,200,.45)');bgg.addColorStop(1,'rgba(255,62,200,0)');
   bctx.fillStyle=bgg;bctx.fillRect(0,0,256,256);
-  bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffffff});
+  bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.NormalBlending,depthWrite:false,transparent:true,opacity:0,color:0xffffff});
   bgGeo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(B_COUNT).fill(1),1));
   bgMat.onBeforeCompile=function(sh){
     sh.vertexShader=sh.vertexShader
