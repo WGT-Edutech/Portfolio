@@ -108,7 +108,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .lbl-mob{display:none}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 1px hsl(260 90% 75% / .75)}50%{text-shadow:0 0 2px hsl(260 95% 80% / .95)}}
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
-.dna-base{width:14px;height:110px;border-radius:999px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:rgba(45,18,85,.55);box-shadow:inset 0 0 0 1px rgba(200,170,255,.35);background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:100% 0%;background-position:bottom;background-repeat:no-repeat;will-change:transform,opacity,background-size,box-shadow}
+.dna-base{width:14px;height:110px;border-radius:999px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:rgba(45,18,85,.55);box-shadow:inset 0 0 0 1px rgba(200,170,255,.35);background-image:linear-gradient(to top,#22c55e 0%,#22c55e 50%,#a855f7 50%,#a855f7 100%);background-size:100% 0%;background-position:bottom;background-repeat:no-repeat;will-change:transform,opacity,background-size,box-shadow}
 
 .landscape-overlay{display:none}
 @media(max-width:768px) and (orientation:portrait){
@@ -183,7 +183,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 </nav>
 <div class="slogan-bar" id="sloganBar">Building the Future of Learning.</div>
 <div class="gallery-floor" id="galleryFloor"></div>
-<div id="varprox" aria-hidden="true"><span class="variable-proximity">Projects</span></div>
+<div id="varprox" aria-hidden="true"></div>
 <div class="section-buttons" id="sectionButtons">
   <a href="#about" class="sect-btn">About</a>
   <a href="#contact" class="sect-btn">Contact</a>
@@ -362,7 +362,12 @@ function splitToChars(el,cls){
 var nameVPChars=splitToChars(nameText,'name-char');
 var roleVPChars=splitToChars(roleText,'vp-char');
 var sloganVPChars=splitToChars(sloganText,'vp-char');
-var allVPChars=[].concat(nameVPChars,roleVPChars,sloganVPChars);
+var projectsEl=document.getElementById('varprox');
+var projectsSpan=document.createElement('span');
+projectsSpan.className='variable-proximity';
+projectsEl.appendChild(projectsSpan);
+var projectsVPChars=splitToChars(projectsSpan,'vp-char');
+var allVPChars=[].concat(nameVPChars,roleVPChars,sloganVPChars,projectsVPChars);
 var nameRevealCount=0;
 
 var TITLE_PAD=40;
@@ -518,7 +523,7 @@ function tick(now){
   // Room 1: DNA loader
   var helixP=rp[0],loader=document.getElementById('loader');
   var strandSpan=1/BASE_COUNT,LERP_SPEED=.08;
-  var FILL_END=.4,HOLD_END=.7;
+  var FILL_END=2/3,HOLD_END=.85;
   var fillP=clamp01(helixP/FILL_END);
   var fadeP=clamp01((helixP-HOLD_END)/(1-HOLD_END));
   var dnaSmooth=[];
@@ -532,9 +537,13 @@ function tick(now){
     base.style.backgroundSize='100% '+(smoothstep(sp)*100)+'%';
     base.style.opacity=(.25+smoothstep(sp)*.75).toFixed(3);
     if(sp>0){
-      var glowP=smoothstep(sp),gt=clamp01((sp-.4)/.6);
-      var gr=Math.round(34+(139-34)*gt),gg=Math.round(197+(92-197)*gt),gb=Math.round(94+(246-94)*gt);
-      base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35), 0 0 '+(glowP*18).toFixed(1)+'px rgba('+gr+','+gg+','+gb+','+(glowP*.8).toFixed(2)+'), 0 0 '+(glowP*40).toFixed(1)+'px rgba(139,92,246,'+(glowP*.45).toFixed(2)+')';
+      var glowP=smoothstep(sp);
+      if(fillP>=1){
+        base.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.6), 0 0 25px rgba(34,197,94,.9), 0 0 60px rgba(168,85,247,.7), 0 0 100px rgba(168,85,247,.4)';
+        base.style.opacity='1';
+      }else{
+        base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35), 0 0 '+(glowP*18).toFixed(1)+'px rgba(139,92,246,'+(glowP*.8).toFixed(2)+'), 0 0 '+(glowP*40).toFixed(1)+'px rgba(139,92,246,'+(glowP*.45).toFixed(2)+')';
+      }
     }else base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35)';
   });
   loader.style.opacity=(1-smoothstep(fadeP)).toFixed(3);
@@ -611,6 +620,7 @@ function tick(now){
     }
     navBar.classList.add('visible');
     sectBtns.classList.toggle('visible',galP>(mobilePortrait?0.6:0));
+    updateAllVP();
   }else{
     gallery.style.opacity='0';gallery.style.visibility='hidden';
     floor.classList.remove('visible');sectBtns.classList.remove('visible');varprox.classList.remove('visible');
