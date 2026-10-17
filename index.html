@@ -26,6 +26,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .title-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:6;opacity:0;transform:translateY(150px)}
 .title-role{font-family:'Roboto Flex',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 2px hsl(260 90% 75% / .65)}
 .title-slogan{font-family:'Roboto Flex',sans-serif;font-size:clamp(2.4rem,5.6vw,4rem);color:var(--text-cream);letter-spacing:.04em;text-align:center;text-shadow:0 0 2px hsl(260 90% 75% / .6)}
+.title-reflect{display:flex;flex-direction:column;align-items:center;gap:1.5rem;transform:scaleY(-1);margin-top:-.4rem;opacity:0;pointer-events:none;user-select:none;-webkit-user-select:none;-webkit-mask-image:linear-gradient(to bottom,transparent 15%,rgba(0,0,0,.7) 100%);mask-image:linear-gradient(to bottom,transparent 15%,rgba(0,0,0,.7) 100%);filter:blur(1px)}
 
 #galleryRoom{position:absolute;inset:0;z-index:30;perspective:1200px;display:flex;align-items:center;justify-content:center}
 .card-ring{position:relative;width:100%;height:100%;transform-style:preserve-3d;display:flex;align-items:center;justify-content:center}
@@ -43,7 +44,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .dot{width:10px;height:10px;border-radius:50%;background:rgba(244,241,234,.2);border:1px solid rgba(244,241,234,.1);cursor:pointer;transition:all .3s;padding:0}
 .dot.active{background:radial-gradient(circle,rgba(200,170,255,.9) 20%,var(--purple) 55%,rgba(139,92,246,.3) 100%);border-color:var(--purple);box-shadow:none;transform:scale(1.3)}
 
-.top-nav{position:fixed;top:0;left:0;right:0;z-index:45;height:3.5rem;opacity:0;pointer-events:none;transition:opacity .5s;background:rgba(0,0,0,.85);border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;justify-content:flex-end;padding:0 2rem}
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:45;height:3.5rem;opacity:0;pointer-events:none;transition:opacity .5s;background:#000;border-bottom:0;display:flex;align-items:center;justify-content:flex-end;padding:0 2rem}
 .top-nav.visible{opacity:1;pointer-events:auto}
 .nav-links{display:flex;gap:1.5rem}
 .nav-links a{font-family:'Inter',sans-serif;font-size:.85rem;font-weight:500;color:var(--text-dim);text-decoration:none;letter-spacing:.05em;text-transform:uppercase;transition:color .3s}
@@ -60,7 +61,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .slogan-bar{position:fixed;bottom:calc((50vh - 140px) / 3 - 150px);left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--text-cream);letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .6s;text-shadow:0 0 2px hsl(260 90% 75% / .5)}
 .slogan-bar.visible{opacity:1;transition:opacity 7s}
 
-.gallery-floor{position:fixed;bottom:0;left:0;right:0;height:38vh;z-index:25;opacity:0;pointer-events:none;transition:opacity .8s;background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(0,0,0,.3) 0%,rgba(0,0,0,.85) 100%)}
+.gallery-floor{position:fixed;bottom:0;left:0;right:0;height:max(calc(50vh - 170px),40px);z-index:25;opacity:0;pointer-events:none;transition:opacity .8s;background:linear-gradient(to bottom,rgba(255,255,255,.07) 0%,rgba(255,255,255,.02) 14%,rgba(255,255,255,0) 48%),#000;border-top:1px solid rgba(255,255,255,.14);box-shadow:0 -1px 10px rgba(200,170,255,.12)}
 .gallery-floor.visible{opacity:1}
 #varprox{position:fixed;top:0;left:0;right:0;height:25vh;z-index:42;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 2.5s}
 #varprox.visible{opacity:1}
@@ -108,7 +109,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .lbl-mob{display:none}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 1px hsl(260 90% 75% / .75)}50%{text-shadow:0 0 2px hsl(260 95% 80% / .95)}}
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
-.dna-base{width:12px;height:110px;border-radius:4px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:0% 100%;background-repeat:no-repeat;will-change:transform,opacity,background-size,box-shadow}
+.dna-base{width:14px;height:110px;border-radius:999px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:rgba(45,18,85,.55);box-shadow:inset 0 0 0 1px rgba(200,170,255,.35);background-image:linear-gradient(to top,#22c55e 0%,#8b5cf6 40%,#4c1d95 100%);background-size:100% 0%;background-position:bottom;background-repeat:no-repeat;will-change:transform,opacity,background-size,box-shadow}
 
 .landscape-overlay{display:none}
 @media(max-width:768px) and (orientation:portrait){
@@ -155,6 +156,10 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
     <div class="title-stage" id="titleStage">
       <div class="title-role" id="roleText">EdTech Designer</div>
       <div class="title-slogan" id="sloganText">Building the Future of Learning.</div>
+      <div class="title-reflect" id="titleReflect" aria-hidden="true">
+        <div class="title-role">EdTech Designer</div>
+        <div class="title-slogan">Building the Future of Learning.</div>
+      </div>
     </div>
   </div>
 </section>
@@ -250,11 +255,11 @@ try{
   var pc=document.createElement('canvas');pc.width=256;pc.height=256;
   var pctx=pc.getContext('2d');
   var pg=pctx.createRadialGradient(128,128,1,128,128,128);
-  pg.addColorStop(0,'rgba(210,180,255,1)');pg.addColorStop(0.25,'rgba(200,170,255,1)');
-  pg.addColorStop(0.35,'rgba(185,165,250,0.6)');pg.addColorStop(0.6,'rgba(145,125,235,0.15)');
-  pg.addColorStop(1,'rgba(0,0,0,0)');
+  pg.addColorStop(0,'rgba(255,255,255,1)');pg.addColorStop(0.2,'rgba(225,170,255,1)');
+  pg.addColorStop(0.5,'rgba(200,75,255,1)');pg.addColorStop(0.56,'rgba(190,60,255,.9)');
+  pg.addColorStop(0.72,'rgba(165,40,255,.3)');pg.addColorStop(1,'rgba(120,0,255,0)');
   pctx.fillStyle=pg;pctx.fillRect(0,0,256,256);
-  pMat=new THREE.PointsMaterial({size:.65,map:new THREE.CanvasTexture(pc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xb49cff});
+  pMat=new THREE.PointsMaterial({size:.65,map:new THREE.CanvasTexture(pc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffffff});
   pGeo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(P_COUNT).fill(1),1));
   pMat.onBeforeCompile=function(sh){
     sh.vertexShader=sh.vertexShader
@@ -276,11 +281,11 @@ try{
   var bpc=document.createElement('canvas');bpc.width=256;bpc.height=256;
   var bctx=bpc.getContext('2d');
   var bgg=bctx.createRadialGradient(128,128,1,128,128,128);
-  bgg.addColorStop(0,'rgba(255,190,250,1)');bgg.addColorStop(0.25,'rgba(255,170,245,1)');
-  bgg.addColorStop(0.35,'rgba(255,140,240,0.6)');bgg.addColorStop(0.6,'rgba(235,90,220,0.15)');
-  bgg.addColorStop(1,'rgba(0,0,0,0)');
+  bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.2,'rgba(255,160,235,1)');
+  bgg.addColorStop(0.5,'rgba(255,62,200,1)');bgg.addColorStop(0.56,'rgba(255,45,190,.9)');
+  bgg.addColorStop(0.72,'rgba(255,0,170,.3)');bgg.addColorStop(1,'rgba(255,0,150,0)');
   bctx.fillStyle=bgg;bctx.fillRect(0,0,256,256);
-  bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffb0ff});
+  bgMat=new THREE.PointsMaterial({size:.7,map:new THREE.CanvasTexture(bpc),blending:THREE.AdditiveBlending,depthWrite:false,transparent:true,opacity:0,color:0xffffff});
   bgGeo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(B_COUNT).fill(1),1));
   bgMat.onBeforeCompile=function(sh){
     sh.vertexShader=sh.vertexShader
@@ -346,7 +351,7 @@ function updateParticles(time){
 
 // ── TEXT EFFECTS ──
 var nameText=document.getElementById('nameText'),nameStage=document.getElementById('nameStage');
-var roleText=document.getElementById('roleText'),sloganText=document.getElementById('sloganText'),titleStage=document.getElementById('titleStage');
+var roleText=document.getElementById('roleText'),sloganText=document.getElementById('sloganText'),titleStage=document.getElementById('titleStage'),titleReflect=document.getElementById('titleReflect');
 
 function splitToChars(el,cls){
   var text=el.textContent;el.textContent='';
@@ -529,12 +534,13 @@ function tick(now){
     var sp=dnaSmooth[i];
     var rotY=helixP*Math.PI*12+(i/BASE_COUNT)*Math.PI*2;
     base.style.transform='rotateY('+(rotY*180/Math.PI)+'deg) rotateX(25deg)';
-    base.style.backgroundSize=(smoothstep(sp)*100)+'% 100%';
+    base.style.backgroundSize='100% '+(smoothstep(sp)*100)+'%';
     base.style.opacity=(.25+smoothstep(sp)*.75).toFixed(3);
     if(sp>0){
-      var glowP=smoothstep(sp);
-      base.style.boxShadow='0 0 '+(glowP*6).toFixed(1)+'px rgba(139,92,246,'+(glowP*.7).toFixed(2)+')';
-    }else base.style.boxShadow='none';
+      var glowP=smoothstep(sp),gt=clamp01((sp-.4)/.6);
+      var gr=Math.round(34+(139-34)*gt),gg=Math.round(197+(92-197)*gt),gb=Math.round(94+(246-94)*gt);
+      base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35), 0 0 '+(glowP*18).toFixed(1)+'px rgba('+gr+','+gg+','+gb+','+(glowP*.8).toFixed(2)+'), 0 0 '+(glowP*40).toFixed(1)+'px rgba(139,92,246,'+(glowP*.45).toFixed(2)+')';
+    }else base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35)';
   });
   loader.style.opacity=(1-smoothstep(fadeP)).toFixed(3);
 
@@ -555,9 +561,11 @@ function tick(now){
     titleStage.style.opacity='1';
     var tp=Math.min(1,rp[3]/.35);
     roleText.style.opacity=tp;
-    sloganText.style.opacity=Math.max(0,Math.min(1,(rp[3]-.2)/.3));
+    var slOp=Math.max(0,Math.min(1,(rp[3]-.2)/.3));
+    sloganText.style.opacity=slOp;
+    titleReflect.style.opacity=(slOp*.45*(1-clamp01(rp[4]*5))).toFixed(3);
     updateAllVP();
-  }else titleStage.style.opacity='0';
+  }else{titleStage.style.opacity='0';titleReflect.style.opacity='0';}
 
   // Room 5: Shrink to nav
   var shrinkP=rp[4],heroEl=document.getElementById('nameStage'),titleEl=document.getElementById('titleStage'),navBar=document.getElementById('topNav'),sloganBar=document.getElementById('sloganBar');
