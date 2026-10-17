@@ -108,7 +108,9 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .lbl-mob{display:none}
 @keyframes pulseGlow{0%,100%{text-shadow:0 0 1px hsl(260 90% 75% / .75)}50%{text-shadow:0 0 2px hsl(260 95% 80% / .95)}}
 .dna-helix{display:flex;align-items:center;justify-content:center;height:140px;position:relative;perspective:400px}
-.dna-base{width:14px;height:110px;border-radius:999px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:rgba(45,18,85,.55);box-shadow:inset 0 0 0 1px rgba(200,170,255,.35);background-image:linear-gradient(to top,#22c55e 0%,#22c55e 50%,#a855f7 50%,#a855f7 100%);background-size:100% 0%;background-position:bottom;background-repeat:no-repeat;will-change:transform,opacity,background-size,box-shadow}
+.dna-base{width:14px;height:110px;border-radius:999px;margin:0 14px;position:relative;transform-origin:center center;opacity:.2;background-color:rgba(45,18,85,.55);box-shadow:inset 0 0 0 1px rgba(200,170,255,.35);backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform,opacity,box-shadow}
+.dna-fill{position:absolute;left:0;right:0;bottom:0;height:0%;border-radius:999px;overflow:hidden;pointer-events:none;background:linear-gradient(to top,#22c55e 0%,#22c55e 50%,#a855f7 50%,#a855f7 100%) bottom/100% 110px no-repeat}
+.dna-fill::before{content:'';position:absolute;top:0;left:1px;right:1px;height:5px;border-radius:999px;background:rgba(255,255,255,.55);filter:blur(1.5px)}
 
 .landscape-overlay{display:none}
 @media(max-width:768px) and (orientation:portrait){
@@ -472,6 +474,7 @@ var dnaHelix=document.getElementById('dnaHelix');
 var dnaBases=[];
 for(var i=0;i<BASE_COUNT;i++){
   var base=document.createElement('div');base.className='dna-base';
+  var fillEl=document.createElement('span');fillEl.className='dna-fill';base.appendChild(fillEl);
   dnaHelix.appendChild(base);dnaBases.push(base);
 }
 
@@ -533,16 +536,17 @@ function tick(now){
     dnaSmooth[i]+=(targetP-dnaSmooth[i])*LERP_SPEED;
     var sp=dnaSmooth[i];
     var rotY=helixP*Math.PI*12+(i/BASE_COUNT)*Math.PI*2;
-    base.style.transform='rotateY('+(rotY*180/Math.PI)+'deg) rotateX(25deg)';
-    base.style.backgroundSize='100% '+(smoothstep(sp)*100)+'%';
+    base.style.transform='rotateY('+(rotY*180/Math.PI)+'deg) rotateX(25deg) translateZ(0)';
+    base.firstChild.style.height=(smoothstep(sp)*100).toFixed(1)+'%';
     base.style.opacity=(.25+smoothstep(sp)*.75).toFixed(3);
     if(sp>0){
       var glowP=smoothstep(sp);
       if(fillP>=1){
-        base.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.6), 0 0 25px rgba(34,197,94,.9), 0 0 60px rgba(168,85,247,.7), 0 0 100px rgba(168,85,247,.4)';
+        base.style.boxShadow='inset 0 0 0 1px rgba(255,255,255,.6), 0 0 6px rgba(34,197,94,.95), 0 0 14px rgba(34,197,94,.7), 0 0 28px rgba(168,85,247,.6), 0 0 55px rgba(168,85,247,.35)';
         base.style.opacity='1';
       }else{
-        base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35), 0 0 '+(glowP*18).toFixed(1)+'px rgba(139,92,246,'+(glowP*.8).toFixed(2)+'), 0 0 '+(glowP*40).toFixed(1)+'px rgba(139,92,246,'+(glowP*.45).toFixed(2)+')';
+        var gc=glowP<.5?'34,197,94':'168,85,247';
+        base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35), 0 0 '+(glowP*5).toFixed(1)+'px rgba('+gc+','+(glowP*.9).toFixed(2)+'), 0 0 '+(glowP*12).toFixed(1)+'px rgba('+gc+','+(glowP*.55).toFixed(2)+'), 0 0 '+(glowP*26).toFixed(1)+'px rgba(139,92,246,'+(glowP*.3).toFixed(2)+')';
       }
     }else base.style.boxShadow='inset 0 0 0 1px rgba(200,170,255,.35)';
   });
