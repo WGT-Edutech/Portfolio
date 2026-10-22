@@ -122,7 +122,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 }
 @media(prefers-reduced-motion){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 </style>
-<style id="animate-lab-css">.r1h{height:1000vh}.r2h{height:1100vh}.r3h{height:1000vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}.ring-card{width:420px;height:280px;margin-left:-210px;margin-top:-140px}.ring-card-reflect img{opacity:.55}</style>
+<style id="sitecfg-css">.r1h{height:1000vh}.r2h{height:1100vh}.r3h{height:1000vh}.r4h{height:500vh}.r5h{height:120vh}.r6h{height:2300vh}.ring-card{width:420px;height:280px;margin-left:-210px;margin-top:-140px}.ring-card-reflect img{opacity:.55}</style>
 <script src="config.js"></script>
 <script>
 (function(){
@@ -130,7 +130,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
   function _rgba(hex,a){var m=/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(String(hex||'').trim());
     if(!m)return 'rgba(139,92,246,'+a+')';
     return 'rgba('+parseInt(m[1],16)+','+parseInt(m[2],16)+','+parseInt(m[3],16)+','+a+')';}
-  var s=document.createElement('style');s.id='animate-lab-dynamic';
+  var s=document.createElement('style');s.id='sitecfg-dynamic';
   s.textContent=':root{--purple:'+Q.ACCENT+';--text-cream:'+Q.TEXT+';--text-dim:'+_rgba(Q.TEXT,.5)+'}'
     +'#varprox .variable-proximity{color:'+_rgba(Q.VP_COLOR,.8)+'}'
     +'.r1h{height:'+Q.R1_H+'vh}.r2h{height:'+Q.R2_H+'vh}.r3h{height:'+Q.R3_H+'vh}'
@@ -143,13 +143,13 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 </script>
 </head>
 <body>
-<div id="animate-lab-badge" style="position:fixed;left:12px;bottom:12px;z-index:99999;font:600 11px/1.5 ui-monospace,Menlo,Consolas,monospace;color:#e9d5ff;background:rgba(20,10,40,.85);border:1px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;max-width:min(420px,80vw);backdrop-filter:blur(8px);display:none"><div style="color:#c4b5fd;letter-spacing:.08em;text-transform:uppercase;font-size:10px">animate-lab config</div><div id="animate-lab-badge-body"></div></div>
+<div id="sitecfg-badge" style="position:fixed;left:12px;bottom:12px;z-index:99999;font:600 11px/1.5 ui-monospace,Menlo,Consolas,monospace;color:#e9d5ff;background:rgba(20,10,40,.85);border:1px solid rgba(139,92,246,.5);border-radius:8px;padding:8px 12px;max-width:min(420px,80vw);backdrop-filter:blur(8px);display:none"><div style="color:#c4b5fd;letter-spacing:.08em;text-transform:uppercase;font-size:10px">config override</div><div id="sitecfg-badge-body"></div></div>
 <script>
 (function(){
   var CFG=window.PortfolioConfig;
   if(!CFG||!CFG.applied)return;
   if(!/[?&]badge=1/.test(location.search))return;
-  var b=document.getElementById('animate-lab-badge'),body=document.getElementById('animate-lab-badge-body');
+  var b=document.getElementById('sitecfg-badge'),body=document.getElementById('sitecfg-badge-body');
   if(!b||!body)return;
   b.style.display='block';
   body.textContent=CFG.describe().join('  ·  ');
@@ -235,7 +235,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 (function(){
 'use strict';
 
-// ── animate-lab config layer ──
+// ── site config layer ──
 var CFG=window.PortfolioConfig,P=CFG.params;
 function _hexHsl(hex){var m=/^#?([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(String(hex||'').trim());if(!m)return[265,95];var r=parseInt(m[1],16)/255,g=parseInt(m[2],16)/255,b=parseInt(m[3],16)/255,mx=Math.max(r,g,b),mn=Math.min(r,g,b),l=(mx+mn)/2,d=mx-mn,h=0,s=0;if(d){s=d/(1-Math.abs(2*l-1));h=mx===r?60*(((g-b)/d)%6):mx===g?60*((b-r)/d+2):60*((r-g)/d+4);if(h<0)h+=360;}return[Math.round(h),Math.round(s*100)];}
 function _tint(hex,l,a){var c=_hexHsl(hex);return 'hsla('+c[0]+','+c[1]+'%,'+l+'%,'+a+')';}
@@ -308,7 +308,7 @@ try{
       .replace('#include <common>','#include <common>\nattribute float aSize;')
       .replace('gl_PointSize = size * ( scale / - mvPosition.z );','gl_PointSize = size * aSize * ( scale / - mvPosition.z );');
   };
-  pts=new THREE.Points(pGeo,pMat);pts.scale.set(.01,.01,.01);scene3.add(pts);
+  pts=new THREE.Points(pGeo,pMat);pts.position.set(P.P_X,P.P_Y,P.P_Z);pts.scale.set(.01,.01,.01);scene3.add(pts);
 
   var B_RING=P.B_RING;
   bgGeo=new THREE.BufferGeometry();
@@ -334,7 +334,7 @@ try{
       .replace('#include <common>','#include <common>\nattribute float aSize;')
       .replace('gl_PointSize = size * ( scale / - mvPosition.z );','gl_PointSize = size * aSize * ( scale / - mvPosition.z );');
   };
-  bgPts=new THREE.Points(bgGeo,bgMat);bgPts.position.z=P.BG_Z;bgPts.scale.set(.01,.01,.01);scene3.add(bgPts);
+  bgPts=new THREE.Points(bgGeo,bgMat);bgPts.position.set(P.B_X,P.B_Y,P.B_Z);bgPts.scale.set(.01,.01,.01);scene3.add(bgPts);
 
   window.addEventListener('mousemove',function(e){mtx3=(e.clientX/viewW)*2-1;mty3=-(e.clientY/viewH)*2+1;},{passive:true});
 }catch(e){console.error('Three.js:',e);}
@@ -379,7 +379,7 @@ function updateParticles(time){
   var bgPosArr=bgGeo.attributes.position.array;
   for(var i=0;i<B_COUNT;i++){
     var idx=i*3,a=(i/B_COUNT)*Math.PI*2,w=Math.sin(time*.001*P.P_SPEED+bgPhaseArr[i])*P.P_BREATH,r=P.B_RING+w*.8;
-    bgPosArr[idx]=Math.cos(a+orbitRot)*r;bgPosArr[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+P.P_IW;bgPosArr[idx+2]=Math.sin(a+orbitRot)*r;
+    bgPosArr[idx]=Math.cos(a+orbitRot)*r;bgPosArr[idx+1]=Math.sin(a*2+orbitRot*0.3)*1.5+w+P.B_IW;bgPosArr[idx+2]=Math.sin(a+orbitRot)*r;
     var dx=bgPosArr[idx]-mag3D.x,dy=bgPosArr[idx+1]-mag3D.y,dz=bgPosArr[idx+2]-mag3D.z;
     var dist=Math.sqrt(dx*dx+dy*dy+dz*dz)+.001,force=Math.min(P.M_FORCE_BG/dist,P.M_FORCE_BG_MAX);
     bgPosArr[idx]+=(bgPosArr[idx]+(dx/dist)*force*.9-bgPosArr[idx])*P.M_LERP_BG;

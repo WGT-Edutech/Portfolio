@@ -1,5 +1,5 @@
 /*!
- * animate-lab — site-side config layer  (config.js)
+ * Portfolio site config  (config.js)
  *
  * ONE self-contained file. No dependencies, no build step.
  * Reads ?cfg=<base64url> from the page URL and exposes it as window.PortfolioConfig.
@@ -19,12 +19,13 @@
 
   var FORMAT_VERSION = 1;
 
-  // ── Defaults (mirror of studio/schema.js DEFAULTS — kept in sync by test) ──
+  // ── Defaults (kept in sync with the schema by the test suite) ──────────
   var DEFAULTS = {
-    P_COUNT: 200, P_RING: 7, P_SIZE: 0.65, P_BREATH: 0.8, P_SPEED: 0.4,
+    P_COUNT: 200, P_RING: 7, P_X: 0, P_Y: 0, P_Z: 0, P_SIZE: 0.65, P_BREATH: 0.8, P_SPEED: 0.4,
     P_IW: 0.55, P_PULSE_SPEED: 0.6, P_PULSE_AMP: 0.5, P_COLOR: '#c84bff', P_OPACITY: 1,
     P_ORBIT_SPEED: 0.5,
-    B_COUNT: 250, B_RING: 10, B_SIZE: 0.7, B_PULSE_SPEED: 0.525, B_PULSE_AMP: 0.65, B_COLOR: '#ff2dbe',
+    B_COUNT: 250, B_RING: 10, B_X: 0, B_Y: 0, B_Z: -2, B_IW: 0.55,
+    B_SIZE: 0.7, B_PULSE_SPEED: 0.525, B_PULSE_AMP: 0.65, B_COLOR: '#ff2dbe',
     M_MAG_X: 28, M_MAG_Y: 16, M_MAG_Z: 2, M_FORCE_NEAR: 12, M_FORCE_FAR: 20,
     M_LERP_NEAR: 0.12, M_FORCE_BG: 14, M_FORCE_BG_MAX: 18, M_LERP_BG: 0.14, M_SMOOTH: 0.35,
     VP_RADIUS: 150, VP_W_MIN: 400, VP_W_MAX: 1000, VP_OPS_MIN: 9, VP_OPS_MAX: 40,
@@ -35,7 +36,7 @@
     G_STIFF: 0.08, G_DAMP: 0.72, G_REFLECT_OPACITY: 0.55,
     R1_H: 1000, R2_H: 1100, R3_H: 1000, R4_H: 500, R5_H: 120, R6_H: 2300,
     AUTO_DELAY: 4000, AUTO_SPEED_DIV: 80, AUTO_ENABLED: true,
-    CAM_FOV: 48, CAM_X: 0, CAM_Y: 0.8, CAM_Z: 7, BG_Z: -2,
+    CAM_FOV: 48, CAM_X: 0, CAM_Y: 0.8, CAM_Z: 7,
     ACCENT: '#8b5cf6', TEXT: '#f4f1ea', VP_COLOR: '#5b4dff'
   };
 
