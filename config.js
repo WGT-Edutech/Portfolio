@@ -37,6 +37,7 @@
     R1_H: 1000, R2_H: 1100, R3_H: 1000, R4_H: 500, R5_H: 120, R6_H: 2300,
     AUTO_DELAY: 4000, AUTO_SPEED_DIV: 80, AUTO_ENABLED: true,
     CAM_FOV: 48, CAM_X: 0, CAM_Y: 0.8, CAM_Z: 7,
+    VP_POINT_X: 50, VP_POINT_Y: 50, VP_DEPTH: 1200, ELEMENTS: '',
     ACCENT: '#8b5cf6', TEXT: '#f4f1ea', VP_COLOR: '#5b4dff'
   };
 
