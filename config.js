@@ -22,10 +22,10 @@
   // ── Defaults (kept in sync with the schema by the test suite) ──────────
   var DEFAULTS = {
     P_COUNT: 200, P_RING: 7, P_X: 0, P_Y: 0, P_Z: 0, P_SIZE: 0.65, P_BREATH: 0.8, P_SPEED: 0.4,
-    P_IW: 0.55, P_PULSE_SPEED: 0.6, P_PULSE_AMP: 0.5, P_COLOR: '#c84bff', P_OPACITY: 1,
+    P_IW: 0.55, P_PULSE_SPEED: 0.6, P_PULSE_AMP: 0.5, P_COLOR: '#c84bff', P_CORE: '#ffffff', P_OPACITY: 1,
     P_ORBIT_SPEED: 0.5,
     B_COUNT: 250, B_RING: 10, B_X: 0, B_Y: 0, B_Z: -2, B_IW: 0.55,
-    B_SIZE: 0.7, B_PULSE_SPEED: 0.525, B_PULSE_AMP: 0.35, B_COLOR: '#ff2dbe',
+    B_SIZE: 0.7, B_PULSE_SPEED: 0.525, B_PULSE_AMP: 0.35, B_COLOR: '#ff2dbe', B_CORE: '#ffffff',
     B_SPEED: 0.4, B_BREATH: 0.8,
     M_MAG_X: 28, M_MAG_Y: 16, M_MAG_Z: 2, M_FORCE_NEAR: 29, M_FORCE_FAR: 20,
     M_LERP_NEAR: 0.12, M_FORCE_BG: 14, M_FORCE_BG_MAX: 18, M_LERP_BG: 0.14, M_SMOOTH: 0.35,
