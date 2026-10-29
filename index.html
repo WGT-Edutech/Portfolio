@@ -23,7 +23,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .name-text{font-family:'Roboto Flex',sans-serif;font-size:clamp(3.5rem,10vw,7rem);font-weight:700;color:var(--text-cream);text-transform:uppercase;letter-spacing:.05em;text-shadow:0 0 2px hsl(260 90% 75% / .8),0 0 4px hsl(260 90% 65% / .4)}
 .name-char{display:inline-block;opacity:0;transform:translateY(20px)}
 
-.title-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:6;opacity:0;transform:translateY(150px)}
+.title-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:6;opacity:0;transform:translateY(150px) translate(var(--title-x,0px),var(--title-y,0px))}
 .title-role{font-family:'Roboto Flex',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 2px hsl(260 90% 75% / .65)}
 .title-slogan{font-family:'Roboto Flex',sans-serif;font-size:clamp(2.4rem,5.6vw,4rem);color:var(--text-cream);letter-spacing:.04em;text-align:center;text-shadow:0 0 2px hsl(260 90% 75% / .6)}
 
@@ -57,7 +57,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .donate-btn{background:var(--purple);border-color:var(--purple);box-shadow:0 0 4px rgba(180,140,255,.35)}
 .donate-btn:hover{background:rgba(139,92,246,.8);box-shadow:0 0 4px rgba(180,140,255,.5)}
 
-.slogan-bar{position:fixed;bottom:calc((50vh - 140px) / 3 - 150px);left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--text-cream);letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .6s;text-shadow:0 0 2px hsl(260 90% 75% / .5)}
+.slogan-bar{position:fixed;bottom:calc((50vh - 140px) / 3 - 150px);left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--text-cream);letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .6s;text-shadow:0 0 2px hsl(260 90% 75% / .5);transform:translate(var(--slogan-x,0px),var(--slogan-y,0px))}
 .slogan-bar.visible{opacity:1;transition:opacity 7s}
 
 .gallery-floor{position:fixed;bottom:0;left:0;right:0;height:38vh;z-index:1;opacity:0;pointer-events:none;transition:opacity .8s;background:#000}
@@ -298,7 +298,7 @@ try{
   var pc=document.createElement('canvas');pc.width=256;pc.height=256;
   var pctx=pc.getContext('2d');
   var pg=pctx.createRadialGradient(128,128,1,128,128,128);
-  pg.addColorStop(0,'rgba(255,255,255,1)');pg.addColorStop(0.15,_tint(P.P_COLOR,72,1));
+  pg.addColorStop(0,P.P_CORE);pg.addColorStop(0.15,_tint(P.P_COLOR,72,1));
   pg.addColorStop(0.375,_tint(P.P_COLOR,62,1));pg.addColorStop(0.42,_tint(P.P_COLOR,58,.9));
   pg.addColorStop(0.62,_tint(P.P_COLOR,48,.3));pg.addColorStop(1,_tint(P.P_COLOR,50,0));
   pctx.fillStyle=pg;pctx.fillRect(0,0,256,256);
@@ -324,7 +324,7 @@ try{
   var bpc=document.createElement('canvas');bpc.width=256;bpc.height=256;
   var bctx=bpc.getContext('2d');
   var bgg=bctx.createRadialGradient(128,128,1,128,128,128);
-  bgg.addColorStop(0,'rgba(255,255,255,1)');bgg.addColorStop(0.15,_tint(P.B_COLOR,72,1));
+  bgg.addColorStop(0,P.B_CORE);bgg.addColorStop(0.15,_tint(P.B_COLOR,72,1));
   bgg.addColorStop(0.375,_tint(P.B_COLOR,62,1));bgg.addColorStop(0.42,_tint(P.B_COLOR,58,.9));
   bgg.addColorStop(0.62,_tint(P.B_COLOR,48,.3));bgg.addColorStop(1,_tint(P.B_COLOR,50,0));
   bctx.fillStyle=bgg;bctx.fillRect(0,0,256,256);
@@ -395,6 +395,17 @@ function updateParticles(time){
 // ── TEXT EFFECTS ──
 var nameText=document.getElementById('nameText'),nameStage=document.getElementById('nameStage');
 var roleText=document.getElementById('roleText'),sloganText=document.getElementById('sloganText'),titleStage=document.getElementById('titleStage');
+
+  // Apply title & slogan position offsets from config (TITLE_X/Y, SLOGAN_X/Y)
+  if (titleStage) {
+    titleStage.style.setProperty('--title-x', P.TITLE_X+'px');
+    titleStage.style.setProperty('--title-y', P.TITLE_Y+'px');
+  }
+  var _sb = document.getElementById('sloganBar');
+  if (_sb) {
+    _sb.style.setProperty('--slogan-x', P.SLOGAN_X+'px');
+    _sb.style.setProperty('--slogan-y', P.SLOGAN_Y+'px');
+  }
 
 function splitToChars(el,cls){
   var text=el.textContent;el.textContent='';
@@ -628,14 +639,14 @@ function tick(now){
     heroEl.style.transform='translate(0,0) scale('+shrink+')';heroEl.style.transformOrigin='top left';
     heroEl.style.zIndex='46';heroEl.style.opacity=Math.min(1,shrinkP*4).toFixed(3);
     titleEl.style.position='fixed';titleEl.style.top=(topY+2.5)+'vh';titleEl.style.left=leftX+'vw';
-    titleEl.style.transform='translate(0,0) scale('+(shrink*.7)+')';titleEl.style.transformOrigin='top left';
+    titleEl.style.transform='translate('+P.TITLE_X+'px,'+P.TITLE_Y+'px) scale('+(shrink*.7)+')';titleEl.style.transformOrigin='top left';
     titleEl.style.zIndex='46';titleEl.style.opacity=shrinkP>.25?'1':'0';
     sloganBar.classList.remove('visible');
     navBar.classList.toggle('visible',shrinkP>.75);
   }else{
     heroEl.style.position='';heroEl.style.top='';heroEl.style.left='';heroEl.style.transform='';
     heroEl.style.transformOrigin='';heroEl.style.zIndex='';
-    titleEl.style.position='';titleEl.style.top='';titleEl.style.left='';titleEl.style.transform='';
+    titleEl.style.position='';titleEl.style.top='';titleEl.style.left='';titleEl.style.transform='translate('+P.TITLE_X+'px,'+P.TITLE_Y+'px)';
     titleEl.style.transformOrigin='';titleEl.style.zIndex='';
     navBar.classList.remove('visible');sloganBar.classList.remove('visible');
   }
