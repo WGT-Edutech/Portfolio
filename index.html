@@ -23,7 +23,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .name-text{font-family:'Roboto Flex',sans-serif;font-size:clamp(3.5rem,10vw,7rem);font-weight:700;color:var(--text-cream);text-transform:uppercase;letter-spacing:.05em;text-shadow:0 0 2px hsl(260 90% 75% / .8),0 0 4px hsl(260 90% 65% / .4)}
 .name-char{display:inline-block;opacity:0;transform:translateY(20px)}
 
-.title-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:6;opacity:0;transform:translateY(150px) translate(var(--title-x,0px),var(--title-y,0px))}
+.title-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;z-index:6;opacity:.15;transform:translateY(150px) translate(var(--title-x,0px),var(--title-y,0px))}
 .title-role{font-family:'Roboto Flex',sans-serif;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;color:var(--purple);letter-spacing:.12em;text-transform:uppercase;text-shadow:0 0 2px hsl(260 90% 75% / .65)}
 .title-slogan{font-family:'Roboto Flex',sans-serif;font-size:clamp(2.4rem,5.6vw,4rem);color:var(--text-cream);letter-spacing:.04em;text-align:center;text-shadow:0 0 2px hsl(260 90% 75% / .6)}
 
@@ -36,7 +36,8 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .ring-card-front{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:12px;background:#0a0a12}
 .ring-card-title{font-family:'Oswald',sans-serif;font-size:1.5rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-cream);text-align:center;line-height:1.2;text-shadow:0 0 1px hsl(260 90% 75% / .55)}
 #cardInfo{position:fixed;top:50%;left:50%;transform:translate(-50%,-185px);z-index:45;text-align:center;pointer-events:none;transition:opacity .4s ease}
-.card-name{font-family:'Oswald',sans-serif;font-size:1.4rem;text-transform:uppercase;letter-spacing:.05em;text-shadow:0 0 2px rgba(160,130,255,.5);background:rgba(3,3,10,.7);padding:.4rem 1.5rem;border-radius:8px;border:1px solid rgba(139,92,246,.2)}
+.card-name{font-family:'Roboto Flex',sans-serif;font-size:1.4rem;font-weight:500;font-variation-settings:"wght" 500,"opsz" 14;text-transform:uppercase;letter-spacing:.05em;color:var(--text-cream);text-shadow:0 0 4px rgba(139,92,246,.6),0 0 8px rgba(139,92,246,.3);background:rgba(10,10,20,.55);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:.5rem 1.8rem;border-radius:12px;border:1px solid rgba(139,92,246,.3);box-shadow:0 0 20px rgba(139,92,246,.4),0 14px 40px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.12)}
+.card-desc{font-family:'Inter',sans-serif;font-size:.8rem;color:rgba(244,241,234,.7);margin-top:.35rem;letter-spacing:0;text-transform:none;line-height:1.4}
 .ring-card:hover .ring-card-inner{box-shadow:inset 0 1px 0 rgba(255,255,255,.15),inset 0 -2px 0 rgba(0,0,0,.4),0 0 3px rgba(160,130,255,.3),0 20px 60px rgba(0,0,0,.6)}
 
 .phase-dots{position:fixed;right:1.5rem;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:.8rem}
@@ -57,12 +58,12 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 .donate-btn{background:var(--purple);border-color:var(--purple);box-shadow:0 0 4px rgba(180,140,255,.35)}
 .donate-btn:hover{background:rgba(139,92,246,.8);box-shadow:0 0 4px rgba(180,140,255,.5)}
 
-.slogan-bar{position:fixed;bottom:calc((50vh - 140px) / 3 - 150px);left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--text-cream);letter-spacing:.04em;opacity:0;pointer-events:none;transition:opacity .6s;text-shadow:0 0 2px hsl(260 90% 75% / .5);transform:translate(var(--slogan-x,0px),var(--slogan-y,0px))}
+.slogan-bar{position:fixed;bottom:calc((50vh - 140px) / 3 - 150px);left:0;right:0;z-index:50;text-align:center;padding:1.5rem 2rem;font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,5vw,3.2rem);color:var(--text-cream);letter-spacing:.04em;opacity:.15;pointer-events:none;transition:opacity .6s;text-shadow:0 0 2px hsl(260 90% 75% / .5);transform:translate(var(--slogan-x,0px),var(--slogan-y,0px))}
 .slogan-bar.visible{opacity:1;transition:opacity 7s}
 
 .gallery-floor{position:fixed;bottom:0;left:0;right:0;height:38vh;z-index:1;opacity:0;pointer-events:none;transition:opacity .8s;background:#000}
 .gallery-floor.visible{opacity:1}
-#varprox{position:fixed;top:0;left:0;right:0;height:25vh;z-index:42;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 2.5s}
+#varprox{position:fixed;top:0;left:0;right:0;height:25vh;z-index:42;display:flex;align-items:center;justify-content:center;pointer-events:none;overflow:hidden;opacity:.15;transition:opacity 2.5s}
 #varprox.visible{opacity:1}
 #varprox .variable-proximity{font-family:'Roboto Flex',sans-serif;font-size:clamp(2rem,8vw,6rem);font-weight:400;letter-spacing:.04em;line-height:1.2;text-align:center;white-space:nowrap;color:rgba(91,77,255,.8);text-shadow:0 0 2px rgba(160,130,255,.4);user-select:none;-webkit-user-select:none}
 
@@ -166,6 +167,10 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 
 <canvas id="scene"></canvas>
 
+<div id="sitecfg-stage" aria-hidden="true">
+  <div class="sitecfg-el" style="color:var(--text-cream);font-family:'Roboto Flex',sans-serif;font-size:clamp(1.5rem,3vw,2.5rem);font-weight:600;text-align:center;transform:translate(-50%,-50%) translateZ(80px) rotateX(10deg)">Portfolio</div>
+</div>
+
 <section class="room r1h" id="r1">
   <div class="sticky">
     <div class="loading-screen" id="loader">
@@ -194,7 +199,7 @@ body{background:#000;color:var(--text-cream);font-family:'Inter',sans-serif;line
 <section class="room r6h" id="r6">
   <div class="sticky">
     <section id="galleryRoom"><div class="card-ring" id="cardRing"></div></section>
-    <div id="cardInfo"><div class="card-name" id="cardName"></div></div>
+    <div id="cardInfo"><div class="card-name" id="cardName"></div><div class="card-desc" id="cardDesc"></div></div>
   </div>
 </section>
 
@@ -349,7 +354,7 @@ function updateParticles(time){
   var rp1=clamp01(roomData[1].progress);
   var ps=lerp(.01,1,smoothstep(rp1));
   var psOp=lerp(.25,1,smoothstep(rp1));
-  var illum=rp1>0 ? (.2+.8*clamp01(rp1*1.4)) : 0;
+  var illum=rp1>0 ? (.2+.8*clamp01(rp1*1.4)) : .2;
 
   var posArr=pGeo.attributes.position.array;
   for(var i=0;i<P_COUNT;i++){
@@ -424,6 +429,7 @@ var sloganVPChars=splitToChars(sloganText,'vp-char');
 var projectsEl=document.getElementById('varprox');
 var projectsSpan=document.createElement('span');
 projectsSpan.className='variable-proximity';
+projectsSpan.textContent='Works in Progress';
 projectsEl.appendChild(projectsSpan);
 var projectsVPChars=splitToChars(projectsSpan,'vp-char');
 var allVPChars=[].concat(nameVPChars,roleVPChars,sloganVPChars,projectsVPChars);
@@ -463,42 +469,142 @@ function updateAllVP(){
 
 // ── GALLERY CARDS ──
 var cardData=[
-  {name:'Language Tool',img:'images/language-tool.png',url:'https://articulate-english.github.io/language-widget/'},
-  {name:'B2 Grammar Lessons',img:'images/b2-grammar.png',url:'https://wgt-edutech.github.io/b2-grammar/'},
-  {name:'IELTS Slide Decks',img:'images/ielts-speaking.png',url:'https://articulate-english.github.io/ielts-b1/'},
-  {name:'IELTS Speaking Portal',img:'images/ielts-speaking-portal.jpg',url:'https://wgt-edutech.github.io/IELTS-Speaking-Practice/'},
-  {name:'IELTS Writing Essays',img:'images/ielts-writing-essays.png',url:'https://wgt-edutech.github.io/ielts-writing-essays/'},
-  {name:'Online Whiteboard',img:'images/whiteboard-screenshot.png',url:'https://articulate-english.github.io/whiteboard/'},
-  {name:'Nebula Notepad',img:'images/nebula-notepad.png',url:'https://articulate-english.github.io/nebula-notepad/'},
-  {name:'Alien Fret',img:'images/oobzoo-daw.png',url:'https://articulate-english.github.io/alien-fret/'},
-  {name:'Alien Metronome',img:'images/alien-metronome.png',url:'https://articulate-english.github.io/alien-metronome/'},
-  {name:'Alien Tuner',img:'images/alien-tuner.png',url:'https://wgt-edutech.github.io/alien-tuner/'},
-  {name:'Alien Recorder',img:'images/alien-recorder.png',url:'https://articulate-english.github.io/alien-recorder/'},
-  {name:'B1 Grammar Lessons',img:'images/b1-grammar.png',url:'https://wgt-edutech.github.io/b1-grammar/'},
-  {name:'Grammar Slide Decks',img:'images/linking-words.png',url:'https://wgt-edutech.github.io/linking-words/'},
-  {name:'VBook Maker/Reader',img:'images/vbook.png',url:'https://wgt-edutech.github.io/vbook-maker/'},
-  {name:'Web Dev',img:'images/web-dev.png',restart:true},
-  {name:'Articulate English Site',img:'images/articulate-english.webp',url:'https://articulate-english.github.io/articulate-english/'},
-  {name:'VocabForge',img:'images/vocab-forge.png',url:'https://articulate-english.github.io/VocabForge/'},
-  {name:'Sliding In',img:'images/sliding-in.png',url:'https://articulate-english.github.io/sliding-in/'},
-  {name:'B2 FCE Practice Decks Portal',img:'images/b2-fce-speaking.jpg',url:'https://articulate-english.github.io/articulate-english/b2-exam-speaking/'},
-  {name:'Scalien',img:'images/scalien.png',url:'https://articulate-english.github.io/scalien/'},
-  {name:'Qigong Morning Flow',img:'images/qigong-morning-flow.png',url:'https://articulate-english.github.io/Akasha-Qi-Gong/'}
+  {name:'Language Tool',img:'images/language-tool.png',url:'https://articulate-english.github.io/language-widget/',desc:'Grammar & vocabulary practice widget'},
+  {name:'B2 Grammar Lessons',img:'images/b2-grammar.png',url:'https://wgt-edutech.github.io/b2-grammar/',desc:'Structured B2-level grammar lessons & exercises'},
+  {name:'IELTS Slide Decks',img:'images/ielts-speaking.png',url:'https://articulate-english.github.io/ielts-b1/',desc:'Speaking practice slide decks with cue cards'},
+  {name:'IELTS Speaking Portal',img:'images/ielts-speaking-portal.jpg',url:'https://wgt-edutech.github.io/IELTS-Speaking-Practice/',desc:'IELTS Speaking Parts 1-3 practice portal'},
+  {name:'IELTS Writing Essays',img:'images/ielts-writing-essays.png',url:'https://wgt-edutech.github.io/ielts-writing-essays/',desc:'Academic Task 2 essay writing practice'},
+  {name:'Online Whiteboard',img:'images/whiteboard-screenshot.png',url:'https://articulate-english.github.io/whiteboard/',desc:'Collaborative online whiteboard for teaching'},
+  {name:'Nebula Notepad',img:'images/nebula-notepad.png',url:'https://articulate-english.github.io/nebula-notepad/',desc:'Offline-first PWA notepad with dark theme'},
+  {name:'Alien Fret',img:'images/oobzoo-daw.png',url:'https://articulate-english.github.io/alien-fret/',desc:'Guitar fretboard trainer with ear training'},
+  {name:'Alien Metronome',img:'images/alien-metronome.png',url:'https://articulate-english.github.io/alien-metronome/',desc:'Visual metronome with color-coded beats'},
+  {name:'Alien Tuner',img:'images/alien-tuner.png',url:'https://wgt-edutech.github.io/alien-tuner/',desc:'Chromatic tuner for guitar and instruments'},
+  {name:'Alien Recorder',img:'images/alien-recorder.png',url:'https://articulate-english.github.io/alien-recorder/',desc:'Browser-based audio recorder with playback'},
+  {name:'B1 Grammar Lessons',img:'images/b1-grammar.png',url:'https://wgt-edutech.github.io/b1-grammar/',desc:'B1-level English grammar lessons'},
+  {name:'Grammar Slide Decks',img:'images/linking-words.png',url:'https://wgt-edutech.github.io/linking-words/',desc:'Grammar & linking words teaching slide decks'},
+  {name:'VBook Maker/Reader',img:'images/vbook.png',url:'https://wgt-edutech.github.io/vbook-maker/',desc:'Create and read interactive multimedia e-books'},
+  {name:'Web Dev',img:'images/web-dev.png',restart:true,desc:'Web development component showcase'},
+  {name:'Articulate English Site',img:'images/articulate-english.webp',url:'https://articulate-english.github.io/articulate-english/',desc:'Online English school curriculum & booking site'},
+  {name:'VocabForge',img:'images/vocab-forge.png',url:'https://articulate-english.github.io/VocabForge/',desc:'Gamified vocabulary builder with word lists'},
+  {name:'Sliding In',img:'images/sliding-in.png',url:'https://articulate-english.github.io/sliding-in/',desc:'Smooth sliding puzzle game'},
+  {name:'B2 FCE Practice Decks Portal',img:'images/b2-fce-speaking.jpg',url:'https://articulate-english.github.io/articulate-english/b2-exam-speaking/',desc:'12 topic-based B2 First speaking practice decks'},
+  {name:'Scalien',img:'images/scalien.png',url:'https://articulate-english.github.io/scalien/',desc:'Alien-themed language learning game'},
+  {name:'Qigong Morning Flow',img:'images/qigong-morning-flow.png',url:'https://articulate-english.github.io/Akasha-Qi-Gong/',desc:'Guided morning qigong exercise routine'}
 ];
-var $cardRing=document.getElementById('cardRing'),$cardName=document.getElementById('cardName'),$cardInfo=document.getElementById('cardInfo');
+var $cardRing=document.getElementById('cardRing'),$cardName=document.getElementById('cardName'),$cardDesc=document.getElementById('cardDesc'),$cardInfo=document.getElementById('cardInfo');
 cardData.forEach(function(card){
   var el=document.createElement('div');el.className='ring-card';
   var inner=card.img
     ?'<div class="ring-card-inner"><div class="ring-card-front"><img src="'+card.img+'" alt="'+card.name+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px"></div></div><div class="ring-card-reflect" aria-hidden="true"><img src="'+card.img+'" alt=""></div>'
     :'<div class="ring-card-inner"><div class="ring-card-front"><span class="ring-card-title">'+card.name+'</span></div></div>';
   el.innerHTML=inner;
-  el.addEventListener('mouseenter',function(){$cardName.textContent=card.name;$cardInfo.style.opacity='1';});
+  el.addEventListener('mouseenter',function(){
+    $cardName.textContent=card.name;
+    $cardDesc.textContent=card.desc||'';
+    vpCardChars=[];
+    vpSplit($cardName);
+    vpCache();
+    $cardInfo.style.opacity='1';
+  });
   el.addEventListener('mouseleave',function(){$cardInfo.style.opacity='0';});
   if(card.url)el.addEventListener('click',function(e){e.stopPropagation();window.open(card.url,'_blank');});
   if(card.restart)el.addEventListener('click',function(e){e.stopPropagation();window.scrollTo({top:0,behavior:'smooth'});});
   el._spring={tx:0,tz:-400,ry:0,sc:1,op:0,vtx:0,vtz:0,vry:0,vsc:0,vop:0};
   $cardRing.appendChild(el);
 });
+
+// ── VARIABLE PROXIMITY (inlined from margreenie/js/vp-engine.js) ──
+// Pure maths: cursor distance → variable-font wght/opsz with quintic falloff.
+// Each card-name character is split into per-char spans so every glyph responds
+// to its OWN radial distance from the cursor — a soft-edged blob effect.
+(function(){
+  function clamp01(v){return v<0?0:v>1?1:v;}
+  function smootherstep(t){t=clamp01(t);return t*t*t*(t*(t*6-15)+10);}
+  function clamp(v,lo,hi){return v<lo?lo:v>hi?hi:v;}
+  function compute(o){
+    var cx=+o.cx||0,cy=+o.cy||0,ex=+o.ex||0,ey=+o.ey||0;
+    var radius=+o.radius||0,baseW=+o.baseW||400;
+    var swing=clamp(+o.swing||0,0,1),strength=clamp(o.strength==null?1:+o.strength,0,1);
+    var dx=cx-ex,dy=cy-ey,dist=Math.sqrt(dx*dx+dy*dy);
+    var t=radius>0?clamp01(1-dist/radius):0;
+    t=smootherstep(t)*strength;
+    var wMax=clamp(baseW*(1+swing),100,1000),wMin=clamp(baseW*(1-swing),100,1000);
+    if(wMin>wMax){var tmp=wMin;wMin=wMax;wMax=tmp;}
+    var wght=Math.round(wMin+(wMax-wMin)*t);
+    var opsz=null;
+    if(o.opszBase!=null){
+      var ob=clamp(+o.opszBase,8,144),os=clamp(+o.opszSwing||0,0,1);
+      var oMax=clamp(ob*(1+os),8,144),oMin=clamp(ob*(1-os),8,144);
+      if(oMin>oMax){var t2=oMin;oMin=oMax;oMax=t2;}
+      opsz=Math.round(oMin+(oMax-oMin)*t);
+    }
+    return {wght:wght,opsz:opsz,t:t,dist:dist};
+  }
+  function formatSettings(wght,opsz){
+    var s='"wght" '+Math.round(wght);
+    if(opsz!=null){s+=', "opsz" '+Math.round(opsz);}
+    return s;
+  }
+  window.VPEngine={clamp01:clamp01,smootherstep:smootherstep,clamp:clamp,compute:compute,formatSettings:formatSettings};
+})();
+var VP=window.VPEngine;
+var vpReduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+var vpCfg={radius:260,swing:.35,strength:1};
+var vpCursor={x:-9999,y:-9999};
+var vpEls=[];
+var vpCardChars=[];
+var vpCacheT=0;
+var VP_EASE_K=1-Math.exp(-1/60/0.12);
+// Dynamic split: called on each card hover (text changes each time).
+function vpSplit(el){
+  var text=el.textContent;
+  el.innerHTML='';
+  for(var i=0;i<text.length;i++){
+    var s=document.createElement('span');
+    s.className='vpch';
+    s.textContent=text.charAt(i)===' '?'\u00a0':text.charAt(i);
+    el.appendChild(s);
+    vpCardChars.push(s);
+  }
+}
+function vpCache(){
+  if(!VP)return;
+  vpEls=[];
+  var el=$cardName;
+  var cs=getComputedStyle(el);
+  var sz=parseFloat(cs.fontSize)||16;
+  var baseW=parseFloat(cs.fontWeight)||500;
+  var opszBase=cs.fontFamily.indexOf('Roboto Flex')!==-1?Math.round(sz):null;
+  for(var i=0;i<vpCardChars.length;i++){
+    var ch=vpCardChars[i];
+    var r=ch.getBoundingClientRect();
+    vpEls.push({el:ch,fixed:true,left:r.left,top:r.top,w:r.width,h:r.height,baseW:baseW,opszBase:opszBase});
+  }
+}
+function vpCacheSoon(){clearTimeout(vpCacheT);vpCacheT=setTimeout(vpCache,250);}
+function vpStep(){
+  if(!VP||!vpEls.length||vpReduced)return;
+  var cx=vpCursor.x,cy=vpCursor.y;
+  for(var i=0;i<vpEls.length;i++){
+    var e=vpEls[i];
+    var r=VP.compute({cx:cx,cy:cy,ex:e.left+e.w/2,ey:e.top+e.h/2,radius:vpCfg.radius,baseW:e.baseW,swing:vpCfg.swing,strength:vpCfg.strength,opszBase:e.opszBase,opszSwing:.2});
+    var resting=e.opszBase==null?e.baseW:e.opszBase;
+    var tW=r.t<=0.001?e.baseW:r.wght;
+    var tO=r.t<=0.001?(e.opszBase==null?null:e.opszBase):r.opsz;
+    if(!e.cur){e.cur={w:tW,o:tO};}
+    e.cur.w+=(tW-e.cur.w)*VP_EASE_K;
+    if(tO==null){e.cur.o=null;}else{e.cur.o+=(tO-e.cur.o)*VP_EASE_K;}
+    if(Math.abs(e.cur.w-e.baseW)<0.6&&(tO==null||Math.abs(e.cur.o-resting)<0.6)){
+      if(e.on){e.el.style.fontVariationSettings=VP.formatSettings(e.baseW,e.opszBase);e.on=false;}
+      continue;
+    }
+    e.on=true;
+    var fs=VP.formatSettings(Math.round(e.cur.w),e.cur.o==null?null:Math.round(e.cur.o));
+    if(e._lastFS!==fs){e.el.style.fontVariationSettings=fs;e._lastFS=fs;}
+  }
+}
+window.addEventListener('pointermove',function(ev){vpCursor.x=ev.clientX;vpCursor.y=ev.clientY;},{passive:true});
+window.addEventListener('resize',function(){if(vpCardChars.length)vpCacheSoon()});
 
 // ── PHASE DOTS ──
 var dots=document.querySelectorAll('.phase-dots .dot');
@@ -554,6 +660,7 @@ var prevTime=0;
 
 function tick(now){
   requestAnimationFrame(tick);
+  if(VP)vpStep();
   var dt=Math.min((now-prevTime)/1000,.1);prevTime=now;if(dt<=0)return;
 
   // Autoplay
@@ -611,7 +718,7 @@ function tick(now){
   }
 
   // Room 2: Particles zoom
-  if(pts){var ps2=lerp(.01,1,smoothstep(rp[1]));pts.scale.set(ps2,ps2,ps2);bgPts.scale.set(ps2,ps2,ps2);}
+  if(pts){var ps2=lerp(.25,1,smoothstep(rp[1]));pts.scale.set(ps2,ps2,ps2);bgPts.scale.set(ps2,ps2,ps2);}
 
   // Room 3: Name reveal
   if(rp[2]>.01){
@@ -629,7 +736,7 @@ function tick(now){
     roleText.style.opacity=tp;
     sloganText.style.opacity=Math.max(0,Math.min(1,(rp[3]-.2)/.3));
     updateAllVP();
-  }else titleStage.style.opacity='0';
+  }else titleStage.style.opacity='.2';
 
   // Room 5: Shrink to nav
   var shrinkP=rp[4],heroEl=document.getElementById('nameStage'),titleEl=document.getElementById('titleStage'),navBar=document.getElementById('topNav'),sloganBar=document.getElementById('sloganBar');
@@ -692,6 +799,9 @@ function tick(now){
   if(renderer){renderer.render(scene3,cam);}
 }
 
+// Initial render for environments where RAF may not fire immediately
+if(renderer && pts){updateParticles(performance.now());renderer.render(scene3,cam);}
+
 prevTime=performance.now();
 
 // ── AUTOPLAY ──
@@ -715,6 +825,10 @@ armAutoplay();
 if('scrollRestoration' in history)history.scrollRestoration='manual';
 window.scrollTo(0,0);
 requestAnimationFrame(tick);
+// RAF fallback: in some headless/non-visible contexts RAF never fires.
+// Detect this and fall back to setInterval so the animation loop runs.
+var _rafOk=false;requestAnimationFrame(function(){_rafOk=true;});
+setTimeout(function(){if(!_rafOk){setInterval(function(){try{tick(performance.now())}catch(e){console.error(e)}},16);}},100);
 })();
 </script>
 <script>
@@ -729,8 +843,8 @@ requestAnimationFrame(tick);
   if(!Array.isArray(list)||!list.length)return;
   var FONTS=['Oswald','Inter','Roboto Flex'];
   function num(v,d,lo,hi){var n=typeof v==='number'?v:parseFloat(v);if(!isFinite(n))return d;return Math.max(lo,Math.min(hi,n));}
-  var stage=document.createElement('div');
-  stage.id='sitecfg-stage';stage.setAttribute('aria-hidden','true');
+  var stage=document.getElementById('sitecfg-stage');
+  if(!stage){stage=document.createElement('div');stage.id='sitecfg-stage';stage.setAttribute('aria-hidden','true');}
   list.slice(0,40).forEach(function(w){
     if(!w||typeof w!=='object')return;
     var text=typeof w.t==='string'?w.t:'';
@@ -751,7 +865,7 @@ requestAnimationFrame(tick);
     el.style.transform='translate(-50%,-50%) translate3d('+num(w.x,0,-5000,5000)+'px,'+num(w.y,0,-5000,5000)+'px,'+num(w.z,0,-2000,2000)+'px)'+' rotateY('+num(w.r,0,-360,360)+'deg)';
     stage.appendChild(el);
   });
-  if(stage.childNodes.length)document.body.appendChild(stage);
+  if(stage.childNodes.length&&!stage.parentNode)document.body.appendChild(stage);
 })();
 </script>
 </body>
